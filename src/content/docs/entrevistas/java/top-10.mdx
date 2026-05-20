@@ -14,82 +14,126 @@ Estas son las preguntas que **siempre** aparecen en entrevistas técnicas de Jav
 
 ## 1. ¿Cuáles son los pilares de la Programación Orientada a Objetos?
 
-> **Encapsulamiento**: ocultar datos. **Herencia**: reutilizar código. **Polimorfismo**: misma interfaz, diferentes implementaciones. **Abstracción**: modelar lo esencial.
+**Introducción:**
+Pregunta fundamental en cualquier entrevista de Java. Los 4 pilares son la base de todo el paradigma orientado a objetos.
 
-| Pilar | Descripción |
-|-------|-------------|
-| **Encapsulamiento** | Ocultar datos internos y exponer solo lo necesario |
-| **Herencia** | Reutilizar código de clases padre |
-| **Polimorfismo** | Misma interfaz, diferentes implementaciones |
-| **Abstracción** | Modelar conceptos esenciales ocultando detalles |
+**Definición profesional:**
+Los pilares de POO son los principios fundamentales que definen cómo se estructuran y relacionan los objetos en un sistema: Encapsulamiento, Herencia, Polimorfismo y Abstracción.
 
-<Code code={`// Encapsulamiento
-public class Persona {
-    private String nombre; // Dato privado
+**Explicación sencilla:**
+- **Encapsulamiento**: Ocultar los datos internos y controlar el acceso mediante métodos
+- **Herencia**: Una clase hija reutiliza código de una clase padre
+- **Polimorfismo**: Un mismo método se comporta diferente según el objeto
+- **Abstracción**: Mostrar solo lo esencial, ocultar la complejidad
+
+**Funcionamiento básico:**
+
+| Pilar | Qué hace | Cómo se implementa |
+|-------|----------|-------------------|
+| Encapsulamiento | Protege datos | `private` + getters/setters |
+| Herencia | Reutiliza código | `extends` / `implements` |
+| Polimorfismo | Múltiples formas | Override de métodos |
+| Abstracción | Oculta complejidad | `abstract` / `interface` |
+
+**Ejemplo práctico:**
+
+<Code code={`// ENCAPSULAMIENTO - datos privados, acceso controlado
+public class Cuenta {
+    private double saldo;
     
-    public String getNombre() { // Acceso controlado
-        return nombre;
-    }
-    
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public double getSaldo() { return saldo; }
+    public void depositar(double monto) {
+        if (monto > 0) saldo += monto;
     }
 }
 
-// Herencia
-public class Empleado extends Persona {
-    private double salario;
+// HERENCIA - reutilizar código
+public class CuentaAhorro extends Cuenta {
+    private double tasaInteres;
 }
 
-// Polimorfismo
-public interface Animal {
-    void hacerSonido();
+// POLIMORFISMO - mismo método, diferente comportamiento
+public interface Notificador {
+    void enviar(String mensaje);
 }
 
-public class Perro implements Animal {
-    @Override
-    public void hacerSonido() {
-        System.out.println("Guau!");
+public class EmailNotificador implements Notificador {
+    public void enviar(String mensaje) {
+        System.out.println("Email: " + mensaje);
     }
 }
 
-public class Gato implements Animal {
-    @Override
-    public void hacerSonido() {
-        System.out.println("Miau!");
+public class SMSNotificador implements Notificador {
+    public void enviar(String mensaje) {
+        System.out.println("SMS: " + mensaje);
     }
 }
 
-// Abstracción
+// ABSTRACCIÓN - solo lo esencial
 public abstract class Figura {
     public abstract double calcularArea();
 }`} lang="java" title="Los 4 pilares de POO" />
+
+**Casos de uso reales:**
+- **Encapsulamiento**: Validar datos antes de asignarlos (ej: edad no negativa)
+- **Herencia**: Clases de empleados que heredan de Persona
+- **Polimorfismo**: Diferentes métodos de pago (tarjeta, PayPal, transferencia)
+- **Abstracción**: Interfaces de repositorio que ocultan si es BD o API
+
+**Cómo responder en entrevista:**
+> "Los 4 pilares de POO son Encapsulamiento, Herencia, Polimorfismo y Abstracción. El encapsulamiento protege los datos usando modificadores de acceso. La herencia permite reutilizar código entre clases. El polimorfismo permite que un mismo método tenga diferentes comportamientos. Y la abstracción nos permite modelar solo lo esencial ocultando la complejidad."
 
 ---
 
 ## 2. ¿Cuál es la diferencia entre `==` y `.equals()`?
 
-> **`==`** compara referencias (direcciones de memoria). **`.equals()`** compara contenido/valores. Para objetos, siempre usar `.equals()`.
+**Introducción:**
+Una de las preguntas más frecuentes. Confundir estos operadores causa bugs difíciles de detectar.
 
-<Code code={`// == compara referencias (direcciones de memoria)
-// .equals() compara contenido (valores)
+**Definición profesional:**
+`==` es un operador que compara referencias de memoria (si dos variables apuntan al mismo objeto). `.equals()` es un método que compara el contenido o valor lógico de los objetos.
 
-String s1 = new String("Hola");
+**Explicación sencilla:**
+- `==` pregunta: "¿Son el mismo objeto en memoria?"
+- `.equals()` pregunta: "¿Tienen el mismo valor?"
+
+**Funcionamiento básico:**
+
+| Operador | Compara | Primitivos | Objetos |
+|----------|---------|------------|---------|
+| `==` | Referencias | Valor directo | Dirección de memoria |
+| `.equals()` | Contenido | N/A | Valor lógico |
+
+**Sintaxis:**
+
+<Code code={`objeto1 == objeto2      // Compara referencias
+objeto1.equals(objeto2) // Compara contenido`} lang="java" />
+
+**Ejemplo práctico:**
+
+<Code code={`String s1 = new String("Hola");
 String s2 = new String("Hola");
 String s3 = s1;
 
-// Comparación de referencias
-System.out.println(s1 == s2);      // false (diferentes objetos)
+// == compara referencias
+System.out.println(s1 == s2);      // false (objetos diferentes)
 System.out.println(s1 == s3);      // true (misma referencia)
 
-// Comparación de contenido
+// .equals() compara contenido
 System.out.println(s1.equals(s2)); // true (mismo valor)
-System.out.println(s1.equals(s3)); // true
 
-// Con String Pool
+// Caso especial: String Pool
 String s4 = "Hola";
 String s5 = "Hola";
-System.out.println(s4 == s5);      // true (String Pool)`} lang="java" title="== vs .equals()" />
+System.out.println(s4 == s5);      // true (String Pool reutiliza)`} lang="java" title="== vs .equals()" />
+
+**Casos de uso reales:**
+- Comparar IDs de usuario: usar `.equals()`
+- Verificar si dos variables apuntan al mismo objeto: usar `==`
+- Comparar objetos en colecciones (HashMap, HashSet): siempre `.equals()`
+
+**Cómo responder en entrevista:**
+> "El operador `==` compara referencias, es decir, si dos variables apuntan al mismo objeto en memoria. El método `.equals()` compara el contenido o valor lógico de los objetos. Para comparar objetos siempre debemos usar `.equals()`, y es importante sobrescribir tanto `equals()` como `hashCode()` en nuestras clases."
 
 <Aside type="caution" title="Importante">
 Siempre usa `.equals()` para comparar objetos. Sobrescribe `equals()` y `hashCode()` en tus clases.
@@ -99,7 +143,21 @@ Siempre usa `.equals()` para comparar objetos. Sobrescribe `equals()` y `hashCod
 
 ## 3. ¿Qué es el String Pool?
 
-> Área en el Heap donde Java almacena literales de String para reutilizarlos. Dos literales iguales apuntan al mismo objeto.
+**Introducción:**
+Concepto clave para entender cómo Java optimiza el manejo de Strings y por qué `==` a veces funciona con Strings.
+
+**Definición profesional:**
+El String Pool es un área especial en el Heap donde la JVM almacena literales de String para reutilizarlos, optimizando memoria al evitar duplicados.
+
+**Explicación sencilla:**
+Cuando escribes `"Hola"` en tu código, Java guarda ese texto en un "almacén". Si escribes `"Hola"` otra vez, Java reutiliza el mismo objeto del almacén en lugar de crear uno nuevo.
+
+**Funcionamiento básico:**
+1. Los literales de String (`"texto"`) van automáticamente al Pool
+2. `new String()` crea objetos FUERA del Pool
+3. `intern()` fuerza a un String a usar el Pool
+
+**Ejemplo práctico:**
 
 <Code code={`// Literales van al String Pool
 String s1 = "Java";
@@ -112,59 +170,108 @@ System.out.println(s1 == s3); // false (diferente referencia)
 
 // intern() fuerza a usar el Pool
 String s4 = s3.intern();
-System.out.println(s1 == s4); // true`} lang="java" title="String Pool" />
+System.out.println(s1 == s4); // true (ahora usa el Pool)`} lang="java" title="String Pool" />
+
+**Casos de uso reales:**
+- Optimización de memoria en aplicaciones con muchos Strings repetidos
+- Comparaciones rápidas con `==` cuando sabemos que son literales
+- Caché de configuraciones o constantes de texto
+
+**Cómo responder en entrevista:**
+> "El String Pool es un área en el Heap donde Java almacena literales de String para reutilizarlos y ahorrar memoria. Cuando usamos literales como `String s = \"Hola\"`, Java verifica si ya existe en el Pool y reutiliza esa referencia. Por eso dos literales iguales con `==` dan true. Pero `new String()` crea objetos fuera del Pool, por eso siempre debemos usar `.equals()` para comparar Strings."
 
 ---
 
 ## 4. ¿Cuál es la diferencia entre ArrayList y LinkedList?
 
-> **ArrayList**: array dinámico, acceso O(1), inserción O(n). **LinkedList**: nodos enlazados, acceso O(n), inserción O(1). Usar ArrayList por defecto.
+**Introducción:**
+Pregunta clásica sobre estructuras de datos. Demuestra conocimiento de complejidad algorítmica y cuándo usar cada una.
 
-| Característica | ArrayList | LinkedList |
-|----------------|-----------|------------|
-| Estructura | Array dinámico | Lista doblemente enlazada |
-| Acceso por índice | O(1) - Rápido | O(n) - Lento |
-| Inserción/Eliminación | O(n) - Lento | O(1) - Rápido |
-| Memoria | Menos overhead | Más overhead (nodos) |
-| Uso ideal | Lectura frecuente | Inserción/eliminación frecuente |
+**Definición profesional:**
+ArrayList es una implementación de List basada en un array dinámico que ofrece acceso O(1) por índice. LinkedList es una lista doblemente enlazada que ofrece inserción/eliminación O(1) en los extremos.
+
+**Explicación sencilla:**
+- **ArrayList**: Como un array que crece automáticamente. Rápido para leer, lento para insertar en medio.
+- **LinkedList**: Cadena de nodos conectados. Rápido para insertar/eliminar, lento para buscar.
+
+**Funcionamiento básico:**
+
+| Operación | ArrayList | LinkedList |
+|-----------|-----------|------------|
+| Acceso por índice | O(1) ✅ | O(n) ❌ |
+| Inserción al final | O(1)* | O(1) |
+| Inserción en medio | O(n) ❌ | O(1) ✅ |
+| Búsqueda | O(n) | O(n) |
+| Memoria | Menos | Más (nodos) |
+
+*Amortizado
+
+**Ejemplo práctico:**
 
 <Code code={`import java.util.*;
 
 // ArrayList - mejor para acceso aleatorio
 List<String> arrayList = new ArrayList<>();
 arrayList.add("A");
-arrayList.get(0); // O(1)
+arrayList.add("B");
+String elemento = arrayList.get(0); // O(1) - Muy rápido
 
-// LinkedList - mejor para inserciones/eliminaciones
-List<String> linkedList = new LinkedList<>();
-linkedList.add("A");
-linkedList.addFirst("B"); // O(1)
-linkedList.removeLast();  // O(1)`} lang="java" title="ArrayList vs LinkedList" />
+// LinkedList - mejor para inserciones/eliminaciones frecuentes
+LinkedList<String> linkedList = new LinkedList<>();
+linkedList.addFirst("A"); // O(1)
+linkedList.addLast("B");  // O(1)
+linkedList.removeFirst(); // O(1)
+
+// Regla general: usar ArrayList por defecto
+List<String> lista = new ArrayList<>();`} lang="java" title="ArrayList vs LinkedList" />
+
+**Casos de uso reales:**
+- **ArrayList**: Lista de productos, resultados de búsqueda, cualquier lectura frecuente
+- **LinkedList**: Implementar colas (Queue), historial de navegación, undo/redo
+
+**Cómo responder en entrevista:**
+> "ArrayList usa un array dinámico internamente, lo que permite acceso O(1) por índice pero inserción O(n) en medio. LinkedList usa nodos enlazados, ofreciendo inserción O(1) pero acceso O(n). En la práctica, ArrayList es mejor en la mayoría de casos porque el acceso a memoria es más eficiente. Solo usaría LinkedList si necesito muchas inserciones/eliminaciones al inicio o final de la lista."
 
 ---
 
-## 5. ¿Qué es la diferencia entre Interface y Abstract Class?
+## 5. ¿Cuál es la diferencia entre Interface y Abstract Class?
 
-> **Interface**: contrato puro, herencia múltiple, solo métodos abstractos (y default). **Abstract class**: puede tener implementación, herencia simple, tiene constructor.
+**Introducción:**
+Pregunta esencial de diseño orientado a objetos. Demuestra comprensión de cuándo usar cada mecanismo de abstracción.
 
-| Característica | Interface | Abstract Class |
-|----------------|-----------|----------------|
-| Métodos | Abstractos (y default desde Java 8) | Abstractos y concretos |
-| Variables | Solo constantes (public static final) | Cualquier tipo |
-| Herencia | Múltiple (implements) | Simple (extends) |
-| Constructor | No tiene | Puede tener |
-| Uso | Definir contrato | Compartir código base |
+**Definición profesional:**
+Una Interface define un contrato de comportamiento que las clases deben implementar, permitiendo herencia múltiple. Una Abstract Class es una clase parcialmente implementada que sirve como base para subclases, permitiendo compartir código común.
 
-<Code code={`// Interface - contrato
+**Explicación sencilla:**
+- **Interface**: "Qué debe hacer" - Define capacidades (Volador, Serializable)
+- **Abstract Class**: "Qué es" - Define una familia de objetos con código compartido
+
+**Funcionamiento básico:**
+
+| Aspecto | Interface | Abstract Class |
+|---------|-----------|----------------|
+| Herencia | Múltiple (`implements`) | Simple (`extends`) |
+| Métodos | Abstractos + default | Abstractos + concretos |
+| Variables | Solo constantes | Cualquier tipo |
+| Constructor | No | Sí |
+| Cuándo usar | Definir capacidades | Compartir código base |
+
+**Ejemplo práctico:**
+
+<Code code={`// INTERFACE - define capacidades/contrato
 public interface Volador {
-    void volar(); // Abstracto por defecto
+    void volar();
     
-    default void aterrizar() { // Método default (Java 8+)
+    default void aterrizar() { // Java 8+
         System.out.println("Aterrizando...");
     }
 }
 
-// Abstract Class - código compartido
+public interface Nadador {
+    void nadar();
+}
+
+// ABSTRACT CLASS - comparte código base
 public abstract class Animal {
     protected String nombre;
     
@@ -172,204 +279,334 @@ public abstract class Animal {
         this.nombre = nombre;
     }
     
-    public void dormir() { // Método concreto
-        System.out.println(nombre + " está durmiendo");
+    public void dormir() { // Método concreto compartido
+        System.out.println(nombre + " duerme");
     }
     
-    public abstract void hacerSonido(); // Método abstracto
+    public abstract void hacerSonido(); // Cada animal lo implementa
 }
 
-// Implementación
-public class Pajaro extends Animal implements Volador {
-    public Pajaro(String nombre) {
-        super(nombre);
-    }
+// Combinación: hereda de una clase, implementa múltiples interfaces
+public class Pato extends Animal implements Volador, Nadador {
+    public Pato(String nombre) { super(nombre); }
     
-    @Override
-    public void hacerSonido() {
-        System.out.println("Pío pío");
-    }
-    
-    @Override
-    public void volar() {
-        System.out.println(nombre + " está volando");
-    }
+    public void hacerSonido() { System.out.println("Cuac"); }
+    public void volar() { System.out.println(nombre + " vuela"); }
+    public void nadar() { System.out.println(nombre + " nada"); }
 }`} lang="java" title="Interface vs Abstract Class" />
+
+**Casos de uso reales:**
+- **Interface**: `Comparable`, `Serializable`, `Runnable`, contratos de servicio
+- **Abstract Class**: `HttpServlet`, `AbstractList`, clases base de frameworks
+
+**Cómo responder en entrevista:**
+> "La principal diferencia es que una clase puede implementar múltiples interfaces pero solo extender una clase abstracta. Uso interfaces para definir contratos o capacidades que pueden tener objetos no relacionados. Uso clases abstractas cuando tengo una jerarquía de clases que comparten código común. Desde Java 8, las interfaces pueden tener métodos default, pero las clases abstractas siguen siendo útiles cuando necesito estado (variables de instancia) o constructores."
 
 ---
 
 ## 6. ¿Qué es el manejo de excepciones en Java?
 
-> **Checked**: deben manejarse (IOException). **Unchecked**: RuntimeException, no obligatorio. Usar try-catch-finally o try-with-resources.
+**Introducción:**
+Tema fundamental para escribir código robusto. Los entrevistadores evalúan si conoces la diferencia entre tipos de excepciones y las mejores prácticas.
 
-<Code code={`// Jerarquía de excepciones
-// Throwable
-// ├── Error (no manejar: OutOfMemoryError, StackOverflowError)
-// └── Exception
-//     ├── RuntimeException (unchecked: NullPointerException)
-//     └── Checked Exceptions (IOException, SQLException)
+**Definición profesional:**
+El manejo de excepciones es el mecanismo de Java para gestionar errores en tiempo de ejecución de forma controlada, separando el flujo normal del código del manejo de errores.
 
-// Try-Catch-Finally
-public void leerArchivo(String ruta) {
-    BufferedReader reader = null;
-    try {
-        reader = new BufferedReader(new FileReader(ruta));
-        String linea = reader.readLine();
-        System.out.println(linea);
-    } catch (FileNotFoundException e) {
-        System.out.println("Archivo no encontrado: " + e.getMessage());
-    } catch (IOException e) {
-        System.out.println("Error de lectura: " + e.getMessage());
-    } finally {
-        // Siempre se ejecuta
-        if (reader != null) {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+**Explicación sencilla:**
+- **Checked exceptions**: El compilador te obliga a manejarlas (ej: leer archivo)
+- **Unchecked exceptions**: Errores de programación, no obligatorio manejar (ej: NullPointer)
+- **Errors**: Problemas graves del sistema, no debes manejar (ej: OutOfMemory)
+
+**Funcionamiento básico:**
+
+```
+Throwable
+├── Error (NO manejar: OutOfMemoryError)
+└── Exception
+    ├── RuntimeException (Unchecked: NullPointerException)
+    └── Checked (IOException, SQLException)
+```
+
+**Sintaxis:**
+
+<Code code={`try {
+    // Código que puede fallar
+} catch (TipoExcepcion e) {
+    // Manejar error
+} finally {
+    // Siempre se ejecuta (limpiar recursos)
 }
 
-// Try-with-resources (Java 7+) - Mejor práctica
-public void leerArchivoModerno(String ruta) {
+// Try-with-resources (Java 7+) - MEJOR PRÁCTICA
+try (Recurso r = new Recurso()) {
+    // Recurso se cierra automáticamente
+}`} lang="java" />
+
+**Ejemplo práctico:**
+
+<Code code={`// Try-with-resources - forma moderna y recomendada
+public String leerArchivo(String ruta) {
     try (BufferedReader reader = new BufferedReader(new FileReader(ruta))) {
-        String linea = reader.readLine();
-        System.out.println(linea);
+        return reader.readLine();
+    } catch (FileNotFoundException e) {
+        System.out.println("Archivo no existe: " + ruta);
+        return null;
     } catch (IOException e) {
-        System.out.println("Error: " + e.getMessage());
+        System.out.println("Error de lectura: " + e.getMessage());
+        return null;
     }
     // reader se cierra automáticamente
+}
+
+// Lanzar excepción personalizada
+public void validarEdad(int edad) {
+    if (edad < 0) {
+        throw new IllegalArgumentException("Edad no puede ser negativa");
+    }
 }`} lang="java" title="Manejo de excepciones" />
+
+**Casos de uso reales:**
+- **Checked**: Operaciones de I/O, conexiones a BD, llamadas a APIs
+- **Unchecked**: Validaciones de negocio, errores de programación
+- **Try-with-resources**: Cualquier recurso que implemente `AutoCloseable`
+
+**Cómo responder en entrevista:**
+> "Java tiene dos tipos principales de excepciones: Checked, que el compilador obliga a manejar como IOException, y Unchecked que extienden de RuntimeException. La mejor práctica es usar try-with-resources para recursos que necesitan cerrarse, y solo capturar excepciones que realmente podemos manejar. Nunca debemos capturar Exception genérica ni dejar catch blocks vacíos."
 
 ---
 
 ## 7. ¿Qué son los modificadores de acceso?
 
-> **public**: todos. **protected**: paquete + subclases. **default**: solo paquete. **private**: solo la clase.
+**Introducción:**
+Pregunta básica pero importante. Demuestra comprensión del encapsulamiento y diseño de APIs.
 
-| Modificador | Clase | Paquete | Subclase | Mundo |
-|-------------|-------|---------|----------|-------|
-| `public` | ✓ | ✓ | ✓ | ✓ |
-| `protected` | ✓ | ✓ | ✓ | ✗ |
-| `default` (sin modificador) | ✓ | ✓ | ✗ | ✗ |
-| `private` | ✓ | ✗ | ✗ | ✗ |
+**Definición profesional:**
+Los modificadores de acceso son palabras clave que controlan la visibilidad de clases, métodos y variables, implementando el principio de encapsulamiento.
 
-<Code code={`public class Ejemplo {
-    public String publico = "Accesible desde cualquier lugar";
-    protected String protegido = "Accesible en paquete y subclases";
-    String porDefecto = "Accesible solo en el paquete";
-    private String privado = "Accesible solo en esta clase";
+**Explicación sencilla:**
+Controlan "quién puede ver qué" en tu código:
+- **public**: Todo el mundo
+- **protected**: Familia (mismo paquete + hijos)
+- **default**: Vecinos (mismo paquete)
+- **private**: Solo yo (misma clase)
+
+**Funcionamiento básico:**
+
+| Modificador | Misma Clase | Mismo Paquete | Subclase | Otro Paquete |
+|-------------|:-----------:|:-------------:|:--------:|:------------:|
+| `public` | ✅ | ✅ | ✅ | ✅ |
+| `protected` | ✅ | ✅ | ✅ | ❌ |
+| `default` | ✅ | ✅ | ❌ | ❌ |
+| `private` | ✅ | ❌ | ❌ | ❌ |
+
+**Ejemplo práctico:**
+
+<Code code={`public class Usuario {
+    // private - solo accesible dentro de esta clase
+    private String password;
     
-    public void metodoPublico() {}
-    protected void metodoProtegido() {}
-    void metodoPorDefecto() {}
-    private void metodoPrivado() {}
+    // default - accesible en el mismo paquete
+    String nombreInterno;
+    
+    // protected - paquete + subclases
+    protected int id;
+    
+    // public - accesible desde cualquier lugar
+    public String nombre;
+    
+    // Getter público para dato privado (encapsulamiento)
+    public String getPassword() {
+        return "****"; // No exponer el real
+    }
+    
+    public void setPassword(String password) {
+        if (password.length() >= 8) {
+            this.password = password;
+        }
+    }
 }`} lang="java" title="Modificadores de acceso" />
+
+**Casos de uso reales:**
+- **private**: Datos sensibles, implementación interna
+- **public**: APIs, métodos de servicio
+- **protected**: Métodos que subclases pueden sobrescribir
+- **default**: Clases auxiliares dentro del mismo paquete
+
+**Cómo responder en entrevista:**
+> "Java tiene 4 niveles de acceso: public es visible para todos, protected para el mismo paquete y subclases, default (sin modificador) solo para el mismo paquete, y private solo dentro de la misma clase. La mejor práctica es usar el nivel más restrictivo posible: hacer los campos private y exponer solo lo necesario mediante métodos públicos. Esto implementa el principio de encapsulamiento."
 
 ---
 
 ## 8. ¿Qué es la palabra clave `final`?
 
-> **Variable**: constante, no reasignable. **Método**: no se puede sobrescribir. **Clase**: no se puede heredar.
+**Introducción:**
+Concepto importante para inmutabilidad y seguridad del código. Tiene diferentes significados según dónde se use.
 
-<Code code={`// final en variable - constante (no se puede reasignar)
-final int MAX_SIZE = 100;
-// MAX_SIZE = 200; // Error de compilación
+**Definición profesional:**
+`final` es un modificador que indica que algo no puede ser cambiado: una variable no puede reasignarse, un método no puede sobrescribirse, y una clase no puede heredarse.
 
-// final en método - no se puede sobrescribir
+**Explicación sencilla:**
+- **Variable final**: Es una constante, no puedes cambiar su valor
+- **Método final**: Nadie puede sobrescribirlo en subclases
+- **Clase final**: Nadie puede heredar de ella
+
+**Funcionamiento básico:**
+
+| Contexto | Significado | Ejemplo |
+|----------|-------------|---------|
+| Variable | No reasignable | `final int MAX = 100;` |
+| Método | No sobrescribible | `public final void metodo()` |
+| Clase | No heredable | `public final class String` |
+| Parámetro | No modificable en el método | `void foo(final int x)` |
+
+**Ejemplo práctico:**
+
+<Code code={`// VARIABLE FINAL - constante
+final int MAX_USUARIOS = 100;
+// MAX_USUARIOS = 200; // ❌ Error de compilación
+
+// Objeto final: la referencia no cambia, pero el contenido sí puede
+final List<String> lista = new ArrayList<>();
+lista.add("elemento"); // ✅ Esto sí se puede
+// lista = new ArrayList<>(); // ❌ Esto no
+
+// MÉTODO FINAL - no se puede sobrescribir
 public class Padre {
-    public final void metodoFinal() {
-        System.out.println("No se puede sobrescribir");
+    public final void metodoCritico() {
+        // Lógica que no debe modificarse
     }
 }
 
-// final en clase - no se puede heredar
-public final class ClaseFinal {
-    // No puede tener subclases
+// CLASE FINAL - no se puede heredar
+public final class Utilidades {
+    public static int sumar(int a, int b) {
+        return a + b;
+    }
 }
+// class MiUtilidad extends Utilidades {} // ❌ Error`} lang="java" title="Palabra clave final" />
 
-// final en parámetro
-public void metodo(final String param) {
-    // param = "otro"; // Error
-}
+**Casos de uso reales:**
+- **Variables**: Constantes de configuración, valores inmutables
+- **Métodos**: Lógica crítica que no debe modificarse (seguridad, validaciones)
+- **Clases**: `String`, `Integer`, clases de utilidad, inmutabilidad garantizada
 
-// Ejemplo: String es final
-// public class MiString extends String {} // Error`} lang="java" title="Palabra clave final" />
+**Cómo responder en entrevista:**
+> "La palabra clave `final` tiene tres usos: en variables las hace constantes (no reasignables), en métodos previene que sean sobrescritos en subclases, y en clases previene la herencia. Es importante notar que una variable final de tipo objeto no puede reasignarse, pero el objeto en sí puede modificarse. Por eso para inmutabilidad completa necesitamos que la clase también sea inmutable, como String."
 
 ---
 
 ## 9. ¿Qué es el método `hashCode()` y por qué es importante?
 
-> Retorna entero que identifica al objeto. Si `equals()` es true, `hashCode()` DEBE ser igual. Esencial para HashMap/HashSet.
+**Introducción:**
+Pregunta crítica que evalúa comprensión de colecciones hash. Errores aquí causan bugs muy difíciles de detectar.
 
-<Code code={`// hashCode() retorna un entero que representa el objeto
-// Contrato:
-// 1. Si a.equals(b) es true, entonces a.hashCode() == b.hashCode()
-// 2. Si hashCode es diferente, equals DEBE ser false
-// 3. hashCode igual NO garantiza equals true (colisiones)
+**Definición profesional:**
+`hashCode()` es un método que retorna un entero representando al objeto, usado por colecciones hash (HashMap, HashSet) para ubicar objetos eficientemente. Debe ser consistente con `equals()`.
 
-public class Persona {
+**Explicación sencilla:**
+Es como el "número de casillero" donde se guarda un objeto. Si dos objetos son iguales (`equals` = true), DEBEN tener el mismo número de casillero.
+
+**Funcionamiento básico:**
+
+**Contrato hashCode-equals:**
+1. Si `a.equals(b)` es `true` → `a.hashCode() == b.hashCode()` (OBLIGATORIO)
+2. Si `hashCode` es diferente → `equals` DEBE ser `false`
+3. Si `hashCode` es igual → `equals` puede ser `true` o `false` (colisiones)
+
+**Ejemplo práctico:**
+
+<Code code={`public class Producto {
+    private String codigo;
     private String nombre;
-    private int edad;
     
+    // SIEMPRE sobrescribir equals Y hashCode juntos
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        Persona persona = (Persona) obj;
-        return edad == persona.edad && 
-               Objects.equals(nombre, persona.nombre);
+        Producto otro = (Producto) obj;
+        return Objects.equals(codigo, otro.codigo);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(nombre, edad);
+        return Objects.hash(codigo); // Usar los mismos campos que equals
     }
 }
 
-// Importante para HashMap, HashSet, etc.
-Map<Persona, String> mapa = new HashMap<>();
-Persona p1 = new Persona("Juan", 25);
-mapa.put(p1, "Valor");
+// ¿Por qué importa?
+Map<Producto, Integer> inventario = new HashMap<>();
+Producto p1 = new Producto("ABC123", "Laptop");
+inventario.put(p1, 50);
 
-Persona p2 = new Persona("Juan", 25);
-System.out.println(mapa.get(p2)); // "Valor" (si equals y hashCode están bien)`} lang="java" title="hashCode() y equals()" />
+Producto p2 = new Producto("ABC123", "Laptop");
+System.out.println(inventario.get(p2)); // 50 ✅ (si hashCode está bien)
+// Sin hashCode correcto: null ❌`} lang="java" title="hashCode() y equals()" />
+
+**Casos de uso reales:**
+- Usar objetos como claves en HashMap
+- Almacenar objetos en HashSet (sin duplicados)
+- Cachés basados en hash
+- Cualquier estructura que use hashing
+
+**Cómo responder en entrevista:**
+> "hashCode() retorna un entero que representa al objeto y es usado por colecciones hash para ubicar objetos eficientemente. El contrato fundamental es: si dos objetos son iguales según equals(), DEBEN tener el mismo hashCode. Por eso siempre que sobrescribimos equals() debemos sobrescribir hashCode() usando los mismos campos. Si no lo hacemos, objetos iguales podrían terminar en diferentes 'buckets' y no los encontraríamos en HashMap o HashSet."
 
 ---
 
 ## 10. ¿Qué es el Garbage Collector?
 
-> Proceso automático que libera memoria de objetos sin referencias. No se controla directamente. Tipos: Serial, Parallel, G1, ZGC.
+**Introducción:**
+Tema importante para entender gestión de memoria en Java. Demuestra conocimiento de cómo la JVM optimiza recursos.
 
-<Code code={`// Objeto elegible para GC cuando:
-// 1. No hay referencias apuntando a él
-// 2. Todas las referencias son null
-// 3. El objeto está fuera de scope
+**Definición profesional:**
+El Garbage Collector (GC) es un proceso automático de la JVM que identifica y elimina objetos que ya no son accesibles, liberando memoria del heap sin intervención del programador.
 
-public void ejemplo() {
-    String s1 = new String("Hola"); // Objeto creado
-    s1 = null; // Ahora es elegible para GC
+**Explicación sencilla:**
+Es el "recolector de basura" de Java. Cuando un objeto ya no tiene ninguna referencia apuntándole, el GC lo detecta y libera esa memoria automáticamente.
+
+**Funcionamiento básico:**
+
+**Un objeto es elegible para GC cuando:**
+1. No hay referencias apuntando a él
+2. Todas las referencias son `null`
+3. El objeto está fuera de scope
+
+**Generaciones del Heap:**
+- **Young Generation**: Objetos nuevos (la mayoría muere aquí)
+- **Old Generation**: Objetos que sobreviven múltiples GC
+- **Metaspace**: Metadata de clases (Java 8+)
+
+**Ejemplo práctico:**
+
+<Code code={`public void ejemplo() {
+    // Objeto creado en el heap
+    String s1 = new String("Hola");
     
+    // Ahora "Hola" es elegible para GC
+    s1 = null;
+    
+    // "Mundo" se vuelve elegible cuando s2 apunta a otro objeto
     String s2 = new String("Mundo");
-    s2 = new String("Otro"); // "Mundo" es elegible para GC
+    s2 = new String("Otro"); // "Mundo" → elegible para GC
     
-    // System.gc() sugiere ejecutar GC (no garantizado)
+    // System.gc() SUGIERE ejecutar GC (no garantizado)
     System.gc();
 }
 
 // Tipos de GC en Java:
-// - Serial GC: Simple, single-threaded
-// - Parallel GC: Multi-threaded (default hasta Java 8)
-// - G1 GC: Low-latency (default desde Java 9)
-// - ZGC: Ultra-low latency (Java 11+)
-// - Shenandoah: Low-pause (Java 12+)`} lang="java" title="Garbage Collector" />
+// - G1 GC: Default desde Java 9, buen balance
+// - ZGC: Ultra-low latency (Java 11+), pausas < 10ms
+// - Parallel GC: Alto throughput, pausas más largas
+// - Serial GC: Para aplicaciones pequeñas`} lang="java" title="Garbage Collector" />
 
-**Generaciones del Heap:**
-- **Young Generation**: Objetos nuevos (Eden + Survivor spaces)
-- **Old Generation**: Objetos de larga vida
-- **Metaspace**: Metadata de clases (reemplazó PermGen en Java 8)
+**Casos de uso reales:**
+- **G1**: Aplicaciones web típicas, buen balance
+- **ZGC**: Aplicaciones con requisitos de baja latencia
+- **Parallel**: Procesamiento batch donde throughput importa más que latencia
+
+**Cómo responder en entrevista:**
+> "El Garbage Collector es un proceso automático de la JVM que libera memoria de objetos no accesibles. Un objeto es elegible para GC cuando no tiene referencias apuntándole. Java usa un modelo generacional: objetos nuevos van al Young Generation y si sobreviven varios ciclos pasan al Old Generation. El GC por defecto desde Java 9 es G1, que ofrece buen balance entre throughput y latencia. Para aplicaciones con requisitos de ultra-baja latencia, ZGC es la mejor opción."
 
 ---
 

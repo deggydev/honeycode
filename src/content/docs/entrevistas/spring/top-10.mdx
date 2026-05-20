@@ -14,7 +14,16 @@ Estas son las preguntas que **siempre** aparecen en entrevistas técnicas de Spr
 
 ## 1. ¿Qué es Spring Framework y cuáles son sus módulos principales?
 
-**Spring** es un framework de Java que proporciona infraestructura para desarrollar aplicaciones empresariales.
+**Introducción:**
+Pregunta de apertura en toda entrevista de Spring. Demuestra conocimiento general del ecosistema.
+
+**Definición profesional:**
+Spring es un framework de Java que proporciona infraestructura completa para desarrollar aplicaciones empresariales. Su núcleo es el contenedor IoC (Inversión de Control) que gestiona el ciclo de vida de los objetos.
+
+**Explicación sencilla:**
+Spring te ayuda a construir aplicaciones Java de forma más fácil: maneja la creación de objetos, conexiones a BD, seguridad, APIs REST, y mucho más.
+
+**Funcionamiento básico:**
 
 | Módulo | Descripción |
 |--------|-------------|
@@ -25,29 +34,51 @@ Estas son las preguntas que **siempre** aparecen en entrevistas técnicas de Spr
 | **Spring Boot** | Configuración automática y arranque rápido |
 | **Spring Cloud** | Microservicios y sistemas distribuidos |
 
+**Casos de uso reales:**
+- APIs REST empresariales
+- Aplicaciones web con MVC
+- Microservicios
+- Integración con bases de datos
+
+**Cómo responder en entrevista:**
+> "Spring es un framework de Java para aplicaciones empresariales. Su núcleo es el contenedor IoC que gestiona objetos mediante Dependency Injection. Los módulos principales son: Spring Core para DI, Spring MVC para web, Spring Data para acceso a datos, Spring Security para autenticación, Spring Boot para configuración automática, y Spring Cloud para microservicios."
+
 ---
 
 ## 2. ¿Qué es Inversión de Control (IoC) y Dependency Injection (DI)?
 
-**IoC** es un principio donde el framework controla el flujo del programa y la creación de objetos.
+**Introducción:**
+Conceptos fundamentales de Spring. Entenderlos es esencial para cualquier desarrollador Spring.
 
-**DI** es un patrón que implementa IoC, donde las dependencias son "inyectadas" en vez de creadas internamente.
+**Definición profesional:**
+IoC (Inversión de Control) es un principio donde el framework controla el flujo del programa y la creación de objetos. DI (Dependency Injection) es el patrón que implementa IoC, donde las dependencias se "inyectan" desde fuera en vez de crearse internamente.
 
-<Code code={`// SIN Dependency Injection (acoplado)
+**Explicación sencilla:**
+- **Sin DI**: Tu clase crea sus propias dependencias (acoplado)
+- **Con DI**: Alguien más (Spring) te da las dependencias que necesitas (desacoplado)
+
+**Funcionamiento básico:**
+
+| Tipo de Inyección | Uso | Recomendación |
+|-------------------|-----|---------------|
+| Constructor | Dependencias obligatorias | ✅ Preferido |
+| Setter | Dependencias opcionales | ⚠️ Ocasional |
+| Field (@Autowired) | Rápido pero acoplado | ❌ Evitar |
+
+**Ejemplo práctico:**
+
+<Code code={`// ❌ SIN Dependency Injection (acoplado)
 public class ServicioUsuario {
-    private RepositorioUsuario repo = new RepositorioUsuarioImpl(); // Acoplado
-    
-    public Usuario buscar(Long id) {
-        return repo.findById(id);
-    }
+    private RepositorioUsuario repo = new RepositorioUsuarioImpl();
+    // Problema: no puedes cambiar la implementación ni testear fácilmente
 }
 
-// CON Dependency Injection (desacoplado)
+// ✅ CON Dependency Injection (desacoplado)
 @Service
 public class ServicioUsuario {
     private final RepositorioUsuario repo;
     
-    // Constructor Injection (recomendado)
+    // Constructor Injection - Spring inyecta automáticamente
     public ServicioUsuario(RepositorioUsuario repo) {
         this.repo = repo;
     }
@@ -55,86 +86,156 @@ public class ServicioUsuario {
     public Usuario buscar(Long id) {
         return repo.findById(id);
     }
-}`} lang="java" title="Sin DI vs Con DI" />
+}
 
-**Tipos de inyección:**
-- **Constructor Injection** (recomendado) - inmutable, fácil de testear
-- **Setter Injection** - para dependencias opcionales
-- **Field Injection** (@Autowired en campo) - evitar, difícil de testear
+// En tests puedes inyectar un mock fácilmente:
+// new ServicioUsuario(mockRepository)`} lang="java" title="IoC y DI" />
+
+**Casos de uso reales:**
+- Inyectar repositorios en servicios
+- Inyectar servicios en controladores
+- Facilitar testing con mocks
+
+**Cómo responder en entrevista:**
+> "IoC es el principio donde el framework controla la creación y ciclo de vida de los objetos. DI es el patrón que implementa IoC, donde las dependencias se inyectan desde fuera. En Spring, usamos anotaciones como @Service y @Autowired. La forma recomendada es Constructor Injection porque hace las dependencias explícitas, permite inmutabilidad con final, y facilita el testing."
 
 ---
 
 ## 3. ¿Qué es un Bean en Spring?
 
-Un **Bean** es un objeto gestionado por el contenedor IoC de Spring.
+**Introducción:**
+Concepto central de Spring. Todo en Spring gira alrededor de los Beans.
 
-<Code code={`// Definir Bean con @Component
-@Component
-public class MiServicio {
-    // Spring lo gestiona automáticamente
+**Definición profesional:**
+Un Bean es un objeto cuyo ciclo de vida es gestionado por el contenedor IoC de Spring. Spring se encarga de crear, configurar, inyectar dependencias y destruir estos objetos.
+
+**Explicación sencilla:**
+Es cualquier objeto que Spring conoce y maneja por ti. Tú defines qué es un Bean, Spring se encarga del resto.
+
+**Funcionamiento básico:**
+
+| Anotación | Capa | Uso |
+|-----------|------|-----|
+| `@Component` | Genérico | Cualquier componente |
+| `@Service` | Negocio | Lógica de negocio |
+| `@Repository` | Datos | Acceso a BD |
+| `@Controller` | Web | Controladores MVC |
+| `@RestController` | Web | APIs REST |
+
+**Ejemplo práctico:**
+
+<Code code={`// Forma 1: Anotaciones de estereotipo
+@Service
+public class UsuarioService {
+    // Spring lo detecta y gestiona automáticamente
 }
 
-// Definir Bean con @Bean en @Configuration
+// Forma 2: @Bean en clase @Configuration
 @Configuration
 public class AppConfig {
     
     @Bean
-    public MiServicio miServicio() {
-        return new MiServicio();
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
     
     @Bean
-    public OtroServicio otroServicio(MiServicio miServicio) {
-        return new OtroServicio(miServicio);
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+            .registerModule(new JavaTimeModule());
     }
-}
+}`} lang="java" title="Definición de Beans" />
 
-// Estereotipos de componentes
-@Component   // Genérico
-@Service     // Capa de servicio (lógica de negocio)
-@Repository  // Capa de datos (acceso a BD)
-@Controller  // Capa web (controladores MVC)
-@RestController // @Controller + @ResponseBody`} lang="java" title="Definición de Beans" />
+**Casos de uso reales:**
+- Servicios de negocio (@Service)
+- Repositorios de datos (@Repository)
+- Configuraciones externas (@Bean)
+- Clientes HTTP, ObjectMapper, etc.
+
+**Cómo responder en entrevista:**
+> "Un Bean es un objeto gestionado por el contenedor IoC de Spring. Se pueden definir con anotaciones de estereotipo como @Component, @Service, @Repository, o con @Bean en clases @Configuration. Spring se encarga de instanciarlos, inyectar sus dependencias, y gestionar su ciclo de vida."
 
 ---
 
 ## 4. ¿Cuáles son los scopes de un Bean?
 
-| Scope | Descripción |
-|-------|-------------|
-| **singleton** | Una instancia por contenedor (default) |
-| **prototype** | Nueva instancia cada vez que se solicita |
-| **request** | Una instancia por request HTTP |
-| **session** | Una instancia por sesión HTTP |
-| **application** | Una instancia por ServletContext |
+**Introducción:**
+Define cuántas instancias de un Bean existen y cuánto tiempo viven.
 
-<Code code={`@Component
-@Scope("prototype")
-public class PrototypeBean {
-    // Nueva instancia cada vez
+**Definición profesional:**
+El scope de un Bean determina el ciclo de vida y visibilidad de las instancias. El scope por defecto es singleton (una instancia por contenedor).
+
+**Explicación sencilla:**
+- **Singleton**: Un solo objeto compartido por todos
+- **Prototype**: Un objeto nuevo cada vez que lo pides
+
+**Funcionamiento básico:**
+
+| Scope | Instancias | Uso |
+|-------|------------|-----|
+| `singleton` | 1 por contenedor | Default, stateless |
+| `prototype` | Nueva cada vez | Stateful, no compartir |
+| `request` | 1 por HTTP request | Web, datos de request |
+| `session` | 1 por sesión HTTP | Web, datos de usuario |
+
+**Ejemplo práctico:**
+
+<Code code={`// Singleton (default) - una instancia compartida
+@Service
+public class UsuarioService {
+    // Todos usan la misma instancia
 }
 
+// Prototype - nueva instancia cada vez
 @Component
-@Scope(value = WebApplicationContext.SCOPE_REQUEST, 
+@Scope("prototype")
+public class ReporteGenerator {
+    private List<String> datos = new ArrayList<>();
+    // Cada inyección crea una nueva instancia
+}
+
+// Request scope - una por request HTTP
+@Component
+@Scope(value = WebApplicationContext.SCOPE_REQUEST,
        proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class RequestBean {
-    // Una instancia por request
+public class RequestContext {
+    private String userId;
 }`} lang="java" title="Scopes de Bean" />
+
+**Casos de uso reales:**
+- **Singleton**: Servicios, repositorios, configuraciones
+- **Prototype**: Objetos con estado, builders
+- **Request**: Contexto del request actual
+
+**Cómo responder en entrevista:**
+> "El scope define cuántas instancias de un Bean existen. El default es singleton: una instancia por contenedor, ideal para servicios stateless. Prototype crea una nueva instancia cada vez, útil para objetos con estado. En aplicaciones web también hay request y session scope. Es importante que los singletons sean thread-safe."
 
 ---
 
 ## 5. ¿Qué es Spring Boot y qué ventajas ofrece?
 
-**Spring Boot** simplifica la configuración y el desarrollo de aplicaciones Spring.
+**Introducción:**
+Spring Boot es la forma moderna de desarrollar con Spring. Elimina la configuración manual.
 
-**Ventajas:**
-- **Auto-configuración**: Configura automáticamente según las dependencias
-- **Starters**: Dependencias pre-configuradas (spring-boot-starter-web, etc.)
-- **Embedded Server**: Tomcat/Jetty embebido, no necesita WAR
-- **Actuator**: Endpoints de monitoreo y métricas
-- **DevTools**: Hot reload en desarrollo
+**Definición profesional:**
+Spring Boot es un proyecto de Spring que simplifica la creación de aplicaciones mediante auto-configuración, servidores embebidos, y convención sobre configuración.
 
-<Code code={`// Aplicación Spring Boot mínima
+**Explicación sencilla:**
+Spring Boot = Spring sin dolor. Configura todo automáticamente para que puedas enfocarte en el código de negocio.
+
+**Funcionamiento básico:**
+
+| Característica | Beneficio |
+|----------------|-----------|
+| Auto-configuración | Configura según dependencias |
+| Starters | Dependencias pre-empaquetadas |
+| Embedded Server | Tomcat/Jetty incluido |
+| Actuator | Monitoreo y métricas |
+| DevTools | Hot reload en desarrollo |
+
+**Ejemplo práctico:**
+
+<Code code={`// Aplicación completa en una clase
 @SpringBootApplication
 public class MiAplicacion {
     public static void main(String[] args) {
@@ -142,14 +243,51 @@ public class MiAplicacion {
     }
 }
 
-// @SpringBootApplication incluye:
-// @Configuration - clase de configuración
-// @EnableAutoConfiguration - auto-configuración
-// @ComponentScan - escanea componentes`} lang="java" title="Spring Boot Application" />
+// @SpringBootApplication = 
+//   @Configuration + @EnableAutoConfiguration + @ComponentScan
+
+// application.yml - configuración simple
+// server:
+//   port: 8080
+// spring:
+//   datasource:
+//     url: jdbc:postgresql://localhost/db
+//     username: user
+//     password: pass`} lang="java" title="Spring Boot" />
+
+**Casos de uso reales:**
+- APIs REST
+- Microservicios
+- Aplicaciones web
+- Batch processing
+
+**Cómo responder en entrevista:**
+> "Spring Boot simplifica el desarrollo con Spring mediante auto-configuración, starters de dependencias, y servidores embebidos. Con @SpringBootApplication puedes tener una aplicación corriendo en minutos. Incluye Actuator para monitoreo y DevTools para desarrollo. La filosofía es convención sobre configuración: funciona out-of-the-box y solo configuras lo que necesitas cambiar."
 
 ---
 
 ## 6. ¿Cómo crear un REST Controller en Spring?
+
+**Introducción:**
+Pregunta práctica esencial. Demuestra conocimiento de Spring MVC y APIs REST.
+
+**Definición profesional:**
+Un REST Controller es un componente que maneja requests HTTP y retorna respuestas (generalmente JSON). Se crea con `@RestController` que combina `@Controller` + `@ResponseBody`.
+
+**Explicación sencilla:**
+Es donde defines los endpoints de tu API: qué URL responde a qué método y qué datos retorna.
+
+**Funcionamiento básico:**
+
+| Anotación | Método HTTP | Uso |
+|-----------|-------------|-----|
+| `@GetMapping` | GET | Obtener datos |
+| `@PostMapping` | POST | Crear recurso |
+| `@PutMapping` | PUT | Actualizar completo |
+| `@PatchMapping` | PATCH | Actualizar parcial |
+| `@DeleteMapping` | DELETE | Eliminar |
+
+**Ejemplo práctico:**
 
 <Code code={`@RestController
 @RequestMapping("/api/usuarios")
@@ -161,13 +299,11 @@ public class UsuarioController {
         this.service = service;
     }
     
-    // GET /api/usuarios
     @GetMapping
     public List<Usuario> listar() {
         return service.findAll();
     }
     
-    // GET /api/usuarios/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> buscar(@PathVariable Long id) {
         return service.findById(id)
@@ -175,21 +311,12 @@ public class UsuarioController {
             .orElse(ResponseEntity.notFound().build());
     }
     
-    // POST /api/usuarios
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario crear(@RequestBody @Valid UsuarioDTO dto) {
         return service.save(dto);
     }
     
-    // PUT /api/usuarios/{id}
-    @PutMapping("/{id}")
-    public Usuario actualizar(@PathVariable Long id, 
-                              @RequestBody @Valid UsuarioDTO dto) {
-        return service.update(id, dto);
-    }
-    
-    // DELETE /api/usuarios/{id}
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
@@ -197,11 +324,37 @@ public class UsuarioController {
     }
 }`} lang="java" title="REST Controller" />
 
+**Casos de uso reales:**
+- APIs para frontend (React, Angular)
+- Microservicios
+- Integraciones con terceros
+
+**Cómo responder en entrevista:**
+> "Un REST Controller se crea con @RestController y @RequestMapping para definir la URL base. Uso @GetMapping, @PostMapping, etc. para los métodos HTTP. @PathVariable extrae valores de la URL, @RequestBody deserializa el JSON del body, y @Valid activa validaciones. ResponseEntity permite controlar el status code y headers de la respuesta."
+
 ---
 
 ## 7. ¿Qué es Spring Data JPA?
 
-**Spring Data JPA** simplifica el acceso a datos con JPA/Hibernate.
+**Introducción:**
+Simplifica enormemente el acceso a datos. Elimina el boilerplate de JPA/Hibernate.
+
+**Definición profesional:**
+Spring Data JPA es un módulo que simplifica la implementación de repositorios JPA. Genera automáticamente las implementaciones de los métodos de acceso a datos basándose en convenciones de nombres.
+
+**Explicación sencilla:**
+Defines una interfaz con métodos como `findByNombre()`, y Spring genera automáticamente el SQL y la implementación.
+
+**Funcionamiento básico:**
+
+| Método | SQL Generado |
+|--------|--------------|
+| `findByNombre(String)` | `WHERE nombre = ?` |
+| `findByEdadGreaterThan(int)` | `WHERE edad > ?` |
+| `findByActivoTrue()` | `WHERE activo = true` |
+| `findByNombreContaining(String)` | `WHERE nombre LIKE %?%` |
+
+**Ejemplo práctico:**
 
 <Code code={`// Entidad JPA
 @Entity
@@ -211,46 +364,69 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(nullable = false)
     private String nombre;
     
     @Column(unique = true)
     private String email;
-    
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Pedido> pedidos;
-    
-    // Getters y setters
 }
 
-// Repository - Spring genera la implementación
+// Repository - Spring genera la implementación automáticamente
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     
     // Query methods - Spring genera el SQL
-    List<Usuario> findByNombre(String nombre);
     Optional<Usuario> findByEmail(String email);
-    List<Usuario> findByEdadGreaterThan(int edad);
+    List<Usuario> findByNombreContaining(String nombre);
+    List<Usuario> findByActivoTrueOrderByNombreAsc();
     
-    // Query personalizada
-    @Query("SELECT u FROM Usuario u WHERE u.activo = true")
-    List<Usuario> findActivos();
+    // Query personalizada con JPQL
+    @Query("SELECT u FROM Usuario u WHERE u.rol = :rol")
+    List<Usuario> findByRol(@Param("rol") String rol);
     
-    @Query("SELECT u FROM Usuario u WHERE u.nombre LIKE %:nombre%")
-    List<Usuario> buscarPorNombre(@Param("nombre") String nombre);
+    // Query nativa
+    @Query(value = "SELECT * FROM usuarios WHERE created_at > ?1", 
+           nativeQuery = true)
+    List<Usuario> findRecientes(LocalDate fecha);
 }`} lang="java" title="Spring Data JPA" />
+
+**Casos de uso reales:**
+- CRUD de entidades
+- Búsquedas complejas
+- Paginación y ordenamiento
+- Auditoría automática
+
+**Cómo responder en entrevista:**
+> "Spring Data JPA simplifica el acceso a datos generando automáticamente la implementación de repositorios. Solo defino una interfaz que extiende JpaRepository y uso query methods como findByNombre() que Spring convierte a SQL. Para queries complejas uso @Query con JPQL o SQL nativo. También soporta paginación con Pageable y especificaciones para queries dinámicas."
 
 ---
 
 ## 8. ¿Qué es @Transactional?
 
-**@Transactional** gestiona transacciones de base de datos automáticamente.
+**Introducción:**
+Esencial para operaciones de base de datos. Garantiza consistencia de datos.
+
+**Definición profesional:**
+`@Transactional` es una anotación que gestiona transacciones de base de datos declarativamente. Si el método falla, hace rollback automático; si termina exitosamente, hace commit.
+
+**Explicación sencilla:**
+"Todo o nada": si algo falla dentro del método, todos los cambios a la BD se revierten automáticamente.
+
+**Funcionamiento básico:**
+
+| Atributo | Descripción |
+|----------|-------------|
+| `readOnly` | Optimiza lecturas, no permite escrituras |
+| `rollbackFor` | Excepciones que causan rollback |
+| `propagation` | Cómo se comporta con transacciones existentes |
+| `isolation` | Nivel de aislamiento |
+
+**Ejemplo práctico:**
 
 <Code code={`@Service
 public class TransferenciaService {
     
     private final CuentaRepository cuentaRepo;
     
-    @Transactional // Si falla, hace rollback automático
+    @Transactional // Rollback automático si falla
     public void transferir(Long origenId, Long destinoId, BigDecimal monto) {
         Cuenta origen = cuentaRepo.findById(origenId)
             .orElseThrow(() -> new CuentaNoEncontradaException());
@@ -262,29 +438,47 @@ public class TransferenciaService {
         
         cuentaRepo.save(origen);
         cuentaRepo.save(destino);
-        // Si algo falla, ambas operaciones se revierten
+        // Si falla aquí, AMBAS operaciones se revierten
     }
     
     @Transactional(readOnly = true) // Optimización para lecturas
     public List<Cuenta> listar() {
         return cuentaRepo.findAll();
     }
-    
-    @Transactional(
-        propagation = Propagation.REQUIRES_NEW,
-        isolation = Isolation.SERIALIZABLE,
-        rollbackFor = Exception.class
-    )
-    public void operacionCritica() {
-        // Configuración avanzada
-    }
 }`} lang="java" title="@Transactional" />
+
+**Casos de uso reales:**
+- Transferencias bancarias
+- Operaciones que modifican múltiples tablas
+- Cualquier operación que requiera atomicidad
+
+**Cómo responder en entrevista:**
+> "@Transactional gestiona transacciones declarativamente. Si el método termina exitosamente hace commit, si lanza una excepción hace rollback. Por defecto solo hace rollback en RuntimeExceptions. Uso readOnly=true para optimizar lecturas. Es importante que el método sea público y llamado desde fuera de la clase para que el proxy de Spring funcione."
 
 ---
 
 ## 9. ¿Qué es Spring Security?
 
-**Spring Security** proporciona autenticación y autorización.
+**Introducción:**
+Framework de seguridad estándar para aplicaciones Spring. Maneja autenticación y autorización.
+
+**Definición profesional:**
+Spring Security es un framework que proporciona autenticación (quién eres), autorización (qué puedes hacer), y protección contra ataques comunes (CSRF, XSS, etc.).
+
+**Explicación sencilla:**
+- **Autenticación**: Verificar que eres quien dices ser (login)
+- **Autorización**: Verificar que tienes permiso para hacer algo (roles)
+
+**Funcionamiento básico:**
+
+| Concepto | Descripción |
+|----------|-------------|
+| `Authentication` | Representa al usuario autenticado |
+| `Authorization` | Permisos y roles del usuario |
+| `SecurityFilterChain` | Cadena de filtros de seguridad |
+| `UserDetailsService` | Carga datos del usuario |
+
+**Ejemplo práctico:**
 
 <Code code={`@Configuration
 @EnableWebSecurity
@@ -293,7 +487,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) // Deshabilitar para APIs REST
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -310,22 +504,39 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
-            .username("user")
-            .password(passwordEncoder().encode("password"))
-            .roles("USER")
-            .build();
-            
-        return new InMemoryUserDetailsManager(user);
-    }
-}`} lang="java" title="Spring Security Config" />
+}`} lang="java" title="Spring Security" />
+
+**Casos de uso reales:**
+- Autenticación con JWT
+- Control de acceso por roles
+- OAuth2 / OpenID Connect
+- Protección de APIs REST
+
+**Cómo responder en entrevista:**
+> "Spring Security maneja autenticación y autorización. La configuración moderna usa SecurityFilterChain para definir reglas de acceso. Uso requestMatchers para definir qué endpoints son públicos, cuáles requieren autenticación, y cuáles requieren roles específicos. Para APIs REST típicamente deshabilito CSRF y uso sesiones stateless con JWT."
 
 ---
 
 ## 10. ¿Cómo manejar excepciones en Spring?
+
+**Introducción:**
+Tema práctico importante. Un buen manejo de errores mejora la experiencia del API.
+
+**Definición profesional:**
+Spring permite manejar excepciones de forma centralizada usando `@RestControllerAdvice` y `@ExceptionHandler`, convirtiendo excepciones en respuestas HTTP apropiadas.
+
+**Explicación sencilla:**
+En lugar de try-catch en cada controlador, defines un manejador global que captura excepciones y retorna respuestas de error consistentes.
+
+**Funcionamiento básico:**
+
+| Anotación | Uso |
+|-----------|-----|
+| `@RestControllerAdvice` | Clase que maneja excepciones globalmente |
+| `@ExceptionHandler` | Método que maneja un tipo de excepción |
+| `@ResponseStatus` | Define el código HTTP de respuesta |
+
+**Ejemplo práctico:**
 
 <Code code={`// Excepción personalizada
 public class UsuarioNoEncontradoException extends RuntimeException {
@@ -334,18 +545,14 @@ public class UsuarioNoEncontradoException extends RuntimeException {
     }
 }
 
-// Global Exception Handler
+// Manejador global de excepciones
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
     @ExceptionHandler(UsuarioNoEncontradoException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
-        return new ErrorResponse(
-            HttpStatus.NOT_FOUND.value(),
-            ex.getMessage(),
-            LocalDateTime.now()
-        );
+    public ErrorResponse handleNotFound(UsuarioNoEncontradoException ex) {
+        return new ErrorResponse(404, ex.getMessage());
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -356,31 +563,27 @@ public class GlobalExceptionHandler {
             .stream()
             .map(e -> e.getField() + ": " + e.getDefaultMessage())
             .toList();
-            
-        return new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Error de validación",
-            errores
-        );
+        return new ErrorResponse(400, "Validación fallida", errores);
     }
     
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleGeneral(Exception ex) {
-        return new ErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            "Error interno del servidor",
-            LocalDateTime.now()
-        );
+        return new ErrorResponse(500, "Error interno");
     }
 }
 
-// DTO de error
-public record ErrorResponse(
-    int status,
-    String mensaje,
-    Object detalles
-) {}`} lang="java" title="Manejo de Excepciones" />
+// DTO de respuesta de error
+public record ErrorResponse(int status, String mensaje, Object... detalles) {}`} lang="java" title="Manejo de Excepciones" />
+
+**Casos de uso reales:**
+- Recursos no encontrados (404)
+- Errores de validación (400)
+- Errores de autenticación (401/403)
+- Errores internos (500)
+
+**Cómo responder en entrevista:**
+> "Uso @RestControllerAdvice para manejar excepciones globalmente. Defino métodos con @ExceptionHandler para cada tipo de excepción, retornando un DTO de error consistente con el código HTTP apropiado. Esto centraliza el manejo de errores y garantiza respuestas uniformes en toda la API. También manejo MethodArgumentNotValidException para errores de validación de @Valid."
 
 ---
 

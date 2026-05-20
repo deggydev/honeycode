@@ -14,100 +14,202 @@ Estas son las preguntas que **siempre** aparecen en entrevistas técnicas de Rea
 
 ## 1. ¿Qué es React y cuáles son sus características principales?
 
-> Biblioteca de JavaScript para construir UIs. Características: Virtual DOM, componentes reutilizables, flujo unidireccional, JSX, declarativo.
+**Introducción:**
+Pregunta de apertura en casi toda entrevista de React. Demuestra comprensión general del framework.
+
+**Definición profesional:**
+React es una biblioteca de JavaScript para construir interfaces de usuario, desarrollada por Facebook. Se basa en componentes reutilizables y utiliza un Virtual DOM para optimizar las actualizaciones del DOM real.
+
+**Explicación sencilla:**
+React te permite construir UIs dividiendo la pantalla en "piezas" llamadas componentes. Cada componente maneja su propia lógica y apariencia, y React se encarga de actualizar la pantalla eficientemente.
+
+**Funcionamiento básico:**
 
 | Característica | Descripción |
 |----------------|-------------|
-| **Virtual DOM** | Representación en memoria del DOM real para optimizar actualizaciones |
-| **Componentes** | UI dividida en piezas reutilizables e independientes |
-| **Unidireccional** | Flujo de datos de padre a hijo (one-way data binding) |
+| **Virtual DOM** | Copia en memoria del DOM real para calcular cambios mínimos |
+| **Componentes** | Piezas reutilizables e independientes de UI |
+| **Unidireccional** | Datos fluyen de padre a hijo (props) |
 | **JSX** | Sintaxis que combina JavaScript con HTML |
-| **Declarativo** | Describes QUÉ quieres, no CÓMO hacerlo |
+| **Declarativo** | Describes QUÉ quieres ver, no CÓMO hacerlo |
+
+**Casos de uso reales:**
+- SPAs (Single Page Applications)
+- Dashboards y aplicaciones empresariales
+- Apps móviles (React Native)
+- Sitios con mucha interactividad
+
+**Cómo responder en entrevista:**
+> "React es una biblioteca de JavaScript para construir interfaces de usuario, creada por Facebook. Sus características principales son: el Virtual DOM que optimiza las actualizaciones, arquitectura basada en componentes reutilizables, flujo de datos unidireccional, JSX para escribir UI de forma declarativa, y un ecosistema rico con hooks para manejar estado y efectos secundarios."
 
 ---
 
 ## 2. ¿Cuál es la diferencia entre componentes funcionales y de clase?
 
-> **Funcionales**: funciones que retornan JSX, usan Hooks, preferidos. **Clase**: extienden Component, tienen lifecycle methods, legacy.
+**Introducción:**
+Pregunta fundamental que evalúa conocimiento de React moderno vs legacy.
 
-<Code code={`// Componente de Clase (legacy)
-class Saludo extends React.Component {
+**Definición profesional:**
+Los componentes funcionales son funciones de JavaScript que retornan JSX y usan Hooks para estado y efectos. Los componentes de clase extienden `React.Component` y usan métodos de ciclo de vida. Los funcionales son el estándar moderno.
+
+**Explicación sencilla:**
+- **Funcional**: Una función que retorna lo que quieres mostrar
+- **Clase**: Una clase con un método `render()` que retorna lo que quieres mostrar
+
+**Funcionamiento básico:**
+
+| Aspecto | Funcional | Clase |
+|---------|-----------|-------|
+| Sintaxis | Función | `class extends Component` |
+| Estado | `useState` | `this.state` |
+| Efectos | `useEffect` | Lifecycle methods |
+| `this` | No existe | Necesario |
+| Código | Menos | Más |
+
+**Ejemplo práctico:**
+
+<Code code={`// COMPONENTE DE CLASE (legacy)
+class Contador extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { contador: 0 };
+    this.state = { count: 0 };
+  }
+  
+  componentDidMount() {
+    document.title = this.state.count;
   }
   
   render() {
-    return <h1>Hola, {this.props.nombre}</h1>;
+    return (
+      <button onClick={() => this.setState({ count: this.state.count + 1 })}>
+        {this.state.count}
+      </button>
+    );
   }
 }
 
-// Componente Funcional (moderno - preferido)
-function Saludo({ nombre }) {
-  const [contador, setContador] = useState(0);
+// COMPONENTE FUNCIONAL (moderno - preferido)
+function Contador() {
+  const [count, setCount] = useState(0);
   
-  return <h1>Hola, {nombre}</h1>;
-}
+  useEffect(() => {
+    document.title = count;
+  }, [count]);
+  
+  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;
+}`} lang="jsx" title="Clase vs Funcional" />
 
-// O con arrow function
-const Saludo = ({ nombre }) => <h1>Hola, {nombre}</h1>;`} lang="jsx" title="Clase vs Funcional" />
+**Casos de uso reales:**
+- **Funcionales**: Todo código nuevo, la mayoría de casos
+- **Clase**: Código legacy, Error Boundaries (aún requieren clases)
 
-**¿Por qué preferir funcionales?**
-- Menos código
-- Más fáciles de leer y testear
-- Hooks disponibles
-- Mejor performance
+**Cómo responder en entrevista:**
+> "Los componentes funcionales son funciones que retornan JSX y usan Hooks para manejar estado y efectos. Los de clase extienden React.Component y usan métodos de ciclo de vida. Hoy en día se prefieren los funcionales porque son más concisos, fáciles de testear, y los Hooks ofrecen más flexibilidad. Los componentes de clase se consideran legacy, aunque aún se necesitan para Error Boundaries."
 
 ---
 
 ## 3. ¿Qué es el estado (state) y las props?
 
-> **Props**: datos del padre, inmutables, flujo hacia abajo. **State**: datos internos, mutables con setState/useState, causan re-render.
+**Introducción:**
+Conceptos fundamentales de React. Entenderlos es esencial para manejar datos en componentes.
 
-<Code code={`// Props - datos que vienen del padre (inmutables)
-function Hijo({ mensaje, onClic }) {
-  return <button onClick={onClic}>{mensaje}</button>;
+**Definición profesional:**
+Props (properties) son datos inmutables pasados de padre a hijo. State es el estado interno mutable del componente que, al cambiar, causa un re-render.
+
+**Explicación sencilla:**
+- **Props**: Datos que tu componente RECIBE (como parámetros de función)
+- **State**: Datos que tu componente POSEE y puede cambiar
+
+**Funcionamiento básico:**
+
+| Aspecto | Props | State |
+|---------|-------|-------|
+| Origen | Padre | Interno |
+| Mutabilidad | Inmutable | Mutable |
+| Actualización | Padre cambia | `setState`/`useState` |
+| Re-render | Si padre re-renderiza | Al cambiar state |
+
+**Ejemplo práctico:**
+
+<Code code={`// PROPS - datos del padre (inmutables para el hijo)
+function Boton({ texto, onClick, disabled }) {
+  // No puedes hacer: texto = "otro" ❌
+  return (
+    <button onClick={onClick} disabled={disabled}>
+      {texto}
+    </button>
+  );
 }
 
-// State - datos internos del componente (mutables)
-function Padre() {
-  const [contador, setContador] = useState(0);
+// STATE - datos internos (mutables)
+function Contador() {
+  const [count, setCount] = useState(0);
+  const [nombre, setNombre] = useState('');
   
   return (
-    <Hijo 
-      mensaje={\`Clicks: \${contador}\`}
-      onClic={() => setContador(c => c + 1)}
-    />
+    <div>
+      <p>Contador: {count}</p>
+      <Boton 
+        texto="Incrementar"
+        onClick={() => setCount(c => c + 1)}
+        disabled={count >= 10}
+      />
+    </div>
   );
 }`} lang="jsx" title="Props vs State" />
 
-| Props | State |
-|-------|-------|
-| Inmutables | Mutables con setState |
-| Vienen del padre | Interno del componente |
-| Solo lectura | Puede cambiar |
+**Casos de uso reales:**
+- **Props**: Configuración de componentes, callbacks, datos a mostrar
+- **State**: Inputs de formulario, datos de API, UI toggle (abierto/cerrado)
+
+**Cómo responder en entrevista:**
+> "Props son datos que un componente recibe de su padre y son inmutables para el componente que los recibe. State es el estado interno del componente que puede cambiar con useState o setState. Cuando el state cambia, React re-renderiza el componente. Los datos fluyen hacia abajo via props (unidireccional), y los hijos pueden comunicarse con el padre mediante callbacks pasados como props."
 
 ---
 
 ## 4. ¿Qué es useState y cómo funciona?
 
-> Hook para manejar estado en componentes funcionales. Retorna [valor, setter]. Actualizar con función para valores basados en estado previo.
+**Introducción:**
+El Hook más básico y usado. Esencial para cualquier componente con estado.
+
+**Definición profesional:**
+`useState` es un Hook que permite agregar estado local a componentes funcionales. Retorna un array con el valor actual y una función para actualizarlo.
+
+**Explicación sencilla:**
+Es como una "caja" donde guardas un valor. Cuando cambias el valor con el setter, React re-renderiza el componente con el nuevo valor.
+
+**Funcionamiento básico:**
+
+**Sintaxis:**
+```jsx
+const [valor, setValor] = useState(valorInicial);
+```
+
+**Reglas:**
+1. Llamar solo en el nivel superior (no en loops/condicionales)
+2. Solo en componentes funcionales o custom hooks
+3. Usar forma funcional cuando el nuevo valor depende del anterior
+
+**Ejemplo práctico:**
 
 <Code code={`import { useState } from 'react';
 
-function Contador() {
-  // Declaración: [valor, función para actualizar]
+function Formulario() {
+  // Estado primitivo
   const [count, setCount] = useState(0);
-  
-  // Actualización directa
-  const incrementar = () => setCount(count + 1);
-  
-  // Actualización funcional (recomendada)
-  const incrementarSeguro = () => setCount(prev => prev + 1);
+  const [nombre, setNombre] = useState('');
+  const [activo, setActivo] = useState(false);
   
   // Estado con objeto
   const [user, setUser] = useState({ nombre: '', edad: 0 });
   
+  // ❌ Actualización directa (puede fallar con múltiples llamadas)
+  const incrementarMal = () => setCount(count + 1);
+  
+  // ✅ Actualización funcional (siempre usa el valor más reciente)
+  const incrementarBien = () => setCount(prev => prev + 1);
+  
+  // ✅ Actualizar objeto (spread para mantener otras propiedades)
   const actualizarNombre = (nombre) => {
     setUser(prev => ({ ...prev, nombre }));
   };
@@ -115,219 +217,428 @@ function Contador() {
   return (
     <div>
       <p>Contador: {count}</p>
-      <button onClick={incrementarSeguro}>+1</button>
+      <button onClick={incrementarBien}>+1</button>
+      
+      <input 
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+      />
     </div>
   );
 }`} lang="jsx" title="useState" />
+
+**Casos de uso reales:**
+- Valores de formularios
+- Toggle de UI (modales, menús)
+- Contadores, paginación
+- Datos cargados de API
+
+**Cómo responder en entrevista:**
+> "useState es un Hook que permite manejar estado en componentes funcionales. Retorna un array con el valor actual y una función setter. Cuando llamas al setter, React re-renderiza el componente. Es importante usar la forma funcional `setCount(prev => prev + 1)` cuando el nuevo valor depende del anterior, para evitar problemas con el batching de React."
 
 ---
 
 ## 5. ¿Qué es useEffect y cuándo se usa?
 
-> Hook para efectos secundarios (fetch, suscripciones, DOM). Se ejecuta después del render. Array de dependencias controla cuándo re-ejecutar.
+**Introducción:**
+Hook esencial para efectos secundarios. Reemplaza los lifecycle methods de las clases.
+
+**Definición profesional:**
+`useEffect` es un Hook para ejecutar efectos secundarios en componentes funcionales. Se ejecuta después del render y puede incluir una función de limpieza. El array de dependencias controla cuándo se re-ejecuta.
+
+**Explicación sencilla:**
+Es donde pones código que "hace cosas" además de renderizar: cargar datos, suscribirse a eventos, modificar el DOM, etc.
+
+**Funcionamiento básico:**
+
+| Dependencias | Cuándo se ejecuta |
+|--------------|-------------------|
+| Sin array | Cada render |
+| `[]` | Solo al montar |
+| `[dep1, dep2]` | Al montar + cuando cambian deps |
+
+**Ejemplo práctico:**
 
 <Code code={`import { useEffect, useState } from 'react';
 
 function Usuario({ userId }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   
-  // Se ejecuta después del render
+  // Fetch cuando cambia userId
   useEffect(() => {
-    // Efecto secundario: fetch de datos
+    setLoading(true);
+    
     fetch(\`/api/users/\${userId}\`)
       .then(res => res.json())
-      .then(data => setUser(data));
+      .then(data => {
+        setUser(data);
+        setLoading(false);
+      });
     
-    // Cleanup (opcional) - se ejecuta al desmontar
+    // Cleanup - se ejecuta antes del siguiente efecto o al desmontar
     return () => {
-      console.log('Componente desmontado');
+      console.log('Limpiando efecto anterior');
     };
-  }, [userId]); // Dependencias - se re-ejecuta si cambian
+  }, [userId]); // Solo se re-ejecuta si userId cambia
   
-  // Sin dependencias = se ejecuta en cada render
+  // Solo al montar (componentDidMount)
   useEffect(() => {
-    console.log('Cada render');
-  });
-  
-  // Array vacío = solo al montar
-  useEffect(() => {
-    console.log('Solo una vez');
+    console.log('Componente montado');
+    
+    return () => console.log('Componente desmontado');
   }, []);
   
+  // Suscripción a eventos
+  useEffect(() => {
+    const handleResize = () => console.log(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  if (loading) return <p>Cargando...</p>;
   return <div>{user?.nombre}</div>;
 }`} lang="jsx" title="useEffect" />
+
+**Casos de uso reales:**
+- Fetch de datos de API
+- Suscripciones (WebSocket, eventos)
+- Manipulación del DOM
+- Timers (setTimeout, setInterval)
+
+**Cómo responder en entrevista:**
+> "useEffect es un Hook para manejar efectos secundarios como fetch de datos, suscripciones o manipulación del DOM. Se ejecuta después del render. El array de dependencias controla cuándo se re-ejecuta: vacío significa solo al montar, con valores se re-ejecuta cuando esos valores cambian. La función de retorno es para cleanup, como cancelar suscripciones o limpiar timers."
 
 ---
 
 ## 6. ¿Qué es el Virtual DOM y cómo funciona?
 
-> Representación en memoria del DOM real. React compara (diffing), calcula cambios mínimos, y actualiza solo lo necesario (patching).
+**Introducción:**
+Concepto clave que explica por qué React es eficiente. Diferencia a React de manipulación directa del DOM.
+
+**Definición profesional:**
+El Virtual DOM es una representación ligera en memoria del DOM real. React lo usa para calcular los cambios mínimos necesarios antes de actualizar el DOM real, optimizando el rendimiento.
+
+**Explicación sencilla:**
+En lugar de modificar el DOM directamente (lento), React trabaja con una "copia" en memoria. Compara la copia nueva con la anterior, y solo actualiza lo que realmente cambió.
+
+**Funcionamiento básico:**
 
 **Proceso de reconciliación:**
-1. Cuando el estado cambia, React crea un nuevo Virtual DOM
-2. Compara el nuevo con el anterior (diffing)
-3. Calcula los cambios mínimos necesarios
-4. Actualiza solo esas partes en el DOM real (patching)
+```
+1. Estado cambia → React crea nuevo Virtual DOM
+2. Diffing → Compara nuevo vs anterior
+3. Calcula cambios mínimos
+4. Patching → Actualiza solo lo necesario en DOM real
+```
 
-<Code code={`// React hace esto internamente:
-// 1. Estado cambia
-setItems([...items, nuevoItem]);
+**Ejemplo práctico:**
 
-// 2. React crea nuevo Virtual DOM
-// 3. Compara con el anterior
-// 4. Solo actualiza el nuevo <li> en el DOM real`} lang="jsx" />
+<Code code={`// Cuando haces esto:
+const [items, setItems] = useState(['A', 'B']);
+setItems([...items, 'C']);
 
-**Beneficios:**
-- Actualizaciones eficientes
-- Mejor performance
-- Abstracción del DOM
+// React internamente:
+// 1. Crea nuevo Virtual DOM con ['A', 'B', 'C']
+// 2. Compara con el anterior ['A', 'B']
+// 3. Detecta: solo se agregó 'C'
+// 4. Solo inserta un nuevo <li>C</li> en el DOM real
+
+// Sin Virtual DOM (jQuery style):
+// Tendría que re-renderizar toda la lista`} lang="jsx" />
+
+**Casos de uso reales:**
+- Listas grandes con actualizaciones frecuentes
+- UIs complejas con muchos componentes
+- Aplicaciones en tiempo real
+
+**Cómo responder en entrevista:**
+> "El Virtual DOM es una representación en memoria del DOM real. Cuando el estado cambia, React crea un nuevo Virtual DOM, lo compara con el anterior mediante un algoritmo de diffing, calcula los cambios mínimos necesarios, y solo actualiza esas partes en el DOM real. Esto es más eficiente que manipular el DOM directamente porque las operaciones del DOM son costosas."
 
 ---
 
 ## 7. ¿Qué son las keys y por qué son importantes?
 
-> Identificadores únicos para elementos en listas. Ayudan a React a identificar qué cambió. Usar IDs, NO índices.
+**Introducción:**
+Concepto crucial para listas. Errores con keys causan bugs difíciles de detectar.
 
-<Code code={`function Lista({ items }) {
+**Definición profesional:**
+Las keys son atributos especiales que ayudan a React a identificar qué elementos de una lista han cambiado, sido agregados o eliminados. Deben ser únicas y estables.
+
+**Explicación sencilla:**
+Son como "nombres" para cada elemento de una lista. React las usa para saber cuál es cuál cuando la lista cambia.
+
+**Funcionamiento básico:**
+
+**Reglas para keys:**
+1. Únicas entre hermanos (no globalmente)
+2. Estables (no cambiar entre renders)
+3. Usar IDs, NO índices (excepto listas estáticas)
+
+**Ejemplo práctico:**
+
+<Code code={`// ✅ BIEN - usar ID único y estable
+function Lista({ items }) {
   return (
     <ul>
       {items.map(item => (
-        // Key única y estable para cada elemento
         <li key={item.id}>{item.nombre}</li>
       ))}
     </ul>
   );
 }
 
-// MAL - usar índice como key (problemas con reordenamiento)
+// ❌ MAL - usar índice como key
+// Problemas: reordenamiento, eliminación, inserción
 {items.map((item, index) => (
   <li key={index}>{item.nombre}</li>
 ))}
 
-// BIEN - usar ID único
-{items.map(item => (
-  <li key={item.id}>{item.nombre}</li>
-))}`} lang="jsx" title="Keys en listas" />
+// ¿Por qué es malo el índice?
+// Lista: [A, B, C] → eliminar B → [A, C]
+// Con índice: key 0=A, key 1=C (React piensa que B se convirtió en C)
+// Con ID: key a=A, key c=C (React sabe que B se eliminó)
 
-**¿Por qué son importantes?**
-- Ayudan a React a identificar qué elementos cambiaron
-- Optimizan el proceso de reconciliación
-- Evitan bugs en componentes con estado
+// ✅ Si no hay ID, generar uno estable
+const itemsConId = items.map((item, i) => ({
+  ...item,
+  id: item.id || \`item-\${item.nombre}-\${i}\`
+}));`} lang="jsx" title="Keys en listas" />
+
+**Casos de uso reales:**
+- Listas de productos, usuarios, posts
+- Tabs, acordeones
+- Cualquier iteración con `.map()`
+
+**Cómo responder en entrevista:**
+> "Las keys son identificadores únicos que React usa para rastrear elementos en listas durante la reconciliación. Deben ser únicas entre hermanos y estables entre renders. Usar índices como key es problemático porque si la lista se reordena o se eliminan elementos, React puede confundir qué elemento es cuál, causando bugs en componentes con estado o animaciones incorrectas."
 
 ---
 
 ## 8. ¿Qué es el lifting state up?
 
-> Mover estado al ancestro común cuando varios componentes lo necesitan. El padre maneja el estado, los hijos reciben props.
+**Introducción:**
+Patrón fundamental para compartir estado entre componentes hermanos.
 
-<Code code={`// Estado compartido en el padre
-function Padre() {
-  const [temperatura, setTemperatura] = useState(0);
+**Definición profesional:**
+Lifting state up es el patrón de mover el estado al ancestro común más cercano cuando múltiples componentes necesitan acceder o modificar el mismo dato. El padre maneja el estado y lo pasa a los hijos via props.
+
+**Explicación sencilla:**
+Si dos componentes hermanos necesitan el mismo dato, mueve ese dato al padre. El padre lo controla y lo pasa a ambos hijos.
+
+**Funcionamiento básico:**
+
+```
+Antes:                    Después:
+ComponenteA (state)       Padre (state)
+ComponenteB (state)       ├── ComponenteA (props)
+                          └── ComponenteB (props)
+```
+
+**Ejemplo práctico:**
+
+<Code code={`// PROBLEMA: Dos inputs que deben estar sincronizados
+// SOLUCIÓN: Lifting state up al padre
+
+function ConversorTemperatura() {
+  // Estado "elevado" al padre
+  const [celsius, setCelsius] = useState(0);
+  
+  // Derivar Fahrenheit del estado
+  const fahrenheit = celsius * 9/5 + 32;
   
   return (
     <div>
-      <InputCelsius 
-        valor={temperatura} 
-        onChange={setTemperatura} 
+      <InputTemperatura 
+        label="Celsius"
+        valor={celsius}
+        onChange={setCelsius}
       />
-      <InputFahrenheit 
-        valor={temperatura * 9/5 + 32} 
-        onChange={(f) => setTemperatura((f - 32) * 5/9)} 
+      <InputTemperatura 
+        label="Fahrenheit"
+        valor={fahrenheit}
+        onChange={(f) => setCelsius((f - 32) * 5/9)}
       />
     </div>
   );
 }
 
-function InputCelsius({ valor, onChange }) {
+// Componente hijo - sin estado propio
+function InputTemperatura({ label, valor, onChange }) {
   return (
-    <input 
-      value={valor} 
-      onChange={(e) => onChange(Number(e.target.value))} 
-    />
+    <label>
+      {label}:
+      <input 
+        value={valor}
+        onChange={(e) => onChange(Number(e.target.value))}
+      />
+    </label>
   );
 }`} lang="jsx" title="Lifting State Up" />
+
+**Casos de uso reales:**
+- Formularios con campos relacionados
+- Filtros que afectan múltiples componentes
+- Sincronización entre componentes hermanos
+
+**Cómo responder en entrevista:**
+> "Lifting state up es mover el estado al ancestro común más cercano cuando varios componentes necesitan acceder al mismo dato. El padre se convierte en la 'fuente de verdad', maneja el estado, y lo pasa a los hijos via props junto con callbacks para modificarlo. Es la forma básica de compartir estado en React antes de considerar Context o state managers."
 
 ---
 
 ## 9. ¿Cuál es la diferencia entre controlled y uncontrolled components?
 
-> **Controlled**: React maneja el valor via state. **Uncontrolled**: DOM maneja el valor, acceso via ref. Preferir controlled.
+**Introducción:**
+Importante para formularios. Define quién es la "fuente de verdad" del valor.
 
-<Code code={`// CONTROLLED - React controla el valor
-function ControlledInput() {
-  const [value, setValue] = useState('');
-  
-  return (
-    <input 
-      value={value} 
-      onChange={(e) => setValue(e.target.value)} 
-    />
-  );
-}
+**Definición profesional:**
+En componentes controlled, React controla el valor del input mediante state. En uncontrolled, el DOM mantiene el valor y se accede mediante refs. Los controlled son el patrón recomendado.
 
-// UNCONTROLLED - DOM controla el valor
-function UncontrolledInput() {
-  const inputRef = useRef(null);
+**Explicación sencilla:**
+- **Controlled**: React sabe el valor en todo momento (via state)
+- **Uncontrolled**: React pregunta al DOM cuando necesita el valor (via ref)
+
+**Funcionamiento básico:**
+
+| Aspecto | Controlled | Uncontrolled |
+|---------|------------|--------------|
+| Fuente de verdad | React (state) | DOM |
+| Acceso al valor | `value` state | `ref.current.value` |
+| Validación | En tiempo real | Al submit |
+| Código | Más | Menos |
+
+**Ejemplo práctico:**
+
+<Code code={`// CONTROLLED - React es la fuente de verdad
+function FormControlled() {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
   
-  const handleSubmit = () => {
-    console.log(inputRef.current.value);
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    
+    // Validación en tiempo real
+    if (!value.includes('@')) {
+      setError('Email inválido');
+    } else {
+      setError('');
+    }
   };
   
   return (
-    <input ref={inputRef} defaultValue="inicial" />
+    <div>
+      <input value={email} onChange={handleChange} />
+      {error && <span>{error}</span>}
+    </div>
+  );
+}
+
+// UNCONTROLLED - DOM es la fuente de verdad
+function FormUncontrolled() {
+  const emailRef = useRef(null);
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Acceder al valor solo cuando se necesita
+    console.log(emailRef.current.value);
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <input ref={emailRef} defaultValue="" />
+      <button type="submit">Enviar</button>
+    </form>
   );
 }`} lang="jsx" title="Controlled vs Uncontrolled" />
 
-| Controlled | Uncontrolled |
-|------------|--------------|
-| React maneja el valor | DOM maneja el valor |
-| Más código | Menos código |
-| Validación en tiempo real | Validación al submit |
-| Recomendado | Para casos simples |
+**Casos de uso reales:**
+- **Controlled**: Formularios con validación, inputs dependientes, formateo
+- **Uncontrolled**: Integraciones con librerías no-React, file inputs, formularios simples
+
+**Cómo responder en entrevista:**
+> "En componentes controlled, React maneja el valor del input mediante state, siendo la fuente de verdad. En uncontrolled, el DOM mantiene el valor y accedemos via refs. Prefiero controlled porque permite validación en tiempo real, formateo, y mantiene el estado sincronizado. Uso uncontrolled para casos simples o cuando integro con librerías que manejan su propio estado."
 
 ---
 
 ## 10. ¿Cómo manejar eventos en React?
 
-> Usar camelCase (onClick), pasar función (no string), usar e.preventDefault(). Eventos son SyntheticEvents (cross-browser).
+**Introducción:**
+Tema práctico esencial. Los eventos en React tienen algunas diferencias con HTML vanilla.
+
+**Definición profesional:**
+React usa SyntheticEvents, un wrapper cross-browser sobre los eventos nativos. Se nombran en camelCase y se pasan funciones como handlers en lugar de strings.
+
+**Explicación sencilla:**
+Similar a HTML pero con sintaxis JSX: `onClick` en vez de `onclick`, y pasas una función en vez de un string.
+
+**Funcionamiento básico:**
+
+| HTML | React |
+|------|-------|
+| `onclick="fn()"` | `onClick={fn}` |
+| `onchange` | `onChange` |
+| `return false` | `e.preventDefault()` |
+
+**Ejemplo práctico:**
 
 <Code code={`function Formulario() {
   const [nombre, setNombre] = useState('');
   
-  // Evento onClick
+  // Handler básico
   const handleClick = () => {
     console.log('Clic!');
   };
   
-  // Evento onChange
+  // Handler con evento
   const handleChange = (e) => {
     setNombre(e.target.value);
   };
   
-  // Evento onSubmit
+  // Prevenir comportamiento por defecto
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevenir recarga
+    e.preventDefault();
     console.log('Enviado:', nombre);
   };
   
-  // Pasar argumentos
+  // Pasar argumentos adicionales
   const handleDelete = (id) => {
     console.log('Eliminar:', id);
   };
   
   return (
     <form onSubmit={handleSubmit}>
-      <input value={nombre} onChange={handleChange} />
+      <input 
+        value={nombre} 
+        onChange={handleChange}
+        onFocus={() => console.log('Focus')}
+        onBlur={() => console.log('Blur')}
+      />
+      
       <button type="submit">Enviar</button>
-      <button onClick={() => handleDelete(123)}>Eliminar</button>
+      
+      {/* Pasar argumentos con arrow function */}
+      <button onClick={() => handleDelete(123)}>
+        Eliminar
+      </button>
+      
+      {/* O con bind */}
+      <button onClick={handleDelete.bind(null, 123)}>
+        Eliminar
+      </button>
     </form>
   );
 }`} lang="jsx" title="Manejo de eventos" />
 
-**Diferencias con HTML:**
-- camelCase: `onClick` en vez de `onclick`
-- Función, no string: `onClick={handleClick}` en vez de `onclick="handleClick()"`
-- `e.preventDefault()` en vez de `return false`
+**Casos de uso reales:**
+- Formularios (onChange, onSubmit)
+- Botones y links (onClick)
+- Inputs (onFocus, onBlur, onKeyDown)
+- Drag and drop, scroll, etc.
+
+**Cómo responder en entrevista:**
+> "En React los eventos se nombran en camelCase como onClick u onChange, y se pasan funciones como handlers en vez de strings. React usa SyntheticEvents que son wrappers cross-browser sobre los eventos nativos. Para prevenir el comportamiento por defecto usamos `e.preventDefault()`. Para pasar argumentos adicionales al handler, usamos una arrow function o bind."
 
 ---
 

@@ -96,7 +96,7 @@ spring:
 
 **¿Qué es?** Separar configuración del código para diferentes entornos (dev, prod, etc.).
 
-**Orden de precedencia:** Command line > Env vars > application-{profile}.yml > application.yml.
+**Orden de precedencia:** Command line > Env vars > application-[profile].yml > application.yml.
 
 <Code code={`// Orden de precedencia (mayor a menor):
 // 1. Command line arguments
@@ -105,7 +105,7 @@ spring:
 // 4. JNDI attributes
 // 5. System properties
 // 6. OS environment variables
-// 7. application-{profile}.properties
+// 7. application-[profile].properties
 // 8. application.properties
 // 9. @PropertySource
 // 10. Default properties
