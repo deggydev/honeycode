@@ -1,0 +1,717 @@
+---
+title: Top 10 Preguntas Esenciales de TypeScript
+description: Las 10 preguntas más importantes y frecuentes en entrevistas de TypeScript
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+## Las 10 Preguntas Más Importantes de TypeScript
+
+Estas son las preguntas que **siempre** aparecen en entrevistas técnicas de TypeScript.
+
+---
+
+## 1. ¿Qué es TypeScript y qué ventajas ofrece sobre JavaScript?
+
+**Introducción:**
+Pregunta de apertura obligatoria en toda entrevista de TypeScript. Demuestra conocimiento general del lenguaje y su propósito.
+
+**Definición profesional:**
+TypeScript es un superset de JavaScript desarrollado por Microsoft que añade tipado estático opcional, interfaces, genéricos y otras características de lenguajes orientados a objetos. El código TypeScript se compila (transpila) a JavaScript estándar.
+
+**Explicación sencilla:**
+TypeScript es JavaScript con "reglas extra". Te dice cuando estás cometiendo un error antes de ejecutar el código, haciendo tu aplicación más segura y fácil de mantener.
+
+**Funcionamiento básico:**
+
+| Característica | JavaScript | TypeScript |
+|----------------|-----------|------------|
+| Tipado | Dinámico | Estático opcional |
+| Errores | En tiempo de ejecución | En tiempo de compilación |
+| Intellisense | Limitado | Completo |
+| Interfaces | No nativas | Sí |
+| Genéricos | No | Sí |
+| Decoradores | No | Sí |
+
+**Casos de uso reales:**
+- Aplicaciones empresariales grandes
+- Proyectos con múltiples desarrolladores
+- Librerías y frameworks (Angular, NestJS)
+- APIs con tipado estricto
+
+**Cómo responder en entrevista:**
+> "TypeScript es un superset de JavaScript que añade tipado estático. Su ventaja principal es detectar errores en tiempo de compilación antes de ejecutar el código. Mejora el autocompletado en el IDE, facilita el refactoring en proyectos grandes, y hace el código más legible y mantenible. Al final compila a JavaScript estándar, por lo que es compatible con cualquier entorno."
+
+---
+
+## 2. ¿Qué es el sistema de tipos de TypeScript? Tipos básicos
+
+**Introducción:**
+Fundamental para entender TypeScript. El sistema de tipos es su característica más importante.
+
+**Definición profesional:**
+TypeScript posee un sistema de tipos estructural (duck typing) que incluye tipos primitivos, tipos compuestos, tipos especiales y la capacidad de inferir tipos automáticamente sin necesidad de anotaciones explícitas.
+
+**Explicación sencilla:**
+TypeScript puede saber qué tipo de dato tiene una variable y avisarte si intentas usarla de forma incorrecta, ya sea porque tú lo declaras explícitamente o porque él lo deduce solo.
+
+**Funcionamiento básico:**
+
+| Tipo | Descripción | Ejemplo |
+|------|-------------|---------|
+| `string` | Texto | `"hola"` |
+| `number` | Números | `42`, `3.14` |
+| `boolean` | Verdadero/Falso | `true`, `false` |
+| `null` | Valor nulo | `null` |
+| `undefined` | Sin valor | `undefined` |
+| `any` | Cualquier tipo | Evitar |
+| `unknown` | Tipo desconocido seguro | Preferir sobre `any` |
+| `never` | Nunca retorna | Funciones que lanzan error |
+| `void` | Sin retorno útil | Funciones sin `return` |
+
+**Ejemplo práctico:**
+
+<Code code={`// Tipos primitivos
+let nombre: string = "Ana";
+let edad: number = 30;
+let activo: boolean = true;
+
+// Inferencia de tipos (TypeScript deduce el tipo)
+let ciudad = "Madrid"; // TypeScript infiere: string
+let contador = 0;       // TypeScript infiere: number
+
+// Arrays
+let frutas: string[] = ["manzana", "pera"];
+let numeros: Array<number> = [1, 2, 3];
+
+// Tuplas (array con tipos fijos por posición)
+let persona: [string, number] = ["Carlos", 25];
+
+// any vs unknown
+let dato: any = "texto";
+dato = 42; // OK, pero peligroso
+
+let valor: unknown = "texto";
+// value.toUpperCase(); // ❌ Error: no puedes usar sin verificar
+if (typeof valor === "string") {
+    valor.toUpperCase(); // ✅ OK después de verificar
+}`} lang="typescript" title="Tipos básicos de TypeScript" />
+
+**Casos de uso reales:**
+- Tipado de variables de configuración
+- Tipado de respuestas de APIs
+- Prevención de errores de tipo en operaciones matemáticas
+
+**Cómo responder en entrevista:**
+> "TypeScript tiene tipos primitivos como string, number y boolean. Usa inferencia de tipos, así que no siempre necesitas anotarlos explícitamente. Prefiero unknown sobre any porque obliga a verificar el tipo antes de usarlo. Los arrays se tipan como `string[]` o `Array<string>`, y las tuplas permiten tipar arrays con posiciones fijas."
+
+---
+
+## 3. ¿Qué son las Interfaces y los Type Aliases? ¿Cuándo usar cada uno?
+
+**Introducción:**
+Pregunta clásica de TypeScript. La diferencia entre `interface` y `type` es uno de los temas más consultados.
+
+**Definición profesional:**
+Las interfaces definen contratos de forma de objetos y pueden extenderse y fusionarse (declaration merging). Los type aliases crean nombres para cualquier tipo, incluidos tipos primitivos, uniones e intersecciones, pero no admiten declaration merging.
+
+**Explicación sencilla:**
+Ambos sirven para definir la forma de un objeto, pero `interface` es más flexible para extender y `type` es más potente para crear tipos complejos como uniones.
+
+**Funcionamiento básico:**
+
+| Característica | `interface` | `type` |
+|----------------|-------------|--------|
+| Objetos | ✅ | ✅ |
+| Extensión | `extends` | `&` (intersección) |
+| Declaration merging | ✅ | ❌ |
+| Tipos primitivos | ❌ | ✅ |
+| Uniones | ❌ | ✅ |
+| Clases la implementan | ✅ | ✅ |
+
+**Ejemplo práctico:**
+
+<Code code={`// Interface - ideal para contratos de objetos
+interface Usuario {
+    id: number;
+    nombre: string;
+    email: string;
+    edad?: number; // Propiedad opcional
+}
+
+// Extensión de interface
+interface Admin extends Usuario {
+    permisos: string[];
+}
+
+// Declaration merging (fusión automática)
+interface Usuario {
+    telefono?: string; // Se fusiona con la interface anterior
+}
+
+// Type alias - más flexible para tipos complejos
+type ID = string | number; // Unión de tipos
+type Coordenada = [number, number]; // Tupla
+type Callback = (error: Error | null, data: string) => void;
+
+// Intersección con type
+type AdminConPermisos = Usuario & { permisos: string[] };
+
+// Cuándo usar cada uno:
+// ✅ interface: Para APIs públicas, clases, objetos extendibles
+// ✅ type: Para uniones, tipos complejos, aliases de primitivos`} lang="typescript" title="Interface vs Type" />
+
+**Casos de uso reales:**
+- Interfaces para modelos de datos (Usuario, Producto)
+- Type aliases para uniones de estados (loading | success | error)
+- Interfaces para contratos de servicios y repositorios
+
+**Cómo responder en entrevista:**
+> "Tanto interface como type sirven para tipar objetos. La diferencia clave es que interface soporta declaration merging y es ideal para APIs públicas y contratos de clases. Type es más versátil: puede representar uniones, tuplas y primitivos. En general uso interface para objetos y contratos, y type para tipos complejos o uniones."
+
+---
+
+## 4. ¿Qué son los Generics (Genéricos) en TypeScript?
+
+**Introducción:**
+Los genéricos son una de las características más poderosas de TypeScript. Aparecen constantemente en código real.
+
+**Definición profesional:**
+Los genéricos permiten crear componentes, funciones y clases reutilizables que funcionan con múltiples tipos de datos, manteniendo la seguridad de tipos sin sacrificar la flexibilidad.
+
+**Explicación sencilla:**
+Un genérico es como un "tipo parámetro": en vez de fijar el tipo de antemano, lo dejas como una variable que se especifica cuando usas la función o clase.
+
+**Funcionamiento básico:**
+
+| Uso | Sintaxis |
+|-----|---------|
+| Función genérica | `function fn<T>(arg: T): T` |
+| Interfaz genérica | `interface Caja<T> { valor: T }` |
+| Clase genérica | `class Stack<T> { ... }` |
+| Restricción | `T extends string \| number` |
+| Múltiples parámetros | `T, K extends keyof T` |
+
+**Ejemplo práctico:**
+
+<Code code={`// Función genérica básica
+function identidad<T>(valor: T): T {
+    return valor;
+}
+
+const texto = identidad<string>("hola");  // tipo: string
+const numero = identidad<number>(42);     // tipo: number
+
+// Genérico con restricción
+function obtenerPropiedad<T, K extends keyof T>(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+const usuario = { nombre: "Ana", edad: 30 };
+const nombre = obtenerPropiedad(usuario, "nombre"); // tipo: string
+const edad = obtenerPropiedad(usuario, "edad");     // tipo: number
+
+// Interfaz genérica
+interface Respuesta<T> {
+    data: T;
+    status: number;
+    mensaje: string;
+}
+
+interface Producto {
+    id: number;
+    nombre: string;
+}
+
+const respuesta: Respuesta<Producto[]> = {
+    data: [{ id: 1, nombre: "Laptop" }],
+    status: 200,
+    mensaje: "OK"
+};
+
+// Clase genérica - Pila (Stack)
+class Pila<T> {
+    private elementos: T[] = [];
+
+    push(elemento: T): void {
+        this.elementos.push(elemento);
+    }
+
+    pop(): T | undefined {
+        return this.elementos.pop();
+    }
+}`} lang="typescript" title="Genéricos en TypeScript" />
+
+**Casos de uso reales:**
+- Funciones de utilidad (mapear, filtrar, transformar datos)
+- Clientes HTTP tipados
+- Hooks de React (`useState<T>`, `useRef<T>`)
+- Repositorios y servicios genéricos
+
+**Cómo responder en entrevista:**
+> "Los genéricos permiten crear código reutilizable manteniendo la seguridad de tipos. En vez de usar any, uso un parámetro de tipo T que se resuelve en el momento de uso. Son fundamentales en TypeScript: los uso en funciones utilitarias, interfaces de respuesta de API, y clases de estructura de datos. Las restricciones con extends me permiten limitar qué tipos son válidos."
+
+---
+
+## 5. ¿Qué son los Union Types e Intersection Types?
+
+**Introducción:**
+Tipos compuestos muy usados en código real. Permiten modelar datos del mundo real con precisión.
+
+**Definición profesional:**
+Un Union Type (`A | B`) permite que un valor sea de uno entre varios tipos. Un Intersection Type (`A & B`) combina múltiples tipos en uno solo, requiriendo que el valor cumpla con todos los tipos simultáneamente.
+
+**Explicación sencilla:**
+- **Union (`|`)**: "puede ser A O puede ser B"
+- **Intersection (`&`)**: "debe ser A Y también B"
+
+**Funcionamiento básico:**
+
+| Tipo | Operador | Significado |
+|------|----------|-------------|
+| Union | `\|` | Uno u otro |
+| Intersection | `&` | Los dos a la vez |
+| Narrowing | `typeof`, `instanceof` | Verificar cuál es |
+| Discriminated Union | `type` literal | Distinguir variantes |
+
+**Ejemplo práctico:**
+
+<Code code={`// Union Type
+type ID = string | number;
+
+function buscarUsuario(id: ID): void {
+    if (typeof id === "string") {
+        console.log("Buscando por texto:", id.toUpperCase());
+    } else {
+        console.log("Buscando por número:", id.toFixed(0));
+    }
+}
+
+// Union Types con objetos (Discriminated Union)
+interface Cargando {
+    estado: "cargando";
+}
+
+interface Exitoso {
+    estado: "exitoso";
+    datos: string[];
+}
+
+interface Error {
+    estado: "error";
+    mensaje: string;
+}
+
+type EstadoPeticion = Cargando | Exitoso | Error;
+
+function manejarEstado(estado: EstadoPeticion): string {
+    switch (estado.estado) {
+        case "cargando": return "Cargando...";
+        case "exitoso": return \`Datos: \${estado.datos.join(", ")}\`;
+        case "error":   return \`Error: \${estado.mensaje}\`;
+    }
+}
+
+// Intersection Type
+interface TienNombre { nombre: string; }
+interface TieneEdad  { edad: number; }
+
+type Persona = TienNombre & TieneEdad;
+
+const persona: Persona = { nombre: "Ana", edad: 30 }; // Requiere ambos`} lang="typescript" title="Union e Intersection Types" />
+
+**Casos de uso reales:**
+- Estados de carga de UI (loading | success | error)
+- Resultados de operaciones (T | null | Error)
+- Mezclar interfaces con propiedades adicionales
+
+**Cómo responder en entrevista:**
+> "Los Union Types con | permiten que un valor sea de varios tipos posibles. Los Intersection Types con & combinan tipos, requiriendo todas sus propiedades. Un patrón muy útil son los Discriminated Unions: objetos con una propiedad literal que identifica el tipo, lo que permite a TypeScript hacer narrowing automático en switch statements."
+
+---
+
+## 6. ¿Qué es Type Narrowing (reducción de tipos)?
+
+**Introducción:**
+Concepto clave para escribir código TypeScript correcto y seguro con Union Types.
+
+**Definición profesional:**
+Type Narrowing es el proceso por el cual TypeScript reduce el tipo posible de una variable dentro de un bloque de código, basándose en comprobaciones como `typeof`, `instanceof`, `in`, o comparaciones de igualdad.
+
+**Explicación sencilla:**
+Dentro de un `if (typeof x === "string")`, TypeScript sabe que `x` es un string en ese bloque y te deja usar métodos de string con total seguridad.
+
+**Funcionamiento básico:**
+
+| Guard | Uso |
+|-------|-----|
+| `typeof x === "string"` | Tipos primitivos |
+| `x instanceof Clase` | Instancias de clases |
+| `"propiedad" in objeto` | Propiedades de objetos |
+| `x !== null` | Null/undefined check |
+| Type Guard función | Narrowing personalizado |
+
+**Ejemplo práctico:**
+
+<Code code={`// typeof narrowing
+function formatear(valor: string | number): string {
+    if (typeof valor === "string") {
+        return valor.toUpperCase(); // TypeScript sabe que es string
+    }
+    return valor.toFixed(2); // TypeScript sabe que es number
+}
+
+// instanceof narrowing
+class Perro { ladrar() { return "Guau"; } }
+class Gato  { maullar() { return "Miau"; } }
+
+function hablar(animal: Perro | Gato): string {
+    if (animal instanceof Perro) {
+        return animal.ladrar(); // TypeScript sabe que es Perro
+    }
+    return animal.maullar(); // TypeScript sabe que es Gato
+}
+
+// "in" narrowing
+interface Circulo  { tipo: "circulo";  radio: number; }
+interface Cuadrado { tipo: "cuadrado"; lado: number; }
+
+function calcularArea(figura: Circulo | Cuadrado): number {
+    if ("radio" in figura) {
+        return Math.PI * figura.radio ** 2;
+    }
+    return figura.lado ** 2;
+}
+
+// Type Guard personalizado (is)
+function esString(valor: unknown): valor is string {
+    return typeof valor === "string";
+}
+
+function procesar(dato: unknown): string {
+    if (esString(dato)) {
+        return dato.toUpperCase(); // Narrowed a string
+    }
+    return String(dato);
+}`} lang="typescript" title="Type Narrowing" />
+
+**Casos de uso reales:**
+- Manejo de respuestas nullable de APIs
+- Procesamiento de inputs de usuario
+- Lógica condicional con tipos unión
+
+**Cómo responder en entrevista:**
+> "Type Narrowing es cuando TypeScript reduce el tipo posible de una variable dentro de una condición. Uso typeof para primitivos, instanceof para clases, y el operador in para propiedades de objetos. También puedo crear Type Guards personalizados con la sintaxis valor is Tipo. Es fundamental para trabajar con Union Types de forma segura."
+
+---
+
+## 7. ¿Qué son los Decoradores en TypeScript?
+
+**Introducción:**
+Característica avanzada muy usada en frameworks como Angular y NestJS.
+
+**Definición profesional:**
+Los decoradores son funciones especiales que se aplican a clases, métodos, propiedades o parámetros usando la sintaxis `@decorador`. Permiten añadir metadatos o modificar el comportamiento de los elementos decorados.
+
+**Explicación sencilla:**
+Son como "etiquetas" que añades a clases o métodos para darles funcionalidades adicionales sin modificar su código directamente.
+
+**Funcionamiento básico:**
+
+| Tipo de Decorador | Aplica a |
+|-------------------|----------|
+| Clase | `@Component`, `@Injectable` |
+| Método | `@Get()`, `@Log` |
+| Propiedad | `@Column`, `@Required` |
+| Parámetro | `@Body()`, `@Param()` |
+| Accessor | `get`/`set` |
+
+**Ejemplo práctico:**
+
+<Code code={`// Habilitar en tsconfig.json:
+// "experimentalDecorators": true
+
+// Decorador de clase
+function Sellado(constructor: Function) {
+    Object.seal(constructor);
+    Object.seal(constructor.prototype);
+}
+
+@Sellado
+class Configuracion {
+    host: string = "localhost";
+    puerto: number = 3000;
+}
+
+// Decorador de método (Logger)
+function Log(target: any, key: string, descriptor: PropertyDescriptor) {
+    const original = descriptor.value;
+    descriptor.value = function (...args: any[]) {
+        console.log(\`Llamando \${key} con:\`, args);
+        const resultado = original.apply(this, args);
+        console.log(\`\${key} retornó:\`, resultado);
+        return resultado;
+    };
+    return descriptor;
+}
+
+class Calculadora {
+    @Log
+    sumar(a: number, b: number): number {
+        return a + b;
+    }
+}
+
+// Uso típico en NestJS
+// @Controller("usuarios")
+// class UsuariosController {
+//     @Get(":id")
+//     findOne(@Param("id") id: string) { ... }
+// }`} lang="typescript" title="Decoradores en TypeScript" />
+
+**Casos de uso reales:**
+- Angular: `@Component`, `@Injectable`, `@NgModule`
+- NestJS: `@Controller`, `@Get`, `@Injectable`
+- TypeORM: `@Entity`, `@Column`, `@PrimaryGeneratedColumn`
+
+**Cómo responder en entrevista:**
+> "Los decoradores son funciones que se aplican con @ a clases, métodos o propiedades para añadir comportamiento o metadatos. Requieren activar experimentalDecorators en tsconfig. Son la base de frameworks como Angular y NestJS. He trabajado con decoradores de Angular para definir componentes y servicios, y con TypeORM para mapear entidades a tablas."
+
+---
+
+## 8. ¿Qué son los Utility Types de TypeScript?
+
+**Introducción:**
+TypeScript incluye tipos utilitarios integrados que simplifican transformaciones comunes de tipos.
+
+**Definición profesional:**
+Los Utility Types son tipos genéricos predefinidos en TypeScript que transforman tipos existentes para crear nuevas variantes, evitando la duplicación de definiciones de tipos.
+
+**Explicación sencilla:**
+Son "atajos" para crear variantes de tipos: hacer todas las propiedades opcionales, solo de lectura, elegir solo algunas propiedades, etc.
+
+**Funcionamiento básico:**
+
+| Utility Type | Descripción |
+|--------------|-------------|
+| `Partial<T>` | Todas las propiedades opcionales |
+| `Required<T>` | Todas las propiedades obligatorias |
+| `Readonly<T>` | Todas las propiedades de solo lectura |
+| `Pick<T, K>` | Solo las propiedades K de T |
+| `Omit<T, K>` | Todas excepto las propiedades K |
+| `Record<K, V>` | Objeto con claves K y valores V |
+| `ReturnType<T>` | Tipo de retorno de una función |
+| `Awaited<T>` | Tipo resuelto de una Promise |
+
+**Ejemplo práctico:**
+
+<Code code={`interface Usuario {
+    id: number;
+    nombre: string;
+    email: string;
+    password: string;
+    creadoEn: Date;
+}
+
+// Partial - todas opcionales (útil para actualizaciones parciales)
+type ActualizarUsuario = Partial<Usuario>;
+// { id?: number; nombre?: string; email?: string; ... }
+
+// Pick - solo algunas propiedades
+type UsuarioPublico = Pick<Usuario, "id" | "nombre" | "email">;
+// { id: number; nombre: string; email: string }
+
+// Omit - todas menos algunas
+type UsuarioSinPassword = Omit<Usuario, "password">;
+// { id, nombre, email, creadoEn }
+
+// Required - todas obligatorias
+type UsuarioCompleto = Required<Partial<Usuario>>;
+
+// Readonly - inmutable
+const config: Readonly<{ host: string; port: number }> = {
+    host: "localhost",
+    port: 3000
+};
+// config.host = "otro"; // ❌ Error: es de solo lectura
+
+// Record - diccionario tipado
+type Roles = Record<string, string[]>;
+const permisos: Roles = {
+    admin: ["leer", "escribir", "eliminar"],
+    usuario: ["leer"],
+};
+
+// ReturnType
+function crearUsuario() {
+    return { id: 1, nombre: "Ana" };
+}
+type TipoUsuario = ReturnType<typeof crearUsuario>;
+// { id: number; nombre: string }`} lang="typescript" title="Utility Types" />
+
+**Casos de uso reales:**
+- `Partial` para DTOs de actualización (PATCH)
+- `Pick`/`Omit` para respuestas de API sin datos sensibles
+- `Record` para mapas de configuración o traducciones
+
+**Cómo responder en entrevista:**
+> "Los Utility Types son tipos genéricos predefinidos que transforman tipos existentes. Los más usados son Partial para hacer propiedades opcionales en updates, Pick y Omit para crear subconjuntos de tipos, Readonly para objetos inmutables, y Record para diccionarios tipados. Evitan duplicar definiciones y mantienen el código DRY."
+
+---
+
+## 9. ¿Qué es el tsconfig.json y cuáles son sus opciones más importantes?
+
+**Introducción:**
+Configuración fundamental de cualquier proyecto TypeScript.
+
+**Definición profesional:**
+El `tsconfig.json` es el archivo de configuración del compilador de TypeScript. Define qué archivos compilar, el nivel de rigor del tipado, el target de JavaScript a generar, y muchas otras opciones del compilador.
+
+**Explicación sencilla:**
+Es como las "reglas del juego" para tu proyecto TypeScript: qué tan estricto es el chequeo de tipos, a qué versión de JavaScript compilar, qué carpetas incluir o excluir, etc.
+
+**Funcionamiento básico:**
+
+| Opción | Descripción |
+|--------|-------------|
+| `target` | Versión de JS a generar (ES5, ES2020...) |
+| `module` | Sistema de módulos (CommonJS, ESNext) |
+| `strict` | Activa todas las reglas estrictas |
+| `strictNullChecks` | null/undefined deben manejarse explícitamente |
+| `noImplicitAny` | Prohibe tipos `any` implícitos |
+| `outDir` | Carpeta de salida del JS compilado |
+| `rootDir` | Carpeta raíz de los archivos TS |
+| `paths` | Alias de módulos |
+
+**Ejemplo práctico:**
+
+<Code code={`// tsconfig.json recomendado para proyectos modernos
+{
+    "compilerOptions": {
+        // Target y módulos
+        "target": "ES2020",
+        "module": "commonjs",
+        "lib": ["ES2020", "DOM"],
+
+        // Directorios
+        "rootDir": "./src",
+        "outDir": "./dist",
+
+        // Rigor del tipado (MUY RECOMENDADO)
+        "strict": true,           // Activa todo lo siguiente:
+        "strictNullChecks": true,     // null/undefined explícitos
+        "noImplicitAny": true,        // Prohibe any implícito
+        "strictFunctionTypes": true,  // Tipos de función estrictos
+
+        // Calidad del código
+        "noUnusedLocals": true,       // Error en variables sin usar
+        "noUnusedParameters": true,   // Error en params sin usar
+        "noImplicitReturns": true,    // Todos los paths deben retornar
+
+        // Resolución de módulos
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+
+        // Decoradores (para Angular/NestJS)
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+
+        // Mapas de código para debugging
+        "sourceMap": true,
+        "declaration": true  // Genera archivos .d.ts
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist"]
+}`} lang="json" title="tsconfig.json" />
+
+**Casos de uso reales:**
+- Configuración base para APIs con NestJS
+- Configuración para aplicaciones Angular
+- Proyectos Node.js con TypeScript
+
+**Cómo responder en entrevista:**
+> "El tsconfig.json configura el compilador TypeScript. Las opciones más importantes son strict: true que activa todas las reglas de tipado estricto, target para la versión de JS a generar, y strictNullChecks para manejar null y undefined explícitamente. Siempre activo strict: true en proyectos nuevos para máxima seguridad de tipos."
+
+---
+
+## 10. ¿Qué son los Enums y cuándo usarlos?
+
+**Introducción:**
+Los enums son una forma de definir conjuntos de constantes con nombre en TypeScript.
+
+**Definición profesional:**
+Un Enum es un tipo especial de TypeScript que permite definir un conjunto de constantes con nombre. Pueden ser numéricos (por defecto) o de cadena, y se compilan a objetos JavaScript.
+
+**Explicación sencilla:**
+Los enums son como listas de opciones válidas para un valor. En vez de usar strings mágicos como "ACTIVO" o "INACTIVO", defines un Enum con esos valores y TypeScript garantiza que solo uses valores válidos.
+
+**Funcionamiento básico:**
+
+| Tipo | Descripción |
+|------|-------------|
+| Numérico | Valores auto-incrementales (0, 1, 2...) |
+| De string | Valores string explícitos |
+| `const enum` | Optimizado, se elimina en compilación |
+| Union de literales | Alternativa moderna a enums |
+
+**Ejemplo práctico:**
+
+<Code code={`// Enum numérico (default: 0, 1, 2...)
+enum Direccion {
+    Arriba,    // 0
+    Abajo,     // 1
+    Izquierda, // 2
+    Derecha    // 3
+}
+
+const mover = (dir: Direccion) => console.log(dir);
+mover(Direccion.Arriba); // 0
+
+// Enum de string (preferido en la práctica)
+enum EstadoPedido {
+    Pendiente = "PENDIENTE",
+    Procesando = "PROCESANDO",
+    Enviado = "ENVIADO",
+    Entregado = "ENTREGADO",
+    Cancelado = "CANCELADO"
+}
+
+function actualizarPedido(estado: EstadoPedido): void {
+    console.log(\`Estado actualizado a: \${estado}\`);
+}
+
+actualizarPedido(EstadoPedido.Enviado); // "ENVIADO"
+// actualizarPedido("OTRO"); // ❌ Error: no es un valor del enum
+
+// const enum - optimizado (se inlinea en compilación)
+const enum Rol {
+    Admin = "ADMIN",
+    Usuario = "USUARIO",
+    Moderador = "MODERADOR"
+}
+
+// Alternativa moderna con union de literales (sin overhead de compilación)
+type EstadoModerno = "pendiente" | "procesando" | "enviado" | "entregado";
+
+function manejarEstado(estado: EstadoModerno): void {
+    switch (estado) {
+        case "enviado": console.log("En camino"); break;
+        case "entregado": console.log("Entregado"); break;
+    }
+}`} lang="typescript" title="Enums en TypeScript" />
+
+**Casos de uso reales:**
+- Estados de entidades (activo/inactivo, roles)
+- Tipos de eventos o acciones
+- Códigos de error o estado HTTP
+
+**Cómo responder en entrevista:**
+> "Los Enums definen conjuntos de constantes con nombre. Prefiero los enums de string sobre los numéricos porque los valores son legibles en runtime. Para enums simples de solo lectura, const enum es más eficiente porque se elimina en compilación. Sin embargo, en proyectos modernos muchas veces prefiero union de literales como type Estado = 'activo' | 'inactivo', que es más ligero y flexible."
+
+---
+
+<Aside type="tip" title="Consejo para la entrevista">
+Practica TypeScript activando siempre strict: true. Los entrevistadores valoran que conozcas las diferencias entre interface y type, que uses genéricos correctamente, y que sepas aplicar Utility Types para mantener el código DRY y seguro.
+</Aside>

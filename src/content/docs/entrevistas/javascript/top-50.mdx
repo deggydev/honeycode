@@ -12,24 +12,22 @@ Guía completa con las preguntas que aparecen en la mayoría de entrevistas téc
 
 ---
 
-## Fundamentos (1-15)
+## 1. ¿Qué es JavaScript?
 
-### 1. ¿Qué es JavaScript?
-
-**¿Qué es?**
-Lenguaje de programación interpretado, dinámico y débilmente tipado que se ejecuta en el navegador y en el servidor (Node.js).
-
-**¿Para qué sirve?**
-- Crear interactividad en páginas web (validaciones, animaciones, eventos)
-- Desarrollar aplicaciones web completas (frontend y backend)
-- Construir aplicaciones móviles y de escritorio
+**Definición profesional:**
+Lenguaje de programación interpretado, dinámico y débilmente tipado que se ejecuta en el navegador y en el servidor (Node.js). Motor V8 en Chrome/Node, SpiderMonkey en Firefox.
 
 **Características clave:**
 - **Single-threaded** con event loop para manejar asincronía
-- **Multiparadigma**: soporta programación funcional, orientada a objetos y basada en eventos
+- **Multiparadigma**: funcional, orientado a objetos, basado en eventos
 - **Interpretado**: no requiere compilación previa
 
-### 2. ¿Cuáles son los tipos de datos en JavaScript?
+**Cómo responder en entrevista:**
+> "JavaScript es un lenguaje dinámico single-threaded que usa el event loop para manejar operaciones asíncronas sin bloquear. Es multiparadigma: soporta programación funcional, orientada a objetos basada en prototipos y reactiva. Corre en el navegador y en el servidor con Node.js usando el motor V8."
+
+---
+
+## 2. ¿Cuáles son los tipos de datos en JavaScript?
 
 **¿Qué es?**
 JavaScript tiene 7 tipos primitivos y tipos no primitivos (objetos).
@@ -64,68 +62,60 @@ let object = { nombre: "Juan" };
 let array = [1, 2, 3];
 let function_var = function() {};`} lang="javascript" title="Tipos de datos" />
 
-### 3. ¿Qué es el DOM?
+**Cómo responder en entrevista:**
+> "JavaScript tiene 7 primitivos: string, number, boolean, null, undefined, symbol y bigint. Son inmutables y se comparan por valor. Todo lo demás es un objeto: arrays, funciones, fechas. Las funciones son objetos de primera clase. `typeof null` retorna 'object' por un bug histórico del lenguaje."
 
-**¿Qué es?**
-Document Object Model - API que representa el HTML como un árbol de nodos que JavaScript puede manipular.
+---
 
-**¿Para qué sirve?**
-- Leer contenido de elementos HTML
-- Modificar texto, atributos y estilos
-- Agregar o eliminar elementos dinámicamente
-- Responder a eventos del usuario
+## 3. ¿Qué es el DOM?
 
-**Ejemplo práctico:**
-```javascript
-// Seleccionar elemento
+**Definición profesional:**
+Document Object Model: API que representa el HTML como un árbol de nodos accesible y manipulable desde JavaScript.
+
+<Code code={`// Seleccionar elemento
 const titulo = document.getElementById('titulo');
+const items = document.querySelectorAll('.item');
 
 // Modificar contenido
 titulo.textContent = 'Nuevo título';
-
-// Cambiar estilos
 titulo.style.color = 'blue';
 
-// Agregar elemento
+// Crear y agregar elemento
 const parrafo = document.createElement('p');
-document.body.appendChild(parrafo);
-```
+parrafo.textContent = 'Nuevo párrafo';
+document.body.appendChild(parrafo);`} lang="javascript" title="Manipulación del DOM" />
 
-### 4. ¿Qué es el BOM?
+**Cómo responder en entrevista:**
+> "El DOM es la representación en árbol del HTML que JavaScript puede leer y modificar. Uso `querySelector` y `querySelectorAll` para seleccionar (más flexibles que `getElementById`). Las operaciones de DOM son costosas en rendimiento, por eso frameworks como React usan un Virtual DOM para minimizar los cambios reales."
 
-**¿Qué es?**
-Browser Object Model - API que permite interactuar con el navegador fuera del documento HTML.
+---
 
-**¿Para qué sirve?**
-- **window**: objeto global, contiene todo
-- **navigator**: información del navegador y dispositivo
-- **location**: URL actual, redirecciones
-- **history**: historial de navegación
-- **screen**: información de la pantalla
+## 4. ¿Qué es el BOM?
 
-**Ejemplo práctico:**
-```javascript
-// Redireccionar
-window.location.href = 'https://ejemplo.com';
+**Definición profesional:**
+Browser Object Model: API que expone objetos del navegador como `window`, `navigator`, `location`, `history` y `screen`.
 
-// Detectar navegador
+<Code code={`// window - objeto global
+window.location.href = 'https://ejemplo.com'; // Redirigir
+window.open('url', '_blank'); // Abrir pestaña
+
+// navigator - info del navegador/dispositivo
 console.log(navigator.userAgent);
+console.log(navigator.language);
 
-// Ir atrás en historial
+// history - historial de navegación
 history.back();
-```
+history.pushState({}, '', '/nueva-ruta');`} lang="javascript" title="BOM - Browser Object Model" />
 
-### 5. ¿Cómo se declara una variable?
+**Cómo responder en entrevista:**
+> "El BOM es la API del navegador fuera del documento HTML. `window` es el objeto global: todas las variables globales son sus propiedades. `location` maneja URLs y redirecciones. `history.pushState()` es la base del routing de SPAs. `navigator.geolocation` y `navigator.serviceWorker` también son parte del BOM."
 
-**¿Qué es?**
-Formas de crear variables en JavaScript: `var`, `let` y `const`.
+---
 
-**¿Cuál usar?**
-- **const** (por defecto): valor que no cambiará
-- **let**: cuando necesitas reasignar el valor
-- **var**: evitar (tiene problemas de scope)
+## 5. ¿Cómo se declara una variable?
 
-**Diferencias clave:**
+**Definición profesional:**
+JavaScript tiene tres formas: `var` (función-scope, hoisting), `let` (bloque-scope, reasignable), `const` (bloque-scope, no reasignable). Usar `const` por defecto.
 
 | | var | let | const |
 |---|-----|-----|-------|
@@ -133,232 +123,198 @@ Formas de crear variables en JavaScript: `var`, `let` y `const`.
 | Hoisting | Sí (undefined) | Sí (TDZ) | Sí (TDZ) |
 | Reasignable | Sí | Sí | No |
 
-**Ejemplo práctico:**
-
 <Code code={`// const - valor fijo (preferido)
 const PI = 3.14159;
 const usuario = { nombre: 'Juan' }; // El objeto puede mutar
-usuario.nombre = 'Pedro'; // OK
+usuario.nombre = 'Pedro'; // OK - muta el objeto, no la referencia
 
 // let - cuando necesitas reasignar
 let contador = 0;
 contador = contador + 1; // OK
 
-// var - evitar por problemas de scope
-var antigua = 'ES5';`} lang="javascript" />
+// var - evitar (scope de función, no de bloque)
+for (var i = 0; i < 3; i++) {}
+console.log(i); // 3 - escapa del for!`} lang="javascript" title="var, let, const" />
 
-### 6. ¿Qué es el scope?
+**Cómo responder en entrevista:**
+> "Uso `const` por defecto para todo. Cambio a `let` solo cuando necesito reasignar. Evito `var` porque su scope de función causa comportamientos inesperados. `const` no significa que el valor sea inmutable: el objeto puede mutar, solo la referencia es fija."
 
-**¿Qué es?**
-Ámbito o contexto donde una variable es accesible. Determina dónde puedes usar una variable.
+---
 
-**Tipos de scope:**
-- **Global**: accesible en todo el código
-- **Función**: solo dentro de la función donde se declara
-- **Bloque**: solo dentro de `{}` (let/const)
+## 6. ¿Qué es el scope?
 
-**Ejemplo práctico:**
-```javascript
-const global = 'Accesible en todo el código';
+**Definición profesional:**
+Ámbito de visibilidad de una variable. JavaScript tiene scope global, de función, de bloque (`let`/`const`) y léxico (closures).
+
+<Code code={`const global = 'Accesible en todo el código';
 
 function ejemplo() {
   const funcionScope = 'Solo dentro de esta función';
   
   if (true) {
     const bloqueScope = 'Solo dentro de este if';
-    var varNoRespeta = 'Escapa del bloque'; // Problema de var
+    var varEscapa = 'Escapa del bloque'; // Problema de var
   }
   
-  console.log(varNoRespeta); // Funciona (problema)
-  // console.log(bloqueScope); // Error: no definida
-}
-```
+  console.log(varEscapa); // Funciona (problema)
+  // console.log(bloqueScope); // ReferenceError
+}`} lang="javascript" title="Tipos de scope" />
 
-### 7. ¿Qué es una función de primera clase?
+**Cómo responder en entrevista:**
+> "Scope determina dónde vive una variable. El scope léxico significa que las funciones anidadas tienen acceso a las variables del scope padre. `var` tiene scope de función (se eleva al inicio de la función), `let` y `const` tienen scope de bloque. Las closures aprovechan el scope léxico para recordar el entorno de creación."
 
-**¿Qué es?**
-En JavaScript, las funciones son "ciudadanos de primera clase", lo que significa que se tratan como cualquier otro valor.
+---
 
-**¿Para qué sirve?**
-Permite patrones poderosos como callbacks, higher-order functions y programación funcional.
+## 7. ¿Qué es una función de primera clase?
 
-**Puedes:**
-- Asignar funciones a variables
-- Pasar funciones como argumentos
-- Retornar funciones desde otras funciones
-- Almacenar funciones en arrays u objetos
+**Definición profesional:**
+En JavaScript las funciones son objetos de primera clase: pueden asignarse a variables, pasarse como argumentos, retornarse desde otras funciones y almacenarse en estructuras de datos.
 
-**Ejemplo práctico:**
-```javascript
-// Asignar a variable
-const saludar = function(nombre) {
-  return `Hola, ${nombre}`;
-};
+<Code code={`// Asignar a variable
+const saludar = function(nombre) { return 'Hola ' + nombre; };
 
 // Pasar como argumento (callback)
-const usuarios = ['Ana', 'Juan'];
-usuarios.forEach(saludar);
+['Ana', 'Juan'].forEach(nombre => console.log(saludar(nombre)));
 
-// Retornar función
+// Retornar función (Higher-Order Function)
 function multiplicador(factor) {
-  return function(numero) {
-    return numero * factor;
-  };
+  return (numero) => numero * factor;
 }
 const duplicar = multiplicador(2);
-duplicar(5); // 10
-```
+duplicar(5); // 10`} lang="javascript" title="Funciones de primera clase" />
 
-### 8. ¿Qué es una función pura?
+**Cómo responder en entrevista:**
+> "Las funciones son objetos de primera clase: pueden asignarse a variables, pasarse como callbacks y retornarse desde otras funciones. Esto habilita patrones funcionales como HOFs, currying y composición. Es la base de toda la programación funcional en JS y de APIs como `map`, `filter` y `reduce`."
 
-**¿Qué es?**
-Función que cumple dos reglas: mismo input siempre produce mismo output, y no tiene efectos secundarios.
+---
 
-**¿Para qué sirve?**
-- Código predecible y fácil de testear
-- Facilita debugging (sin sorpresas)
-- Permite optimizaciones (memoización)
+## 8. ¿Qué es una función pura?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Función que produce el mismo output para el mismo input y no tiene efectos secundarios (no modifica estado externo). Pilar de la programación funcional.
 
 <Code code={`// PURA: mismo input = mismo output, sin efectos secundarios
-function sumar(a, b) {
-  return a + b;
-}
+function sumar(a, b) { return a + b; }
 
-// Función impura - modifica estado externo
+// IMPURA - modifica estado externo
 let total = 0;
 function sumarImpura(valor) {
   total += valor; // Efecto secundario
-  return total;
-}`} lang="javascript" />
+  return total;   // Resultado depende de estado externo
+}`} lang="javascript" title="Función pura vs impura" />
 
-### 9. ¿Qué es una IIFE?
+**Cómo responder en entrevista:**
+> "Una función pura retorna siempre el mismo resultado para los mismos argumentos y no tiene efectos secundarios. Son fáciles de testear, predecibles y permiten optimizaciones como memoización. Los componentes de React deben comportarse como funciones puras respecto a sus props."
 
-**¿Qué es?**
-Immediately Invoked Function Expression - función que se define y ejecuta inmediatamente.
+---
 
-**¿Para qué sirve?**
-- Crear scope privado (variables no contaminan el global)
-- Ejecutar código una sola vez al cargar
-- Patrón común antes de ES6 modules
+## 9. ¿Qué es una IIFE?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Immediately Invoked Function Expression: función que se define y ejecuta inmediatamente, creando un scope privado.
 
-<Code code={`// IIFE clásica
+<Code code={`// IIFE clásica - crea scope privado
 (function() {
-  console.log("Se ejecuta inmediatamente");
+  const privado = "No contamina el global";
+  console.log("Ejecuta inmediatamente");
 })();
 
 // Con arrow function
 (() => {
   console.log("También funciona");
-})();`} lang="javascript" />
+})();`} lang="javascript" title="IIFE" />
 
-### 10. ¿Qué es el strict mode?
+**Cómo responder en entrevista:**
+> "IIFE crea un scope privado para evitar contaminar el namespace global. Era el patrón estándar antes de ES6 modules. Hoy es menos común, pero aún útil en scripts de inicialización y patrones de módulo sin bundler."
 
-**¿Qué es?**
-Modo estricto de JavaScript que hace el código más seguro y previene errores silenciosos.
+---
 
-**¿Para qué sirve?**
-- Convierte errores silenciosos en excepciones
-- Prohíbe sintaxis problemática
-- Prepara el código para futuras versiones de JS
+## 10. ¿Qué es el strict mode?
 
-**¿Cómo activarlo?**
-Agregar `"use strict";` al inicio del archivo o función.
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Modo estricto activado con `"use strict"` que convierte errores silenciosos en excepciones y prohíbe sintaxis problemática.
 
 <Code code={`"use strict";
 
-// Previene errores silenciosos
 x = 10; // ReferenceError: x is not defined
+delete Object.prototype; // TypeError
+let private = 1; // SyntaxError (palabra reservada)
 
-// Previene uso de palabras reservadas
-let private = 1; // SyntaxError`} lang="javascript" />
+// Los módulos ES6 (import/export) tienen strict mode por defecto`} lang="javascript" title="Strict mode" />
 
-### 11. ¿Qué es NaN?
+**Cómo responder en entrevista:**
+> "Strict mode prohíbe usar variables sin declarar, eliminar propiedades no eliminables, usar palabras reservadas y otras malas prácticas. Los módulos ES6 tienen strict mode activado por defecto. Mejora la seguridad y detección temprana de errores."
 
-**¿Qué es?**
-Not a Number - valor especial que representa un resultado matemático inválido.
+---
 
-**Características importantes:**
-- Es de tipo `number` (irónicamente)
-- `NaN !== NaN` (es el único valor que no es igual a sí mismo)
-- Usar `Number.isNaN()` para verificar (más preciso que `isNaN()`)
+## 11. ¿Qué es NaN?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Not a Number: valor de tipo `number` que representa un resultado matemático inválido. Única primitiva en JS que no es igual a sí misma.
 
-<Code code={`// Operaciones que producen NaN
-console.log(0 / 0);           // NaN
+<Code code={`console.log(0 / 0);           // NaN
 console.log(parseInt('abc')); // NaN
+console.log(typeof NaN);      // "number" (quirk histórico)
+console.log(NaN === NaN);     // false (única primitiva así)
 
-// Verificar NaN
-console.log(typeof NaN);        // "number"
-console.log(NaN === NaN);       // false
-console.log(isNaN(NaN));        // true
-console.log(Number.isNaN(NaN)); // true (más preciso)`} lang="javascript" />
+// Verificar correctamente
+console.log(Number.isNaN(NaN));      // true (recomendado)
+console.log(Number.isNaN("string")); // false (más preciso)
+console.log(isNaN("string"));        // true (hace coerción, menos preciso)`} lang="javascript" title="NaN" />
 
-### 12. ¿Cómo verificar si una variable es un array?
+**Cómo responder en entrevista:**
+> "`NaN` es de tipo `number` y es el único valor que no es igual a sí mismo. Siempre uso `Number.isNaN()` en lugar de `isNaN()` porque el global hace coerción de tipos y puede dar falsos positivos. `NaN` se produce en operaciones inválidas como `0/0` o parsear strings no numéricos."
 
-**¿Qué es?**
-Métodos para determinar si un valor es un array.
+---
 
-**¿Cuál usar?**
-- **`Array.isArray()`**: Método recomendado, funciona siempre
-- **`instanceof Array`**: Puede fallar entre iframes
-- **`typeof`**: NO funciona (retorna "object")
+## 12. ¿Cómo verificar si una variable es un array?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+`Array.isArray()` es el método canónico. `instanceof` puede fallar en contextos multi-frame. `typeof` siempre retorna `'object'` para arrays.
 
 <Code code={`const arr = [1, 2, 3];
-const obj = { length: 3 }; // Parece array pero no lo es
 
-Array.isArray(arr);           // true (recomendado)
-arr instanceof Array;         // true
-arr.constructor === Array;    // true`} lang="javascript" />
+Array.isArray(arr);        // true ✅ recomendado
+arr instanceof Array;      // true (falla en multi-frame)
+typeof arr;                // "object" ❌ no funciona
 
-### 13. ¿Qué es type coercion?
+// Verificar array vacío
+Array.isArray(arr) && arr.length === 0; // false`} lang="javascript" title="Verificar si es array" />
 
-**¿Qué es?**
-Conversión automática de un tipo de dato a otro.
+**Cómo responder en entrevista:**
+> "Siempre uso `Array.isArray()`: es el método estándar, funciona en todos los contextos incluyendo iframes con diferentes realms. `instanceof Array` puede fallar porque cada frame tiene su propio `Array`. `typeof` retorna `'object'` para arrays, nulo e inútil para este propósito."
 
-**Tipos de coerción:**
-- **Implícita**: JavaScript convierte automáticamente (`"5" + 3 = "53"`)
-- **Explícita**: Tú conviertes manualmente (`Number("5") = 5`)
+---
 
-**¿Por qué importa?**
-Puede causar bugs sutiles si no entiendes las reglas de conversión.
+## 13. ¿Qué es type coercion?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Conversión automática (implícita) o manual (explícita) entre tipos de datos. La coerción implícita es una fuente común de bugs en JavaScript.
 
-<Code code={`// Coerción implícita (cuidado con estas)
-console.log("5" + 3);   // "53" (string)
-console.log("5" - 3);   // 2 (number)
-console.log(true + 1);  // 2
+<Code code={`// Coerción implícita - puede ser confusa
+console.log("5" + 3);    // "53" (+ concatena si hay string)
+console.log("5" - 3);    // 2   (- convierte a número)
+console.log(true + 1);   // 2
+console.log([] + []);    // ""  (arrays a strings)
 
-// Coerción explícita
+// Coerción explícita - siempre preferida
 Number("5");    // 5
 String(5);      // "5"
-Boolean(0);     // false`} lang="javascript" />
+Boolean(0);     // false`} lang="javascript" title="Type coercion" />
 
-### 14. ¿Qué son los template literals?
+**Cómo responder en entrevista:**
+> "La coerción implícita convierte tipos automáticamente, lo que causa bugs sutiles. `+` con un string concatena; `-`, `*`, `/` convierten a número. Siempre prefiero coerción explícita con `Number()`, `String()`, `Boolean()`. Uso `===` en lugar de `==` para evitar coerción en comparaciones."
 
-**¿Qué es?**
-Strings delimitados por backticks (\`) que permiten interpolación y múltiples líneas.
+---
 
-**¿Para qué sirve?**
-- Insertar variables/expresiones con `${...}`
-- Crear strings multilínea sin `\n`
-- Más legible que concatenación con `+`
+## 14. ¿Qué son los template literals?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Strings delimitados con backticks que soportan interpolación de expresiones con `${...}` y strings multilínea nativamente.
 
 <Code code={`const nombre = "Juan";
 const edad = 25;
 
-// Template literal
 const mensaje = \`Hola, soy \${nombre} y tengo \${edad} años\`;
 
 // Multilínea
@@ -366,157 +322,125 @@ const html = \`
   <div>
     <h1>\${nombre}</h1>
   </div>
-\`;`} lang="javascript" />
+\`;
 
-### 15. ¿Qué es destructuring?
+// Expresiones
+const precio = \`Total: \${(100 * 1.21).toFixed(2)}€\`;`} lang="javascript" title="Template literals" />
 
-**¿Qué es?**
-Sintaxis para extraer valores de arrays u objetos en variables individuales.
-
-**¿Para qué sirve?**
-- Código más limpio y legible
-- Extraer solo lo que necesitas
-- Valores por defecto
-- Renombrar variables
-
-**Ejemplo práctico:**
-
-<Code code={`// Array destructuring
-const [a, b, ...resto] = [1, 2, 3, 4, 5];
-// a = 1, b = 2, resto = [3, 4, 5]
-
-// Object destructuring
-const { nombre, edad, ciudad = "Lima" } = { nombre: "Juan", edad: 25 };
-// nombre = "Juan", edad = 25, ciudad = "Lima"`} lang="javascript" />
+**Cómo responder en entrevista:**
+> "Los template literals usan backticks y permiten interpolación con `${}` donde puede ir cualquier expresión JS. Soportan multilínea sin `\\n` ni concatenación. Los tagged templates son una extensión avanzada: permiten procesar el string (base de librerías como `styled-components` o `sql`)."
 
 ---
 
-## Funciones y Objetos (16-30)
+## 15. ¿Qué es destructuring?
 
-### 16. ¿Qué es `this`?
+**Definición profesional:**
+Sintaxis ES6 para extraer valores de arrays u objetos en variables individuales. Soporta valores por defecto, alias y rest.
 
-**¿Qué es?**
-Palabra clave que referencia al contexto de ejecución actual.
+<Code code={`// Array destructuring
+const [a, b, ...resto] = [1, 2, 3, 4, 5];
+// a=1, b=2, resto=[3,4,5]
 
-**¿Cómo funciona?**
-- **En objeto**: referencia al objeto que contiene el método
-- **En función normal**: depende de cómo se llama (dinámico)
-- **En arrow function**: hereda del scope padre (léxico)
-- **En evento DOM**: referencia al elemento que disparó el evento
+// Object destructuring con alias y default
+const { nombre: n, edad = 18, ciudad = "Lima" } = { nombre: "Juan" };
+// n="Juan", edad=18, ciudad="Lima"
 
-**Ejemplo práctico:**
+// En parámetros de función
+function mostrar({ nombre, edad }) {
+  console.log(\`\${nombre} tiene \${edad} años\`);
+}`} lang="javascript" title="Destructuring" />
 
-<Code code={`// En objeto - referencia al objeto
-const obj = {
+**Cómo responder en entrevista:**
+> "Destructuring extrae valores de arrays y objetos en una sola línea. Soporta valores por defecto, renombrar variables con alias y rest pattern para agrupar el resto. Es omnipresente en React: destructuring de props, hooks (`const [state, setState] = useState()`), imports y respuestas de APIs."
+
+---
+
+## 16. ¿Qué es `this`?
+
+**Definición profesional:**
+`this` referencia el contexto de ejecución actual. En funciones normales es dinámico (depende de cómo se llama). En arrow functions es léxico (hereda del scope padre).
+
+<Code code={`const obj = {
   nombre: "Juan",
-  saludar() {
-    console.log(this.nombre);
-  }
+  saludarNormal() { console.log(this.nombre); }, // "Juan"
+  saludarArrow: () => console.log(this?.nombre),  // undefined (léxico)
 };
 
-// En función normal - depende de cómo se llama
-function mostrar() {
-  console.log(this);
-}
+// En función normal fuera de objeto
+function mostrar() { console.log(this); } // window en browser, undefined en strict`} lang="javascript" title="this en JavaScript" />
 
-// En arrow function - hereda del contexto
-const arrow = () => console.log(this);`} lang="javascript" />
+**Cómo responder en entrevista:**
+> "`this` en funciones normales se determina en tiempo de ejecución según quién llama la función. En arrow functions es léxico: hereda `this` del scope donde fue definida, nunca tiene el suyo propio. En clases siempre referencia la instancia. `call`, `apply` y `bind` permiten controlar `this` explícitamente."
 
-### 17. ¿Qué son call, apply y bind?
+---
 
-**¿Qué es?**
-Métodos para controlar explícitamente el valor de `this` en una función.
+## 17. ¿Qué son call, apply y bind?
 
-**Diferencias:**
-- **call**: Ejecuta la función con `this` y argumentos separados
-- **apply**: Ejecuta la función con `this` y argumentos en array
-- **bind**: Retorna una NUEVA función con `this` fijo (no ejecuta)
-
-**¿Cuándo usar cada uno?**
-- `call`/`apply`: Ejecutar inmediatamente con otro contexto
-- `bind`: Crear función para usar después (ej: event handlers)
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Tres métodos de `Function.prototype` para controlar explícitamente el valor de `this`. `call` y `apply` ejecutan inmediatamente; `bind` retorna una nueva función con `this` fijo.
 
 <Code code={`function saludar(saludo, signo) {
   console.log(\`\${saludo}, \${this.nombre}\${signo}\`);
 }
-
 const persona = { nombre: "Juan" };
 
-// call - argumentos separados
-saludar.call(persona, "Hola", "!");
+saludar.call(persona, "Hola", "!");        // args separados
+saludar.apply(persona, ["Hola", "!"]);     // args en array
+const fn = saludar.bind(persona, "Hola"); // nueva función con this fijo
+fn("!");`} lang="javascript" title="call, apply y bind" />
 
-// apply - argumentos en array
-saludar.apply(persona, ["Hola", "!"]);
+**Cómo responder en entrevista:**
+> "`call` ejecuta con `this` y argumentos separados. `apply` igual pero con array de args (útil con spread: `Math.max.apply(null, arr)`). `bind` retorna una nueva función con `this` permanentemente fijo, ideal para callbacks y event handlers. En ES6+, las arrow functions suelen reemplazar la necesidad de `bind`."
 
-// bind - retorna nueva función
-const saludarJuan = saludar.bind(persona);
-saludarJuan("Hola", "!");`} lang="javascript" />
+---
 
-### 18. ¿Qué es el prototype?
+## 18. ¿Qué es el prototype?
 
-**¿Qué es?**
-Objeto del que otros objetos heredan propiedades y métodos. Es el mecanismo de herencia en JavaScript.
+**Definición profesional:**
+Objeto del que heredan propiedades y métodos los objetos creados con una función constructora. Es el mecanismo de herencia en JavaScript.
 
-**Conceptos clave:**
-- **`prototype`**: Propiedad de funciones constructoras
-- **`__proto__`**: Referencia al prototipo del objeto (interno)
-- **Cadena de prototipos**: Búsqueda de propiedades hacia arriba
-
-**¿Para qué sirve?**
-Compartir métodos entre todas las instancias (ahorra memoria).
-
-**Ejemplo práctico:**
-
-<Code code={`function Persona(nombre) {
-  this.nombre = nombre;
-}
+<Code code={`function Persona(nombre) { this.nombre = nombre; }
 
 Persona.prototype.saludar = function() {
   console.log(\`Hola, soy \${this.nombre}\`);
 };
 
 const juan = new Persona("Juan");
-juan.saludar(); // "Hola, soy Juan"`} lang="javascript" />
+juan.saludar(); // "Hola, soy Juan"
+juan.__proto__ === Persona.prototype; // true`} lang="javascript" title="Prototype" />
 
-### 19. ¿Qué es la herencia prototípica?
+**Cómo responder en entrevista:**
+> "El prototype es el objeto del que heredan los objetos JavaScript. Cuando accedes a una propiedad, JS la busca primero en el objeto, luego en su prototype, y así hasta `null` (cadena de prototipos). Las clases ES6 son azúcar sintáctica sobre este mecanismo. Compartir métodos en el prototype ahorra memoria frente a definirlos en el constructor."
 
-**¿Qué es?**
-Mecanismo donde objetos heredan directamente de otros objetos a través de la cadena de prototipos.
+---
 
-**¿Cómo funciona?**
-1. Cuando accedes a una propiedad, JS la busca en el objeto
-2. Si no la encuentra, busca en su prototipo
-3. Continúa subiendo hasta llegar a `null`
+## 19. ¿Qué es la herencia prototípica?
 
-**Clases ES6:**
-Son "azúcar sintáctico" sobre prototipos (mismo mecanismo, sintaxis más clara).
+**Definición profesional:**
+Mecanismo donde los objetos heredan directamente de otros objetos a través de la cadena de prototipos (`[[Prototype]]`). Las clases ES6 son azúcar sintáctico sobre este sistema.
 
-**Ejemplo práctico:**
-
-<Code code={`// ES6 Classes (azúcar sintáctico sobre prototipos)
-class Animal {
-  constructor(nombre) {
-    this.nombre = nombre;
-  }
-  hablar() {
-    console.log(\`\${this.nombre} hace un sonido\`);
-  }
+<Code code={`class Animal {
+  constructor(nombre) { this.nombre = nombre; }
+  hablar() { console.log(\`\${this.nombre} hace un sonido\`); }
 }
 
 class Perro extends Animal {
-  hablar() {
-    console.log(\`\${this.nombre} ladra\`);
-  }
-}`} lang="javascript" />
+  hablar() { console.log(\`\${this.nombre} ladra\`); }
+}
 
-### 20. ¿Qué es Object.freeze vs Object.seal?
+const p = new Perro("Rex");
+p.hablar(); // "Rex ladra"
+p instanceof Animal; // true`} lang="javascript" title="Herencia prototípica con clases" />
 
-**¿Qué es?**
-Métodos para controlar la mutabilidad de objetos.
+**Cómo responder en entrevista:**
+> "La herencia prototípica encadena objetos: cada objeto tiene un `[[Prototype]]` que forma la cadena hasta `null`. Las clases ES6 con `extends` son azúcar sintáctico sobre `Object.create()`. A diferencia de la herencia clásica, es más dinámica: se puede modificar el prototype en runtime, aunque no es buena práctica."
 
-**Diferencias:**
+---
+
+## 20. ¿Qué es Object.freeze vs Object.seal?
+
+**Definición profesional:**
+Dos métodos para restringir mutabilidad. `freeze` congela completamente el objeto; `seal` permite modificar propiedades existentes pero no agregar ni eliminar.
 
 | Método | Agregar | Modificar | Eliminar |
 |--------|---------|-----------|----------|
@@ -524,440 +448,355 @@ Métodos para controlar la mutabilidad de objetos.
 | `seal` | ❌ | ✅ | ❌ |
 | Normal | ✅ | ✅ | ✅ |
 
-**Nota:** Ambos son "shallow" (no afectan objetos anidados).
-
-**Ejemplo práctico:**
-
-<Code code={`const obj = { a: 1, b: 2 };
-
-// freeze - no se puede modificar nada
+<Code code={`const obj = { a: 1 };
 Object.freeze(obj);
-obj.a = 10;     // No funciona
-obj.c = 3;      // No funciona
-delete obj.a;   // No funciona
+obj.a = 10;   // Silenciosamente ignorado (o TypeError en strict)
+obj.b = 2;    // Ignorado
 
-// seal - se pueden modificar valores existentes
-const obj2 = { a: 1, b: 2 };
+const obj2 = { a: 1 };
 Object.seal(obj2);
-obj2.a = 10;    // Funciona
-obj2.c = 3;     // No funciona
-delete obj2.a;  // No funciona`} lang="javascript" />
+obj2.a = 10;  // OK - modificar existente
+obj2.b = 2;   // Ignorado - no agregar`} lang="javascript" title="freeze vs seal" />
 
-### 21. ¿Cómo clonar un objeto?
+**Cómo responder en entrevista:**
+> "`freeze` hace el objeto completamente inmutable (shallow). `seal` permite modificar valores pero no la estructura. Ambos son shallow: los objetos anidados no se ven afectados. Para inmutabilidad profunda necesito `structuredClone` + `freeze` recursivo o librerías como Immer."
 
-**¿Qué es?**
-Crear una copia independiente de un objeto.
+---
 
-**Tipos de copia:**
-- **Shallow (superficial)**: Copia el primer nivel, objetos anidados siguen siendo referencias
-- **Deep (profunda)**: Copia todo, incluyendo objetos anidados
+## 21. ¿Cómo clonar un objeto?
 
-**Métodos:**
-- Shallow: `{...obj}`, `Object.assign()`
-- Deep: `structuredClone()` (moderno), `JSON.parse(JSON.stringify())`
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Shallow copy copia el primer nivel (los anidados siguen siendo referencias). Deep copy copia toda la estructura. `structuredClone()` es el método moderno recomendado para deep copy.
 
 <Code code={`const original = { a: 1, b: { c: 2 } };
 
-// Shallow copy
-const copia1 = { ...original };
-const copia2 = Object.assign({}, original);
+// Shallow copy - objetos anidados son referencias compartidas
+const shallow1 = { ...original };
+const shallow2 = Object.assign({}, original);
 
-// Deep copy
-const copiaDeep = JSON.parse(JSON.stringify(original));
-const copiaDeep2 = structuredClone(original); // Moderno`} lang="javascript" />
+// Deep copy - copia completa e independiente
+const deep1 = structuredClone(original);        // Moderno ✅
+const deep2 = JSON.parse(JSON.stringify(original)); // Limitado: no funciones, no Date`} lang="javascript" title="Clonar objetos" />
 
-### 22. ¿Qué es el optional chaining?
+**Cómo responder en entrevista:**
+> "Para shallow copy uso spread `{...obj}` u `Object.assign()`. Para deep copy uso `structuredClone()` (ES2022, soporta Date, Map, Set, RegExp). `JSON.parse(JSON.stringify())` es el clásico pero pierde funciones, `undefined`, `Date` (se convierte a string) y referencias circulares."
 
-**¿Qué es?**
-Operador `?.` que permite acceder a propiedades anidadas de forma segura.
+---
 
-**¿Para qué sirve?**
-- Evita errores "Cannot read property of undefined"
-- Reemplaza múltiples chequeos de null/undefined
-- Retorna `undefined` si algo en la cadena no existe
+## 22. ¿Qué es el optional chaining?
 
-**Variantes:**
-- `obj?.prop` - Acceso a propiedad
-- `obj?.[expr]` - Acceso dinámico
-- `func?.()` - Llamada a función
+**Definición profesional:**
+Operador `?.` que cortocircuita y retorna `undefined` si algún nodo de la cadena es `null` o `undefined`, en lugar de lanzar un error.
 
-**Ejemplo práctico:**
-
-<Code code={`const usuario = {
-  nombre: "Juan",
-  direccion: {
-    ciudad: "Lima"
-  }
-};
+<Code code={`const usuario = { nombre: "Juan", direccion: { ciudad: "Lima" } };
 
 // Sin optional chaining
 const pais = usuario.direccion && usuario.direccion.pais;
 
-// Con optional chaining
-const pais2 = usuario.direccion?.pais; // undefined
-const metodo = usuario.saludar?.(); // undefined`} lang="javascript" />
+// Con optional chaining ✅
+const pais2 = usuario.direccion?.pais;     // undefined
+const metodo = usuario.saludar?.();        // undefined
+const valor = arr?.[0]?.nombre;            // acceso dinámico`} lang="javascript" title="Optional chaining" />
 
-### 23. ¿Qué es el nullish coalescing?
+**Cómo responder en entrevista:**
+> "`?.` cortocircuita y retorna `undefined` si el valor es `null` o `undefined`. Funciona en tres formas: `obj?.prop`, `obj?.[expr]` y `func?.()`. Combinado con `??` es muy potente: `usuario?.config?.timeout ?? 3000`. Es una de las mejoras más usadas del JavaScript moderno."
 
-**¿Qué es?**
-Operador `??` que proporciona un valor por defecto solo cuando el valor es `null` o `undefined`.
+---
 
-**Diferencia con `||`:**
-- `||` considera falsy: `0`, `""`, `false`, `null`, `undefined`
-- `??` solo considera: `null`, `undefined`
+## 23. ¿Qué es el nullish coalescing?
 
-**¿Cuándo usar `??`?**
-Cuando `0` o `""` son valores válidos que no quieres reemplazar.
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Operador `??` que retorna el operando derecho solo cuando el izquierdo es `null` o `undefined`, a diferencia de `||` que reacciona a cualquier valor falsy.
 
 <Code code={`// || considera falsy: 0, "", false, null, undefined
-const a = 0 || "default";  // "default"
+const a = 0 || "default";    // "default" (indeseado si 0 es válido)
+const b = "" || "default";   // "default" (indeseado si "" es válido)
 
 // ?? solo considera null y undefined
-const b = 0 ?? "default";  // 0
-const c = null ?? "default"; // "default"`} lang="javascript" />
+const c = 0 ?? "default";    // 0  ✅
+const d = "" ?? "default";   // "" ✅
+const e = null ?? "default"; // "default" ✅`} lang="javascript" title="Nullish coalescing ??" />
 
-### 24. ¿Qué son los getters y setters?
+**Cómo responder en entrevista:**
+> "`??` solo hace fallback para `null` y `undefined`, no para todos los valores falsy. Esto es crucial cuando `0`, `false` o `''` son valores legítimos. Se combina con `?.`: `config?.timeout ?? 3000`. `??=` es el operador de asignación nullish (ES2021): `x ??= defaultValue`."
 
-**¿Qué es?**
-Métodos especiales que se ejecutan automáticamente al leer o escribir una propiedad.
+---
 
-**¿Para qué sirve?**
-- **get**: Ejecuta lógica al LEER (ej: formatear, calcular)
-- **set**: Ejecuta lógica al ESCRIBIR (ej: validar, transformar)
+## 24. ¿Qué son los getters y setters?
 
-**Casos de uso:**
-- Validación de datos
-- Propiedades calculadas
-- Encapsulación
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Métodos especiales declarados con `get`/`set` que interceptan el acceso y escritura a propiedades, permitiendo lógica de validación o transformación transparente.
 
 <Code code={`const persona = {
   _nombre: "",
-  
   get nombre() {
     return this._nombre.toUpperCase();
   },
-  
   set nombre(valor) {
+    if (typeof valor !== 'string') throw new Error('Debe ser string');
     this._nombre = valor.trim();
   }
 };
 
 persona.nombre = "  juan  ";
-console.log(persona.nombre); // "JUAN"`} lang="javascript" />
+console.log(persona.nombre); // "JUAN"`} lang="javascript" title="Getters y setters" />
 
-### 25. ¿Qué es un Symbol?
+**Cómo responder en entrevista:**
+> "Los getters y setters permiten encapsular lógica detrás de accesos a propiedades. Con `get` puedo computar valores al vuelo; con `set` puedo validar y transformar antes de guardar. Son transparentes para el consumidor: se usan como propiedades normales. La clase Vue 2 los usaba para hacer propiedades reactivas."
 
-**¿Qué es?**
-Tipo primitivo que crea identificadores únicos e inmutables.
+---
 
-**¿Para qué sirve?**
-- Crear claves de propiedades que no colisionen
-- Propiedades "ocultas" (no aparecen en `for...in` ni `Object.keys()`)
-- Definir comportamientos especiales (`Symbol.iterator`)
+## 25. ¿Qué es un Symbol?
 
-**Características:**
-- Cada Symbol es único, incluso con la misma descripción
-- No se convierte automáticamente a string
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Tipo primitivo ES6 que genera identificadores únicos e inmutables. Ideal para claves de propiedades que no deben colisionar ni aparecer en iteraciones normales.
 
 <Code code={`const id = Symbol('id');
 const id2 = Symbol('id');
+console.log(id === id2); // false - siempre únicos
 
-console.log(id === id2); // false (siempre únicos)
+const obj = { [id]: 123, nombre: "Juan" };
+console.log(obj[id]);          // 123
+console.log(Object.keys(obj)); // ["nombre"] - Symbol no aparece
+console.log(Symbol.iterator);  // Symbol.iterator - well-known symbol`} lang="javascript" title="Symbol" />
 
-const obj = {
-  [id]: 123,
-  nombre: "Juan"
-};
+**Cómo responder en entrevista:**
+> "Los Symbols son siempre únicos aunque tengan la misma descripción. Se usan como claves de propiedades privadas (no aparecen en `for...in` ni `Object.keys()`). Los well-known symbols como `Symbol.iterator`, `Symbol.toPrimitive` permiten customizar comportamientos del lenguaje."
 
-console.log(obj[id]); // 123
-console.log(Object.keys(obj)); // ["nombre"] - Symbol no aparece`} lang="javascript" />
+---
 
-### 26. ¿Qué es un Map vs Object?
+## 26. ¿Qué es un Map vs Object?
 
-**¿Qué es?**
-Map es una colección de pares clave-valor, similar a Object pero con diferencias importantes.
-
-**Diferencias:**
+**Definición profesional:**
+`Map` es una colección ordenada de pares clave-valor donde las claves pueden ser de cualquier tipo. `Object` solo acepta strings y symbols como claves.
 
 | Característica | Map | Object |
 |---------------|-----|--------|
-| Tipo de clave | Cualquiera | Solo string/symbol |
-| Orden | Mantiene orden de inserción | No garantizado |
-| Tamaño | `map.size` | `Object.keys().length` |
-| Iteración | Directamente iterable | Necesita `Object.keys()` |
+| Tipo de clave | Cualquiera | String/Symbol |
+| Orden | Inserción garantizada | No garantizado |
+| Tamaño | `.size` | `Object.keys().length` |
 
-**¿Cuándo usar Map?**
-Cuando necesitas claves que no sean strings o el orden importa.
+<Code code={`const map = new Map();
+map.set({ id: 1 }, "objeto como clave");
+map.set(42, "número como clave");
+map.size; // 2
 
-**Ejemplo práctico:**
-
-<Code code={`// Map - cualquier tipo como clave
-const map = new Map();
-map.set({ id: 1 }, "valor");
-map.set(1, "número");
-
-// Object - solo strings/symbols como clave
+// Object - convierte la clave a string
 const obj = {};
-obj[{ id: 1 }] = "valor"; // Se convierte a "[object Object]"`} lang="javascript" />
+obj[{ id: 1 }] = "valor"; // clave "[object Object]"`} lang="javascript" title="Map vs Object" />
 
-### 27. ¿Qué es un Set?
+**Cómo responder en entrevista:**
+> "Uso `Map` cuando necesito claves que no sean strings (funciones, objetos), cuando el orden importa, o cuando necesito iterar frecuentemente con `for...of`. `Map` también tiene mejor rendimiento para colecciones grandes. `Object` es mejor para datos con estructura conocida y acceso por clave string."
 
-**¿Qué es?**
-Colección de valores únicos (no permite duplicados).
+---
 
-**¿Para qué sirve?**
-- Eliminar duplicados de un array
-- Verificar pertenencia rápidamente (`has()` es O(1))
-- Operaciones de conjuntos (unión, intersección)
+## 27. ¿Qué es un Set?
 
-**Métodos principales:**
-- `add(valor)`: Agregar
-- `has(valor)`: Verificar existencia
-- `delete(valor)`: Eliminar
-- `size`: Cantidad de elementos
+**Definición profesional:**
+Colección de valores únicos donde la búsqueda, inserción y eliminación son O(1). Ideal para eliminar duplicados y operaciones de conjuntos.
 
-**Ejemplo práctico:**
-
-<Code code={`// Eliminar duplicados
-const set = new Set([1, 2, 2, 3, 3, 3]);
+<Code code={`const set = new Set([1, 2, 2, 3, 3, 3]);
 console.log([...set]); // [1, 2, 3]
 
 set.add(4);
-set.has(2);    // true
+set.has(2);    // true - O(1)
 set.delete(1);
-set.size;      // 3`} lang="javascript" />
 
-### 28. ¿Qué es un WeakMap y WeakSet?
+// Eliminar duplicados de array
+const unique = [...new Set([1,1,2,2,3])]; // [1,2,3]
 
-**¿Qué es?**
-Versiones "débiles" de Map y Set que permiten garbage collection de sus claves/valores.
+// Intersección
+const a = new Set([1,2,3]);
+const b = new Set([2,3,4]);
+const interseccion = new Set([...a].filter(x => b.has(x)));`} lang="javascript" title="Set" />
 
-**Características:**
-- Las claves DEBEN ser objetos (no primitivos)
-- No son iterables (no puedes recorrerlos)
-- No tienen propiedad `size`
-- Cuando la clave ya no tiene referencias, se elimina automáticamente
+**Cómo responder en entrevista:**
+> "`Set` almacena valores únicos con búsqueda O(1). El uso más común es eliminar duplicados de un array con `[...new Set(arr)]`. También sirve para operaciones de conjuntos: unión, intersección, diferencia. `WeakSet` es la versión con referencias débiles (solo objetos, no iterable)."
 
-**¿Para qué sirve?**
-- Almacenar metadata asociada a objetos sin prevenir su eliminación
-- Cachés que se limpian automáticamente
+---
 
-**Ejemplo práctico:**
+## 28. ¿Qué es un WeakMap y WeakSet?
 
-<Code code={`// WeakMap - claves son objetos, permite garbage collection
-const wm = new WeakMap();
-let obj = { data: "importante" };
-wm.set(obj, "metadata");
+**Definición profesional:**
+Versiones con referencias débiles de Map y Set. Las claves deben ser objetos; cuando el objeto no tiene más referencias, el garbage collector puede eliminarlo automáticamente.
 
-obj = null; // El objeto puede ser recolectado
+<Code code={`const cache = new WeakMap();
 
-// WeakSet - similar pero para valores únicos
-const ws = new WeakSet();`} lang="javascript" />
+function procesar(obj) {
+  if (cache.has(obj)) return cache.get(obj);
+  const resultado = /* cálculo costoso */ obj;
+  cache.set(obj, resultado);
+  return resultado;
+}
 
-### 29. ¿Qué es un Proxy?
+let datos = { valores: [1,2,3] };
+procesar(datos);
+datos = null; // El entry en WeakMap se limpia automáticamente`} lang="javascript" title="WeakMap y WeakSet" />
 
-**¿Qué es?**
-Objeto que envuelve a otro y permite interceptar operaciones sobre él.
+**Cómo responder en entrevista:**
+> "`WeakMap` y `WeakSet` tienen referencias débiles: cuando el objeto-clave ya no tiene referencias fuertes, el GC lo elimina y el entry desaparece. No son iterables ni tienen `size`. Ideales para caches asociados a objetos (memoización, datos privados de instancias) sin causar memory leaks."
 
-**¿Para qué sirve?**
-- Validación de datos al asignar propiedades
-- Logging de accesos
-- Valores por defecto automáticos
-- Crear objetos "reactivos" (como en Vue.js)
+---
 
-**Operaciones interceptables (traps):**
-`get`, `set`, `has`, `deleteProperty`, `apply`, etc.
+## 29. ¿Qué es un Proxy?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Objeto que intercepta operaciones sobre otro objeto mediante traps. Es la base de la reactividad en Vue 3 y permite metaprogramación.
 
 <Code code={`const handler = {
   get(target, prop) {
-    console.log(\`Accediendo a \${prop}\`);
-    return target[prop];
+    return prop in target ? target[prop] : 'Propiedad no existe';
   },
   set(target, prop, value) {
-    console.log(\`Estableciendo \${prop} = \${value}\`);
+    if (typeof value !== 'number') throw new TypeError('Solo números');
     target[prop] = value;
     return true;
   }
 };
 
 const proxy = new Proxy({}, handler);
-proxy.nombre = "Juan"; // "Estableciendo nombre = Juan"
-console.log(proxy.nombre); // "Accediendo a nombre" → "Juan"`} lang="javascript" />
+proxy.edad = 25;    // OK
+proxy.edad = "25";  // TypeError`} lang="javascript" title="Proxy" />
 
-### 30. ¿Qué es Reflect?
-
-**¿Qué es?**
-API con métodos estáticos para operaciones de objetos, diseñada para complementar Proxy.
-
-**¿Para qué sirve?**
-- Realizar operaciones de objetos de forma funcional
-- Dentro de Proxy handlers, delegar al comportamiento original
-- Retorna booleanos en vez de lanzar errores
-
-**Métodos principales:**
-`Reflect.get()`, `Reflect.set()`, `Reflect.has()`, `Reflect.deleteProperty()`
-
-**Ejemplo práctico:**
-
-<Code code={`const obj = { a: 1 };
-
-// Métodos de Reflect
-Reflect.get(obj, 'a');           // 1
-Reflect.set(obj, 'b', 2);        // true
-Reflect.has(obj, 'a');           // true
-Reflect.deleteProperty(obj, 'a'); // true`} lang="javascript" />
+**Cómo responder en entrevista:**
+> "`Proxy` envuelve un objeto e intercepta operaciones con traps: `get`, `set`, `has`, `deleteProperty`, `apply`, etc. Vue 3 usa Proxies para reactividad (Vue 2 usaba `Object.defineProperty`, más limitado). Útil para validación, logging, valores por defecto y objetos reactivos."
 
 ---
 
-## Asincronía (31-40)
+## 30. ¿Qué es Reflect?
 
-### 31. ¿Qué es un callback?
+**Definición profesional:**
+API con métodos estáticos que replican el comportamiento de los operadores del lenguaje. Diseñada para complementar `Proxy`, delegar operaciones y retornar booleanos en lugar de lanzar errores.
 
-**¿Qué es?**
-Función que se pasa como argumento a otra función para ejecutarse después.
+<Code code={`const obj = { a: 1 };
 
-**¿Para qué sirve?**
-- Manejar operaciones asíncronas (antes de Promises)
-- Personalizar comportamiento de funciones
-- Event handlers
+Reflect.get(obj, 'a');              // 1 (como obj.a)
+Reflect.set(obj, 'b', 2);           // true
+Reflect.has(obj, 'a');              // true (como 'a' in obj)
+Reflect.deleteProperty(obj, 'a');   // true
 
-**Problema:**
-Anidación excesiva lleva a "callback hell".
+// Uso en Proxy - delegar al comportamiento original
+const proxy = new Proxy(obj, {
+  get(target, prop) {
+    return Reflect.get(target, prop); // delega al target
+  }
+});`} lang="javascript" title="Reflect" />
 
-**Ejemplo práctico:**
+**Cómo responder en entrevista:**
+> "`Reflect` proporciona métodos funcionales equivalentes a operadores del lenguaje. Es el complemento de `Proxy`: dentro de los traps, `Reflect` permite delegar al comportamiento original del objeto. Retorna booleanos en lugar de lanzar errores, lo que facilita el manejo de fallos."
+
+---
+
+## 31. ¿Qué es un callback?
+
+**Definición profesional:**
+Función pasada como argumento a otra función para ser invocada en un momento posterior, ya sea de forma síncrona o asíncrona.
 
 <Code code={`function obtenerDatos(callback) {
-  setTimeout(() => {
-    callback({ nombre: "Juan" });
-  }, 1000);
+  setTimeout(() => callback({ nombre: "Juan" }), 1000);
 }
 
-obtenerDatos((data) => {
-  console.log(data);
-});`} lang="javascript" />
+obtenerDatos((data) => console.log(data));
 
-### 32. ¿Qué es callback hell?
+// Callbacks síncronos también existen:
+[1, 2, 3].forEach(n => console.log(n)); // callback síncrono`} lang="javascript" title="Callbacks" />
 
-**¿Qué es?**
-Anidación excesiva de callbacks que hace el código difícil de leer y mantener.
+**Cómo responder en entrevista:**
+> "Un callback es cualquier función pasada como argumento para ejecutarse después. Pueden ser síncronos (`forEach`, `map`) o asíncronos (`setTimeout`, eventos). El problema es el callback hell cuando se anidan operaciones asíncronas. Hoy usamos Promises y async/await para código asíncrono más legible."
 
-**Problemas:**
-- Código en forma de "pirámide"
-- Difícil de debuggear
-- Manejo de errores complicado
+---
 
-**Soluciones:**
-- Promises (`.then()` encadenado)
-- async/await (sintaxis síncrona)
+## 32. ¿Qué es callback hell?
 
-**Ejemplo del problema:**
+**Definición profesional:**
+Anidación excesiva de callbacks asíncronos que forma una "pirámide del destino", dificultando la lectura, el manejo de errores y el mantenimiento.
 
-<Code code={`// Callback hell - difícil de leer y mantener
+<Code code={`// Callback hell - pirámide del destino
 obtenerUsuario(id, (usuario) => {
   obtenerPedidos(usuario.id, (pedidos) => {
     obtenerDetalles(pedidos[0].id, (detalles) => {
-      // ... más anidación
+      // ... más niveles
     });
   });
-});`} lang="javascript" />
+});
 
-### 33. ¿Cuáles son los estados de una Promise?
+// Solución con async/await
+const usuario = await obtenerUsuario(id);
+const pedidos = await obtenerPedidos(usuario.id);
+const detalles = await obtenerDetalles(pedidos[0].id);`} lang="javascript" title="Callback hell y solución" />
 
-**¿Qué es?**
-Una Promise tiene 3 estados posibles durante su ciclo de vida.
+**Cómo responder en entrevista:**
+> "El callback hell surge al anidar múltiples callbacks asíncronos, creando código difícil de leer y con manejo de errores por cada nivel. La solución son Promises con `.then()` encadenado, pero la mejor solución es `async/await` que permite código asíncrono con apariencia síncrona y un solo `try/catch`."
 
-**Estados:**
-- **pending**: Estado inicial, esperando resultado
-- **fulfilled**: Operación exitosa, tiene un valor
-- **rejected**: Operación fallida, tiene un error
+---
 
-**Importante:**
-Una vez que cambia de `pending`, NO puede volver a cambiar (inmutable).
+## 33. ¿Cuáles son los estados de una Promise?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Una Promise tiene tres estados: `pending` (inicial), `fulfilled` (resuelta con valor) y `rejected` (rechazada con error). La transición es irreversible.
 
-<Code code={`// Estados: pending, fulfilled, rejected
-const promise = new Promise((resolve, reject) => {
-  // pending...
-  if (exito) {
-    resolve(valor);  // fulfilled
-  } else {
-    reject(error);   // rejected
-  }
-});`} lang="javascript" />
+<Code code={`const promise = new Promise((resolve, reject) => {
+  // Estado: pending...
+  setTimeout(() => {
+    if (Math.random() > 0.5) {
+      resolve("éxito");   // Estado: fulfilled
+    } else {
+      reject("error");    // Estado: rejected
+    }
+  }, 1000);
+});
 
-### 34. ¿Qué es Promise.all?
+promise
+  .then(valor => console.log("Fulfilled:", valor))
+  .catch(error => console.log("Rejected:", error));`} lang="javascript" title="Estados de una Promise" />
 
-**¿Qué es?**
-Método que espera a que TODAS las promises se resuelvan.
+**Cómo responder en entrevista:**
+> "Una Promise tiene tres estados: `pending` (esperando), `fulfilled` (resuelta con `.then()`) y `rejected` (rechazada con `.catch()`). Una vez que sale de `pending` no puede volver a cambiar. `.finally()` se ejecuta siempre. Los estados son la base para entender `Promise.all`, `race`, `allSettled` y `any`."
 
-**Comportamiento:**
-- Retorna array con todos los resultados (en orden)
-- Si UNA falla, TODO falla inmediatamente
-- Ejecuta en paralelo (no secuencial)
+---
 
-**¿Cuándo usarlo?**
-Cuando necesitas todos los resultados y uno fallido invalida todo.
+## 34. ¿Qué es Promise.all?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Ejecuta múltiples promises en paralelo y retorna una nueva promise que se resuelve cuando TODAS resuelven. Si una falla, rechaza inmediatamente.
 
-<Code code={`const p1 = fetch('/api/users');
-const p2 = fetch('/api/posts');
-const p3 = fetch('/api/comments');
+<Code code={`// Paralelo: todas empiezan a la vez
+const [users, posts, comments] = await Promise.all([
+  fetch('/api/users').then(r => r.json()),
+  fetch('/api/posts').then(r => r.json()),
+  fetch('/api/comments').then(r => r.json()),
+]);
+// Si cualquiera falla, el catch captura el primer error`} lang="javascript" title="Promise.all" />
 
-// Espera a que TODAS se resuelvan
-const [users, posts, comments] = await Promise.all([p1, p2, p3]);
+**Cómo responder en entrevista:**
+> "`Promise.all` ejecuta en paralelo y espera a que todas resuelvan. Si UNA falla, falla todo inmediatamente (fail-fast). Úsalo cuando necesitas todos los resultados para continuar. Si quieres manejar fallos individuales, usa `Promise.allSettled`. El orden del array resultado siempre corresponde al orden de las promises."
 
-// Si una falla, todo falla`} lang="javascript" />
+---
 
-### 35. ¿Qué es Promise.race?
+## 35. ¿Qué es Promise.race?
 
-**¿Qué es?**
-Método que retorna la PRIMERA promise que se resuelva O rechace.
+**Definición profesional:**
+Retorna la primera promise en completarse (exitosa o fallida). Ideal para implementar timeouts.
 
-**¿Para qué sirve?**
-- Implementar timeouts
-- Obtener el resultado más rápido de múltiples fuentes
+<Code code={`// Implementar timeout con Promise.race
+const timeout = (ms) => new Promise((_, reject) =>
+  setTimeout(() => reject(new Error('Timeout')), ms)
+);
 
-**Comportamiento:**
-La primera en terminar (exitosa o fallida) determina el resultado.
-
-**Ejemplo práctico - Timeout:**
-
-<Code code={`// Retorna la primera que se resuelva o rechace
 const resultado = await Promise.race([
-  fetch('/api/rapido'),
-  new Promise((_, reject) => 
-    setTimeout(() => reject('Timeout'), 5000)
-  )
-]);`} lang="javascript" />
+  fetch('/api/data'),
+  timeout(5000)
+]);`} lang="javascript" title="Promise.race" />
 
-### 36. ¿Qué es Promise.allSettled?
+**Cómo responder en entrevista:**
+> "`Promise.race` retorna la primera en resolverse o rechazarse. Su uso principal es implementar timeouts: compito la operación real contra un `setTimeout` que rechaza. A diferencia de `Promise.any`, `race` también cuenta los rechazos como ganadores."
 
-**¿Qué es?**
-Método que espera a que TODAS las promises terminen, sin importar si fallan.
+---
 
-**Diferencia con Promise.all:**
-- `all`: Falla si UNA falla
-- `allSettled`: Siempre espera a todas
+## 36. ¿Qué es Promise.allSettled?
 
-**Retorna:**
-Array de objetos con `{ status, value }` o `{ status, reason }`.
-
-**¿Cuándo usarlo?**
-Cuando quieres saber el resultado de todas, incluso las fallidas.
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Espera a que TODAS las promises terminen independientemente del resultado, retornando un array con el estado y valor/razón de cada una.
 
 <Code code={`const resultados = await Promise.allSettled([
   Promise.resolve(1),
@@ -969,293 +808,243 @@ Cuando quieres saber el resultado de todas, incluso las fallidas.
 //   { status: 'fulfilled', value: 1 },
 //   { status: 'rejected', reason: 'error' },
 //   { status: 'fulfilled', value: 3 }
-// ]`} lang="javascript" />
+// ]
+const exitosas = resultados.filter(r => r.status === 'fulfilled');`} lang="javascript" title="Promise.allSettled" />
 
-### 37. ¿Qué es Promise.any?
+**Cómo responder en entrevista:**
+> "`Promise.allSettled` espera a que todas terminen sin importar si fallan. Retorna objetos `{ status, value }` o `{ status, reason }`. Úsalo cuando quieres procesar todos los resultados aunque algunos fallen: envío de notificaciones batch, operaciones independientes entre sí."
 
-**¿Qué es?**
-Método que retorna la PRIMERA promise que se resuelva EXITOSAMENTE.
+---
 
-**Diferencia con Promise.race:**
-- `race`: Primera en terminar (exitosa o fallida)
-- `any`: Primera en tener ÉXITO (ignora rechazos)
+## 37. ¿Qué es Promise.any?
 
-**Comportamiento:**
-Solo falla si TODAS las promises fallan (AggregateError).
+**Definición profesional:**
+Retorna la primera promise que se resuelva exitosamente, ignorando los rechazos. Solo falla si TODAS las promises son rechazadas (lanza `AggregateError`).
 
-**Ejemplo práctico:**
-
-<Code code={`// Retorna la primera que se RESUELVA
+<Code code={`// Retorna la primera en tener ÉXITO (ignora rechazos)
 const primera = await Promise.any([
   Promise.reject('error1'),
-  Promise.resolve('éxito'),
+  Promise.resolve('éxito'),  // Esta gana
   Promise.reject('error2')
 ]);
-// 'éxito'`} lang="javascript" />
+// 'éxito'
 
-### 38. ¿Cómo manejar errores en async/await?
+// Solo falla si TODAS fallan
+try {
+  await Promise.any([Promise.reject('a'), Promise.reject('b')]);
+} catch (e) {
+  console.log(e instanceof AggregateError); // true
+}`} lang="javascript" title="Promise.any" />
 
-**¿Qué es?**
-Formas de capturar errores cuando usas async/await.
+**Cómo responder en entrevista:**
+> "`Promise.any` retorna la primera en tener éxito, ignorando rechazos. Solo falla con `AggregateError` cuando todas fallan. Úsalo para obtener el resultado más rápido de varias fuentes alternativas (varios servidores CDN, múltiples APIs de fallback). Es la diferencia con `race` que también acepta rechazos."
 
-**Método principal: try/catch**
-Envuelve el código asíncrono y captura tanto errores síncronos como rechazos de await.
+---
 
-**Alternativa: .catch() al final**
-```javascript
-async function getData() { ... }
-getData().catch(error => console.error(error));
-```
+## 38. ¿Cómo manejar errores en async/await?
 
-**Ejemplo práctico:**
+**Definición profesional:**
+Con `try/catch` para capturar tanto errores síncronos como rechazos de promises. El `catch` recibe el error del `reject()`.
 
-<Code code={`// Con try/catch
-async function obtenerDatos() {
+<Code code={`async function obtenerDatos() {
   try {
     const response = await fetch('/api/data');
-    const data = await response.json();
-    return data;
+    if (!response.ok) throw new Error(\`HTTP \${response.status}\`);
+    return await response.json();
   } catch (error) {
-    console.error('Error:', error);
-    throw error;
+    console.error('Error:', error.message);
+    throw error; // Re-lanzar para el llamador
   }
-}`} lang="javascript" />
+}
 
-### 39. ¿Qué son los microtasks y macrotasks?
+// Alternativa: .catch() al final
+obtenerDatos().catch(console.error);`} lang="javascript" title="Manejo de errores en async/await" />
 
-**¿Qué es?**
-Dos colas de tareas en el event loop con diferentes prioridades.
+**Cómo responder en entrevista:**
+> "Uso `try/catch` alrededor del `await`. Importante: `fetch` no rechaza en errores HTTP (404, 500), solo en errores de red. Debo verificar `response.ok`. Un error común es no re-lanzar el error si el llamador también necesita manejarlo. `finally` se usa para limpieza (cerrar loaders, liberar recursos)."
 
-**Microtasks (alta prioridad):**
-- Promises (`.then`, `.catch`, `.finally`)
-- `queueMicrotask()`
-- MutationObserver
+---
 
-**Macrotasks (baja prioridad):**
-- `setTimeout`, `setInterval`
-- I/O, eventos del DOM
-- `requestAnimationFrame`
+## 39. ¿Qué son los microtasks y macrotasks?
 
-**Orden de ejecución:**
-1. Código síncrono
-2. TODOS los microtasks
-3. UN macrotask
-4. Repetir
+**Definición profesional:**
+Dos colas del event loop con distinta prioridad. Los microtasks (Promises) se vacían completamente antes de cada macrotask (setTimeout).
 
-**Ejemplo práctico:**
-
-<Code code={`// Macrotasks: setTimeout, setInterval, I/O
-// Microtasks: Promises, queueMicrotask, MutationObserver
-
-console.log('1');
-setTimeout(() => console.log('2'), 0);  // Macrotask
+<Code code={`console.log('1');
+setTimeout(() => console.log('2'), 0);          // Macrotask
 Promise.resolve().then(() => console.log('3')); // Microtask
 console.log('4');
 
-// Salida: 1, 4, 3, 2`} lang="javascript" />
+// Salida: 1, 4, 3, 2
+// Orden: síncrono → microtasks → macrotask`} lang="javascript" title="Microtasks y Macrotasks" />
 
-### 40. ¿Qué es un generator?
+**Cómo responder en entrevista:**
+> "El event loop procesa: primero el código síncrono, luego vacía TODOS los microtasks (Promises, queueMicrotask, MutationObserver), luego un macrotask (setTimeout, setInterval, I/O), y repite. Por eso `Promise.resolve().then()` siempre ejecuta antes que `setTimeout(fn, 0)`. Es clave para entender el orden de ejecución en JS."
 
-**¿Qué es?**
-Función especial que puede pausar y reanudar su ejecución.
+---
 
-**Sintaxis:**
-- Declaración: `function* nombre() { }`
-- Pausar: `yield valor`
-- Reanudar: `gen.next()`
+## 40. ¿Qué es un generator?
 
-**¿Para qué sirve?**
-- Crear iteradores personalizados
-- Generar secuencias infinitas
-- Control de flujo asíncrono (con co/redux-saga)
+**Definición profesional:**
+Función especial `function*` que puede pausar su ejecución con `yield` y reanudarla con `.next()`. Retorna un iterador que consume valores lazy.
 
-**Ejemplo práctico:**
-
-<Code code={`function* generador() {
+<Code code={`function* secuencia() {
   yield 1;
   yield 2;
   yield 3;
 }
 
-const gen = generador();
-console.log(gen.next()); // { value: 1, done: false }
-console.log(gen.next()); // { value: 2, done: false }
-console.log(gen.next()); // { value: 3, done: false }
-console.log(gen.next()); // { value: undefined, done: true }`} lang="javascript" />
+const gen = secuencia();
+gen.next(); // { value: 1, done: false }
+gen.next(); // { value: 2, done: false }
+gen.next(); // { value: 3, done: false }
+gen.next(); // { value: undefined, done: true }
+
+// Secuencia infinita
+function* ids() { let i = 1; while(true) yield i++; }
+const idGen = ids();
+idGen.next().value; // 1`} lang="javascript" title="Generators" />
+
+**Cómo responder en entrevista:**
+> "Los generators pausan con `yield` y reanudan con `.next()`. Son la base de la evaluación lazy: pueden representar secuencias infinitas sin consumir memoria. `redux-saga` los usa para manejar side effects. `async/await` fue inspirado en generators + promises."
 
 ---
 
-## DOM y Eventos (41-50)
+## 41. ¿Cómo seleccionar elementos del DOM?
 
-### 41. ¿Cómo seleccionar elementos del DOM?
+**Definición profesional:**
+API del DOM para obtener referencias a nodos HTML. `querySelector`/`querySelectorAll` son los métodos modernos y flexibles.
 
-**¿Qué es?**
-Métodos para obtener referencias a elementos HTML desde JavaScript.
+<Code code={`// Recomendados - aceptan selectores CSS
+document.querySelector('.clase');           // Primer match
+document.querySelectorAll('div.item');      // NodeList (estática)
 
-**Métodos principales:**
-- **`querySelector()`**: Retorna el PRIMER elemento que coincida (CSS selector)
-- **`querySelectorAll()`**: Retorna TODOS los elementos (NodeList)
-- **`getElementById()`**: Por ID (más rápido)
-- **`getElementsByClassName()`**: Por clase (colección viva)
+// Clásicos - por tipo específico
+document.getElementById('mi-id');          // Más rápido por ID
+document.getElementsByClassName('clase');  // HTMLCollection (viva)`} lang="javascript" title="Selección de elementos DOM" />
 
-**Recomendación:** Preferir `querySelector`/`querySelectorAll` por su flexibilidad.
+**Cómo responder en entrevista:**
+> "Prefiero `querySelector` y `querySelectorAll` por su flexibilidad con selectores CSS. `getElementById` es más rápido para IDs. La diferencia entre `NodeList` (estática, de `querySelectorAll`) y `HTMLCollection` (viva, se actualiza automáticamente) es importante: con HTMLCollection si agrego elementos al DOM, la colección cambia."
 
-**Ejemplo práctico:**
+---
 
-<Code code={`// Por ID
-document.getElementById('id');
-document.querySelector('.clase');
-document.querySelectorAll('div');
-document.getElementsByClassName('clase');
-document.getElementsByTagName('p');`} lang="javascript" />
+## 42. ¿Qué es event bubbling y capturing?
 
-### 42. ¿Qué es event bubbling y capturing?
+**Definición profesional:**
+Dos fases de propagación de eventos en el árbol DOM. Capturing baja de `window` al target; Bubbling sube del target a `window`.
 
-**¿Qué es?**
-Dos fases de propagación de eventos en el DOM.
-
-**Fases:**
-1. **Capturing**: El evento BAJA desde `window` hasta el elemento target
-2. **Target**: El evento llega al elemento clickeado
-3. **Bubbling**: El evento SUBE desde el target hasta `window`
-
-**Por defecto:** Los listeners se ejecutan en fase de bubbling.
-
-**Controlar con tercer parámetro:**
-- `false` o sin parámetro: Bubbling
-- `true`: Capturing
-
-**Ejemplo práctico:**
-
-<Code code={`// Bubbling (por defecto): hijo → padre
-// Capturing: padre → hijo
-
+<Code code={`// Por defecto: bubbling (false o ausente)
+element.addEventListener('click', handler);       // Bubbling
 element.addEventListener('click', handler, false); // Bubbling
 element.addEventListener('click', handler, true);  // Capturing
 
 // Detener propagación
-event.stopPropagation();`} lang="javascript" />
+event.stopPropagation();      // Detiene subida/bajada
+event.stopImmediatePropagation(); // Detiene también otros listeners`} lang="javascript" title="Event bubbling y capturing" />
 
-### 43. ¿Qué es event delegation?
+**Cómo responder en entrevista:**
+> "Los eventos tienen tres fases: capturing (window → target), target y bubbling (target → window). Por defecto los listeners usan bubbling. Capturing se activa con `true` como tercer argumento. `stopPropagation()` detiene la propagación. Event delegation aprovecha el bubbling para manejar eventos de hijos en el padre."
 
-**¿Qué es?**
-Técnica que pone UN solo listener en el padre en vez de muchos en los hijos.
+---
 
-**¿Para qué sirve?**
-- Mejor rendimiento (menos listeners)
-- Funciona con elementos dinámicos (agregados después)
-- Código más limpio
+## 43. ¿Qué es event delegation?
 
-**¿Cómo funciona?**
-Usa bubbling + `e.target` para identificar qué elemento hijo disparó el evento.
+**Definición profesional:**
+Patrón que registra un solo listener en el elemento padre y usa `event.target` para identificar qué hijo disparó el evento. Aprovecha el bubbling.
 
-**Ejemplo práctico:**
-
-<Code code={`// En lugar de agregar listener a cada <li>
+<Code code={`// Un listener para todos los <li>, incluso los agregados después
 document.querySelector('ul').addEventListener('click', (e) => {
-  if (e.target.tagName === 'LI') {
-    console.log('Click en:', e.target.textContent);
+  if (e.target.matches('li.item')) {
+    console.log('Click en:', e.target.dataset.id);
   }
-});`} lang="javascript" />
-
-### 44. ¿Cuál es la diferencia entre preventDefault y stopPropagation?
-
-**¿Qué es?**
-Dos métodos para controlar el comportamiento de eventos.
-
-**Diferencias:**
-
-| Método | Qué hace |
-|--------|----------|
-| `preventDefault()` | Evita la acción por defecto del navegador |
-| `stopPropagation()` | Evita que el evento se propague a otros elementos |
-
-**Ejemplos de acciones por defecto:**
-- Submit de formulario
-- Click en link (navegar)
-- Click derecho (menú contextual)
-
-**Ejemplo práctico:**
-
-<Code code={`// preventDefault - evita comportamiento por defecto
-form.addEventListener('submit', (e) => {
-  e.preventDefault(); // No envía el formulario
 });
 
-// stopPropagation - evita que el evento suba/baje
+// Agregar nuevo elemento - el listener ya lo cubre
+const nuevoItem = document.createElement('li');
+nuevoItem.className = 'item';
+document.querySelector('ul').appendChild(nuevoItem);`} lang="javascript" title="Event delegation" />
+
+**Cómo responder en entrevista:**
+> "Event delegation pone un listener en el padre y usa `event.target` + `matches()` para identificar el hijo. Dos ventajas: mejor rendimiento (1 listener vs N) y maneja elementos dinámicos que aún no existían al registrar el listener. Es el patrón base de los frameworks: React usa un solo listener en el root."
+
+---
+
+## 44. ¿Cuál es la diferencia entre preventDefault y stopPropagation?
+
+**Definición profesional:**
+`preventDefault()` cancela la acción nativa del navegador. `stopPropagation()` cancela la propagación del evento por el árbol DOM. Son independientes.
+
+<Code code={`// preventDefault - cancela la acción del navegador
+form.addEventListener('submit', (e) => {
+  e.preventDefault(); // No envía el form (hace fetch en su lugar)
+});
+
+link.addEventListener('click', (e) => {
+  e.preventDefault(); // No navega a href
+});
+
+// stopPropagation - detiene la propagación
 button.addEventListener('click', (e) => {
-  e.stopPropagation(); // No llega al padre
-});`} lang="javascript" />
+  e.stopPropagation(); // El click no llega al padre
+});`} lang="javascript" title="preventDefault vs stopPropagation" />
 
-### 45. ¿Qué es el localStorage y sessionStorage?
+**Cómo responder en entrevista:**
+> "`preventDefault()` cancela el comportamiento nativo del navegador (navegar, enviar form, menú contextual). `stopPropagation()` detiene la propagación por el DOM. Son independientes: puedo usar uno, otro, ambos o ninguno. `return false` en jQuery hacía ambos, pero en JavaScript nativo solo cancela el handler."
 
-**¿Qué es?**
-APIs para almacenar datos en el navegador del usuario.
+---
 
-**Diferencias:**
+## 45. ¿Qué es el localStorage y sessionStorage?
+
+**Definición profesional:**
+APIs de almacenamiento del navegador. `localStorage` persiste indefinidamente; `sessionStorage` se borra al cerrar la pestaña. Solo almacenan strings.
 
 | | localStorage | sessionStorage |
 |---|--------------|----------------|
-| Persistencia | Hasta borrado manual | Hasta cerrar pestaña |
+| Persistencia | Hasta borrado manual | Cierre de pestaña |
 | Compartido | Entre pestañas | Solo esa pestaña |
-| Capacidad | ~5-10 MB | ~5-10 MB |
 
-**Importante:** Solo almacenan strings. Usar `JSON.stringify()`/`JSON.parse()` para objetos.
+<Code code={`localStorage.setItem('user', JSON.stringify({ nombre: 'Juan' }));
+const user = JSON.parse(localStorage.getItem('user'));
+localStorage.removeItem('user');
 
-**Ejemplo práctico:**
+sessionStorage.setItem('temp', 'datos temporales');
 
-<Code code={`// localStorage - persiste hasta que se borre
-localStorage.setItem('usuario', JSON.stringify({ nombre: 'Juan' }));
-const usuario = JSON.parse(localStorage.getItem('usuario'));
-localStorage.removeItem('usuario');
-localStorage.clear();
+// Escuchar cambios (solo detecta cambios de otras pestañas)
+window.addEventListener('storage', (e) => {
+  console.log('Cambio:', e.key, e.newValue);
+});`} lang="javascript" title="localStorage y sessionStorage" />
 
-// sessionStorage - se borra al cerrar pestaña
-sessionStorage.setItem('temp', 'valor');`} lang="javascript" />
+**Cómo responder en entrevista:**
+> "`localStorage` persiste entre sesiones, `sessionStorage` solo dura la pestaña. Ambos solo almacenan strings: siempre uso `JSON.stringify`/`JSON.parse` para objetos. Para datos sensibles nunca uso localStorage (vulnerable a XSS). Para autenticación prefiero cookies httpOnly. El evento `storage` permite sincronizar entre pestañas."
 
-### 46. ¿Qué es debounce?
+---
 
-**¿Qué es?**
-Técnica que retrasa la ejecución de una función hasta que pase un tiempo sin nuevas llamadas.
+## 46. ¿Qué es debounce?
 
-**¿Para qué sirve?**
-- Búsqueda mientras escribes (esperar a que termine de escribir)
-- Redimensionar ventana (ejecutar al final)
-- Autoguardado
-
-**¿Cómo funciona?**
-Cada llamada reinicia el temporizador. Solo ejecuta cuando "para" de llamar.
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Técnica de optimización que retrasa la ejecución de una función hasta que transcurre un período de inactividad. Cancela y reinicia el timer en cada llamada.
 
 <Code code={`function debounce(func, delay) {
   let timeoutId;
   return function(...args) {
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId); // Cancelar el timer anterior
     timeoutId = setTimeout(() => func.apply(this, args), delay);
   };
 }
 
-// Uso: ejecutar solo después de que el usuario deje de escribir
-const buscar = debounce((query) => {
-  fetch(\`/api/search?q=\${query}\`);
-}, 300);`} lang="javascript" />
+// Búsqueda: espera a que el usuario deje de escribir
+const buscar = debounce((query) => fetch('/api/search?q=' + query), 300);
+input.addEventListener('input', (e) => buscar(e.target.value));`} lang="javascript" title="Debounce" />
 
-### 47. ¿Qué es throttle?
+**Cómo responder en entrevista:**
+> "Debounce retrasa la ejecución hasta que pasa un tiempo sin nuevas llamadas. Cada llamada cancela el timer anterior. Ideal para búsquedas en tiempo real (espera a que termine de escribir) y autoguardado. La diferencia con throttle: debounce ejecuta al final de la ráfaga, throttle ejecuta periódicamente durante la ráfaga."
 
-**¿Qué es?**
-Técnica que limita la ejecución a máximo una vez cada X milisegundos.
+---
 
-**Diferencia con debounce:**
-- **Debounce**: Espera a que "pare" de llamar
-- **Throttle**: Ejecuta cada X ms mientras se llama
+## 47. ¿Qué es throttle?
 
-**¿Para qué sirve?**
-- Scroll infinito (cargar más contenido)
-- Tracking de posición del mouse
-- Eventos de resize
-
-**Ejemplo práctico:**
+**Definición profesional:**
+Técnica que garantiza que una función se ejecute como máximo una vez por intervalo de tiempo, sin importar cuántas veces se llame.
 
 <Code code={`function throttle(func, limit) {
   let inThrottle;
@@ -1268,99 +1057,87 @@ Técnica que limita la ejecución a máximo una vez cada X milisegundos.
   };
 }
 
-// Uso: ejecutar máximo una vez cada X ms
+// Scroll: ejecutar máximo 1 vez cada 100ms
 const handleScroll = throttle(() => {
-  console.log('Scroll');
-}, 100);`} lang="javascript" />
+  checkInfiniteScroll();
+}, 100);
+window.addEventListener('scroll', handleScroll);`} lang="javascript" title="Throttle" />
 
-### 48. ¿Qué es el Fetch API?
+**Cómo responder en entrevista:**
+> "Throttle garantiza ejecución periódica: máximo 1 vez por intervalo. Ideal para scroll infinito, resize de ventana y tracking del ratón donde quieres respuesta continua pero limitada. Debounce ejecuta al final de la actividad; throttle ejecuta regularmente durante la actividad."
 
-**¿Qué es?**
-API moderna para hacer peticiones HTTP desde JavaScript.
+---
 
-**Características:**
-- Basada en Promises (usa async/await)
-- Reemplaza a XMLHttpRequest
-- Más limpia y fácil de usar
+## 48. ¿Qué es el Fetch API?
 
-**Importante:**
-- `fetch()` solo rechaza en errores de red, NO en errores HTTP (404, 500)
-- Verificar `response.ok` para errores HTTP
-
-**Ejemplo práctico:**
+**Definición profesional:**
+API moderna basada en Promises para hacer peticiones HTTP. Reemplaza XMLHttpRequest con una interfaz más limpia y componible.
 
 <Code code={`// GET
 const response = await fetch('/api/users');
+if (!response.ok) throw new Error('HTTP ' + response.status);
 const data = await response.json();
 
-// POST
-const response = await fetch('/api/users', {
+// POST con body
+const res = await fetch('/api/users', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ nombre: 'Juan' })
-});`} lang="javascript" />
+});`} lang="javascript" title="Fetch API" />
 
-### 49. ¿Qué son los módulos en JavaScript?
+**Cómo responder en entrevista:**
+> "`fetch()` retorna una Promise que solo rechaza en errores de red, NO en errores HTTP. Siempre verifico `response.ok` (true para códigos 200-299). Dos `await`: uno para la respuesta y otro para el body (`response.json()`, `response.text()`). Para features avanzadas (interceptors, cancelación) suelo usar axios o `AbortController`."
 
-**¿Qué es?**
-Sistema para dividir código en archivos separados y reutilizables.
+---
 
-**¿Para qué sirve?**
-- Organizar código en archivos lógicos
-- Evitar contaminación del scope global
-- Reutilizar código entre proyectos
+## 49. ¿Qué son los módulos en JavaScript?
 
-**Sintaxis ES6 Modules:**
-- `export`: Exponer funciones/variables
-- `import`: Usar lo exportado
-- `export default`: Exportación principal (una por archivo)
+**Definición profesional:**
+Sistema ES6 nativo para dividir código en archivos con scope propio. Cada módulo tiene su propio scope y debe exportar explícitamente lo que quiere compartir.
 
-**Ejemplo práctico:**
-
-<Code code={`// Exportar
+<Code code={`// calculadora.js - exportar
 export const PI = 3.14159;
 export function sumar(a, b) { return a + b; }
-export default class Calculadora {}
+export default class Calculadora {
+  multiply(a, b) { return a * b; }
+}
 
-// Importar
+// main.js - importar
 import Calculadora, { PI, sumar } from './calculadora.js';
-import * as calc from './calculadora.js';`} lang="javascript" />
+import * as calc from './calculadora.js';
 
-### 50. ¿Qué es el patrón módulo revelador?
+// Dynamic import (lazy loading)
+const modulo = await import('./calculadora.js');`} lang="javascript" title="Módulos ES6" />
 
-**¿Qué es?**
-Patrón de diseño que usa closures para crear encapsulación (variables privadas).
+**Cómo responder en entrevista:**
+> "Los módulos ES6 tienen scope propio: las variables no son globales. `export` named permite múltiples exports; `export default` es uno por archivo. Los módulos se importan de forma estática (tree-shaking posible) o dinámica `import()` (lazy loading). Están disponibles nativamente en browsers modernos y son la base de bundlers como Webpack/Vite."
 
-**¿Para qué sirve?**
-- Ocultar implementación interna
-- Exponer solo una API pública
-- Evitar colisiones de nombres
+---
 
-**¿Cómo funciona?**
-Una IIFE retorna un objeto con los métodos públicos, las variables internas quedan en el closure.
+## 50. ¿Qué es el patrón módulo revelador?
 
-**Nota:** Antes de ES6 modules, era la forma principal de crear módulos.
+**Definición profesional:**
+Patrón de diseño que usa una IIFE con closure para crear variables privadas y retornar solo la API pública. Precursor de los módulos ES6.
 
-**Ejemplo práctico:**
-
-<Code code={`const miModulo = (function() {
-  // Privado
-  let contador = 0;
+<Code code={`const contador = (function() {
+  // Privado - no accesible desde fuera
+  let _count = 0;
+  function _validar(n) { return n >= 0; }
   
-  function incrementarPrivado() {
-    contador++;
-  }
-  
-  // Público (revelado)
+  // Público - API revelada
   return {
-    incrementar: function() {
-      incrementarPrivado();
-    },
-    obtenerValor: function() {
-      return contador;
-    }
+    incrementar() { _count++; },
+    decrementar() { if (_validar(_count - 1)) _count--; },
+    obtener() { return _count; }
   };
-})();`} lang="javascript" />
+})();
+
+contador.incrementar();
+contador.obtener(); // 1
+// contador._count // undefined - privado`} lang="javascript" title="Patrón módulo revelador" />
+
+**Cómo responder en entrevista:**
+> "El Revealing Module Pattern usa IIFE + closure para encapsulación: las variables internas son privadas y solo se expone la API pública en el objeto retornado. Era el estándar antes de ES6 modules. Hoy los módulos ES6 y las clases con campos privados (`#field`) cubren este caso. Aún se ve en código legacy."
 
 ---
 

@@ -1,0 +1,1848 @@
+---
+title: Top 50 Preguntas Completas de TypeScript
+description: Las 50 preguntas más completas para entrevistas de TypeScript de nivel avanzado
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+## Las 50 Preguntas Completas de TypeScript
+
+Cobertura exhaustiva de TypeScript para entrevistas técnicas de nivel avanzado.
+
+---
+
+## 1. ¿Qué es TypeScript y qué ventajas ofrece?
+
+**Definición profesional:**
+TypeScript es un superset tipado de JavaScript que compila a JS estándar, detecta errores en compilación, mejora el tooling y la mantenibilidad de proyectos grandes.
+
+**Cómo responder:**
+> "TypeScript añade tipado estático a JavaScript. Detecta errores antes de ejecutar, mejora el autocompletado del IDE, facilita el refactoring y documenta el código. Al compilar a JS es compatible con cualquier entorno."
+
+---
+
+## 2. ¿Cuáles son los tipos primitivos de TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`let nombre: string = "Ana";
+let edad: number = 30;
+let activo: boolean = true;
+let nulo: null = null;
+let indefinido: undefined = undefined;
+let simbolo: symbol = Symbol("id");
+let grande: bigint = 9007199254740991n;`} lang="typescript" title="Tipos primitivos" />
+
+**Cómo responder:**
+> "Los tipos primitivos son string, number, boolean, null, undefined, symbol y bigint. TypeScript también tiene any, unknown, never y void como tipos especiales."
+
+---
+
+## 3. ¿Qué es la inferencia de tipos?
+
+**Ejemplo práctico:**
+
+<Code code={`// TypeScript infiere el tipo automáticamente
+let x = 42;           // infiere: number
+let y = "texto";      // infiere: string
+let z = [1, 2, 3];   // infiere: number[]
+
+// No necesitas anotar cuando inicializas
+const usuario = { nombre: "Ana", edad: 30 };
+// infiere: { nombre: string; edad: number }
+
+// Sí necesitas anotar cuando no hay valor inicial
+let resultado: string | number;`} lang="typescript" title="Inferencia de tipos" />
+
+**Cómo responder:**
+> "TypeScript infiere tipos cuando inicializas variables. Solo necesito anotaciones explícitas en parámetros de funciones, variables sin inicializar, y casos complejos donde la inferencia no es suficiente."
+
+---
+
+## 4. ¿Qué diferencia hay entre any y unknown?
+
+**Ejemplo práctico:**
+
+<Code code={`// any - desactiva el tipado (peligroso)
+let cualquiera: any = "texto";
+cualquiera = 42;
+cualquiera.metodoInventado(); // ❌ Sin error en compilación, falla en runtime
+
+// unknown - tipo seguro para valores desconocidos
+let valor: unknown = "texto";
+valor = 42;
+// valor.toUpperCase(); // ❌ Error: debes verificar antes
+
+if (typeof valor === "string") {
+    valor.toUpperCase(); // ✅ OK después del narrowing
+}
+
+// Función segura con unknown
+function procesar(dato: unknown): string {
+    if (typeof dato === "string") return dato;
+    if (typeof dato === "number") return dato.toString();
+    return String(dato);
+}`} lang="typescript" title="any vs unknown" />
+
+**Cómo responder:**
+> "any desactiva el sistema de tipos: puedes hacer cualquier cosa sin verificar. unknown es seguro: debes verificar el tipo antes de usarlo. Siempre prefiero unknown sobre any."
+
+---
+
+## 5. ¿Qué es never?
+
+**Ejemplo práctico:**
+
+<Code code={`// never - valor que nunca ocurre
+function lanzarError(mensaje: string): never {
+    throw new Error(mensaje);
+}
+
+function bucleInfinito(): never {
+    while (true) {}
+}
+
+// Uso en exhaustive checks
+type Forma = "circulo" | "cuadrado";
+
+function calcularArea(forma: Forma): number {
+    switch (forma) {
+        case "circulo":  return Math.PI * 5 ** 2;
+        case "cuadrado": return 5 ** 2;
+        default:
+            const _exhaustivo: never = forma; // Error si hay caso no manejado
+            throw new Error(\`Forma no manejada: \${_exhaustivo}\`);
+    }
+}`} lang="typescript" title="El tipo never" />
+
+**Cómo responder:**
+> "never representa valores que nunca ocurren: funciones que lanzan errores o bucles infinitos. Es muy útil para exhaustive checking en switch statements con union types."
+
+---
+
+## 6. ¿Interface vs Type Alias?
+
+**Ejemplo práctico:**
+
+<Code code={`// Interface - para contratos y objetos
+interface Animal {
+    nombre: string;
+    sonido(): string;
+}
+
+interface Perro extends Animal { raza: string; }
+
+// Declaration merging (solo interface)
+interface Animal { edad?: number; } // Se fusiona
+
+// Type - para tipos complejos
+type ID = string | number;
+type Punto = [number, number];
+type Estado = "activo" | "inactivo";
+type AnimalConID = Animal & { id: ID };`} lang="typescript" title="Interface vs Type" />
+
+**Cómo responder:**
+> "Interface para contratos de objetos y clases, type para uniones, tuplas y tipos complejos. Interface soporta declaration merging, type no."
+
+---
+
+## 7. ¿Qué son los Generics?
+
+**Ejemplo práctico:**
+
+<Code code={`// Función genérica
+function wrap<T>(valor: T): { valor: T } {
+    return { valor };
+}
+
+const num = wrap(42);       // { valor: number }
+const str = wrap("hola");   // { valor: string }
+
+// Con restricción
+function max<T extends number | string>(a: T, b: T): T {
+    return a > b ? a : b;
+}
+
+// Múltiples parámetros de tipo
+function zip<A, B>(a: A[], b: B[]): [A, B][] {
+    return a.map((item, i) => [item, b[i]]);
+}`} lang="typescript" title="Generics" />
+
+**Cómo responder:**
+> "Los genéricos permiten reutilizar código con diferentes tipos manteniendo la seguridad. Los uso en funciones utilitarias, interfaces de repositorios y hooks de React."
+
+---
+
+## 8. ¿Qué son los Union Types?
+
+**Ejemplo práctico:**
+
+<Code code={`type Resultado = string | number | boolean;
+
+// Discriminated Union - patrón muy útil
+type Notificacion =
+    | { tipo: "email";    destinatario: string }
+    | { tipo: "sms";      telefono: string }
+    | { tipo: "push";     dispositivo: string };
+
+function enviar(n: Notificacion): void {
+    switch (n.tipo) {
+        case "email": console.log(n.destinatario); break;
+        case "sms":   console.log(n.telefono);     break;
+        case "push":  console.log(n.dispositivo);  break;
+    }
+}`} lang="typescript" title="Union Types" />
+
+**Cómo responder:**
+> "Los Union Types permiten múltiples tipos posibles. Los Discriminated Unions con una propiedad literal son el patrón más potente para modelar variantes."
+
+---
+
+## 9. ¿Qué son los Intersection Types?
+
+**Ejemplo práctico:**
+
+<Code code={`interface TieneFecha  { creadoEn: Date; }
+interface TieneAutor  { autor: string; }
+interface TieneContenido { contenido: string; }
+
+type Publicacion = TieneFecha & TieneAutor & TieneContenido;
+
+const post: Publicacion = {
+    creadoEn: new Date(),
+    autor: "Ana",
+    contenido: "Hola mundo"
+};
+
+// Combinar con type
+type AdminUsuario = { id: number; nombre: string } & { permisos: string[]; nivel: number };`} lang="typescript" title="Intersection Types" />
+
+**Cómo responder:**
+> "Los Intersection Types combinan múltiples tipos en uno solo. El objeto debe cumplir todas las propiedades de todos los tipos combinados."
+
+---
+
+## 10. ¿Qué es Type Narrowing?
+
+**Ejemplo práctico:**
+
+<Code code={`function manejar(valor: string | number | null): string {
+    if (valor === null)            return "nulo";
+    if (typeof valor === "string") return valor.toUpperCase();
+    return valor.toFixed(2);
+}
+
+// Type Guard personalizado
+function esArray<T>(valor: T | T[]): valor is T[] {
+    return Array.isArray(valor);
+}
+
+function procesar<T>(dato: T | T[]): T[] {
+    return esArray(dato) ? dato : [dato];
+}`} lang="typescript" title="Type Narrowing" />
+
+**Cómo responder:**
+> "Narrowing reduce el tipo dentro de condiciones. Uso typeof para primitivos, instanceof para clases, in para propiedades, y Type Guards personalizados con valor is Tipo."
+
+---
+
+## 11. ¿Qué son los Utility Types principales?
+
+**Ejemplo práctico:**
+
+<Code code={`interface Config {
+    host: string;
+    port: number;
+    debug: boolean;
+    timeout: number;
+}
+
+type ConfigParcial  = Partial<Config>;   // Todas opcionales
+type ConfigCompleta = Required<Config>;  // Todas obligatorias
+type ConfigFija     = Readonly<Config>;  // Todas de solo lectura
+type ConfigRed      = Pick<Config, "host" | "port">; // Solo esas
+type ConfigSinDebug = Omit<Config, "debug" | "timeout">; // Sin esas
+
+type Mapeado = Record<string, Config>;
+
+// Tipos de funciones
+type FnRetorno = ReturnType<() => Config>;        // Config
+type FnParams  = Parameters<(c: Config) => void>; // [Config]`} lang="typescript" title="Utility Types" />
+
+**Cómo responder:**
+> "Partial para updates, Pick/Omit para subconjuntos, Readonly para inmutabilidad, Record para diccionarios. ReturnType y Parameters para tipar funciones dinámicamente."
+
+---
+
+## 12. ¿Qué son los Mapped Types?
+
+**Ejemplo práctico:**
+
+<Code code={`// Mapped Type personalizado
+type Mutable<T> = {
+    -readonly [K in keyof T]: T[K]; // Quitar readonly
+};
+
+type Requerido<T> = {
+    [K in keyof T]-?: T[K]; // Quitar opcional (-)
+};
+
+// Transformar valores
+type Promisify<T> = {
+    [K in keyof T]: T[K] extends (...args: infer A) => infer R
+        ? (...args: A) => Promise<R>
+        : T[K];
+};
+
+// Renombrar propiedades con as
+type EventHandlers<T> = {
+    [K in keyof T as \`on\${Capitalize<string & K>}\`]?: (valor: T[K]) => void;
+};`} lang="typescript" title="Mapped Types" />
+
+**Cómo responder:**
+> "Los Mapped Types transforman todos los tipos de un tipo iterando sus claves. Con - se eliminan modificadores como readonly y ?. Con as se renombran las claves."
+
+---
+
+## 13. ¿Qué son los Conditional Types?
+
+**Ejemplo práctico:**
+
+<Code code={`// Condicional básico
+type EsArray<T> = T extends any[] ? true : false;
+type R1 = EsArray<string[]>; // true
+type R2 = EsArray<number>;   // false
+
+// infer - extraer tipo interno
+type ElementoDeArray<T> = T extends (infer E)[] ? E : never;
+type Elem = ElementoDeArray<string[]>; // string
+
+// Distribuye automáticamente sobre uniones
+type SinNulo<T> = T extends null | undefined ? never : T;
+type Solo = SinNulo<string | null | undefined>; // string
+
+// Conditional Type complejo
+type PropsOpcionales<T> = {
+    [K in keyof T as undefined extends T[K] ? K : never]: T[K];
+};`} lang="typescript" title="Conditional Types" />
+
+**Cómo responder:**
+> "Los Conditional Types son ternarios de tipos: T extends U ? X : Y. infer permite capturar tipos en posiciones específicas. Se distribuyen automáticamente sobre uniones."
+
+---
+
+## 14. ¿Qué son los Template Literal Types?
+
+**Ejemplo práctico:**
+
+<Code code={`type Ruta = \`/\${string}\`;
+type API = \`/api/\${string}\`;
+
+// Con uniones
+type Metodo  = "get" | "post" | "put" | "delete";
+type Handler = \`handle\${Capitalize<Metodo>}\`;
+// "handleGet" | "handlePost" | "handlePut" | "handleDelete"
+
+// Extraer partes de un string
+type ExtractParam<T extends string> =
+    T extends \`:\${infer Param}/\${infer Rest}\`
+    ? Param | ExtractParam<Rest>
+    : T extends \`:\${infer Param}\`
+    ? Param
+    : never;
+
+type Params = ExtractParam<":userId/posts/:postId">;
+// "userId" | "postId"`} lang="typescript" title="Template Literal Types" />
+
+**Cómo responder:**
+> "Los Template Literal Types construyen tipos string dinámicamente. Con Capitalize y otras helpers se crean variantes automáticas. Son muy útiles para tipar rutas y eventos."
+
+---
+
+## 15. ¿Cómo funcionan los Decoradores?
+
+**Ejemplo práctico:**
+
+<Code code={`// Decorador de clase: singleton
+function Singleton<T extends { new(...args: any[]): {} }>(constructor: T) {
+    let instancia: T;
+    return class extends constructor {
+        constructor(...args: any[]) {
+            if (instancia) return instancia;
+            super(...args);
+            instancia = this as any;
+        }
+    };
+}
+
+@Singleton
+class BaseDeDatos {
+    conectar() { return "conexión establecida"; }
+}
+
+const db1 = new BaseDeDatos();
+const db2 = new BaseDeDatos();
+console.log(db1 === db2); // true`} lang="typescript" title="Decoradores avanzados" />
+
+**Cómo responder:**
+> "Los decoradores modifican clases y miembros en tiempo de ejecución. Son la base de Angular y NestJS. Requieren experimentalDecorators: true. Los de clase reciben el constructor, los de método reciben el descriptor."
+
+---
+
+## 16. ¿Qué son los keyof y typeof operators?
+
+**Ejemplo práctico:**
+
+<Code code={`interface Persona {
+    nombre: string;
+    edad: number;
+    email: string;
+}
+
+// keyof - unión de claves de un tipo
+type ClavesPersona = keyof Persona; // "nombre" | "edad" | "email"
+
+function obtener<T, K extends keyof T>(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+const persona: Persona = { nombre: "Ana", edad: 30, email: "ana@test.com" };
+const nombre = obtener(persona, "nombre"); // tipo: string ✅
+// obtener(persona, "noExiste"); // ❌ Error en compilación
+
+// typeof - captura el tipo de un valor
+const configDefault = { host: "localhost", port: 3000, ssl: false };
+type Config = typeof configDefault; // { host: string; port: number; ssl: boolean }
+
+// Enum keys
+enum Color { Rojo = "ROJO", Verde = "VERDE" }
+type ClavesColor = keyof typeof Color; // "Rojo" | "Verde"`} lang="typescript" title="keyof y typeof" />
+
+**Cómo responder:**
+> "keyof extrae las claves de un tipo como unión de literales. typeof captura el tipo de un valor en tiempo de compilación. Juntos son muy potentes para funciones genéricas tipadas."
+
+---
+
+## 17. ¿Qué es el tipo infer?
+
+**Ejemplo práctico:**
+
+<Code code={`// infer extrae tipos dentro de conditional types
+type TipoRetorno<T> = T extends (...args: any[]) => infer R ? R : never;
+type TipoParams<T>  = T extends (...args: infer P) => any ? P : never;
+
+async function buscarUsuario(id: number) {
+    return { id, nombre: "Ana", email: "ana@test.com" };
+}
+
+type Usuario  = Awaited<ReturnType<typeof buscarUsuario>>;
+type BuscarParams = TipoParams<typeof buscarUsuario>; // [number]
+
+// Extraer tipo de Promise
+type Resolved<T> = T extends Promise<infer R> ? R : T;
+
+// Extraer tipo del array
+type Item<T> = T extends Array<infer E> ? E : never;
+type StringItem = Item<string[]>; // string
+
+// Extraer tipo de la primera posición de tupla
+type Head<T extends any[]> = T extends [infer H, ...any[]] ? H : never;
+type Primero = Head<[string, number, boolean]>; // string`} lang="typescript" title="infer keyword" />
+
+**Cómo responder:**
+> "infer captura tipos dentro de Conditional Types en posiciones específicas. Lo uso para extraer tipos de retorno de funciones, tipos de elementos de arrays, y tipos resueltos de Promises."
+
+---
+
+## 18. ¿Qué son los Index Signature types?
+
+**Ejemplo práctico:**
+
+<Code code={`// Index Signature
+interface Diccionario {
+    [clave: string]: string;
+}
+
+const traducciones: Diccionario = {
+    hello: "hola",
+    world: "mundo",
+};
+
+// Mixto: propiedades fijas + dinámicas
+interface Config {
+    host: string;   // propiedad fija tipada
+    port: number;
+    [extra: string]: string | number; // el tipo debe ser compatible
+}
+
+// Readonly index signature
+interface ConfigFija {
+    readonly [clave: string]: string;
+}
+
+// Con number como índice
+interface ArrayLike {
+    [indice: number]: string;
+    length: number;
+}`} lang="typescript" title="Index Signatures" />
+
+**Cómo responder:**
+> "Los Index Signatures permiten objetos con claves dinámicas. El tipo del valor debe ser compatible con el de las propiedades fijas. Los uso para diccionarios, configuraciones dinámicas y mapas."
+
+---
+
+## 19. ¿Cómo tipar correctamente funciones y callbacks?
+
+**Ejemplo práctico:**
+
+<Code code={`// Tipo de función
+type Comparador<T> = (a: T, b: T) => number;
+type Predicado<T>  = (valor: T, indice: number) => boolean;
+type Transformar<T, R> = (valor: T) => R;
+
+// Sobrecarga de funciones
+function convertir(valor: string): number;
+function convertir(valor: number): string;
+function convertir(valor: string | number): string | number {
+    return typeof valor === "string" ? Number(valor) : String(valor);
+}
+
+const n = convertir("42");  // tipo: number
+const s = convertir(42);    // tipo: string
+
+// Parámetros variables y opcionales
+function crear<T>(
+    constructor: new (...args: any[]) => T,
+    ...args: ConstructorParameters<typeof constructor>
+): T {
+    return new constructor(...args);
+}`} lang="typescript" title="Tipado de funciones" />
+
+**Cómo responder:**
+> "Tipo las funciones con type alias para reutilizarlos. La sobrecarga permite múltiples firmas. ConstructorParameters extrae los tipos del constructor para fábricas genéricas."
+
+---
+
+## 20. ¿Cómo funcionan las clases en TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`abstract class Repositorio<T extends { id: number }> {
+    protected elementos: Map<number, T> = new Map();
+
+    abstract validar(entidad: T): boolean;
+
+    guardar(entidad: T): T {
+        if (!this.validar(entidad)) throw new Error("Inválido");
+        this.elementos.set(entidad.id, entidad);
+        return entidad;
+    }
+
+    buscarPorId(id: number): T | undefined {
+        return this.elementos.get(id);
+    }
+}
+
+interface Producto { id: number; nombre: string; precio: number; }
+
+class ProductoRepositorio extends Repositorio<Producto> {
+    validar(p: Producto): boolean {
+        return p.nombre.length > 0 && p.precio > 0;
+    }
+}`} lang="typescript" title="Clases en TypeScript" />
+
+**Cómo responder:**
+> "TypeScript añade private/protected/public, readonly, clases abstractas e implementación de interfaces. Las clases genéricas son muy potentes para repositorios y servicios reutilizables."
+
+---
+
+## 21. ¿Qué es el Structural Typing (duck typing)?
+
+**Ejemplo práctico:**
+
+<Code code={`interface Pato {
+    quack(): void;
+    caminar(): void;
+}
+
+class PatoReal {
+    quack() { console.log("Quack!"); }
+    caminar() { console.log("Caminando"); }
+    volar() { console.log("Volando"); } // propiedad extra: OK
+}
+
+class PatoRobot {
+    quack() { console.log("*Quack mecánico*"); }
+    caminar() { console.log("*Caminando robóticamente*"); }
+}
+
+// Ambas clases son asignables a Pato sin implements explícito
+function hacerSonar(pato: Pato): void {
+    pato.quack();
+}
+
+hacerSonar(new PatoReal());  // ✅ Tiene quack() y caminar()
+hacerSonar(new PatoRobot()); // ✅ También`} lang="typescript" title="Structural Typing" />
+
+**Cómo responder:**
+> "TypeScript usa tipado estructural: si un objeto tiene las propiedades requeridas, es compatible con el tipo, aunque no lo implemente explícitamente. Esto es diferente a lenguajes como Java que usan tipado nominal."
+
+---
+
+## 22. ¿Qué son los Readonly y const assertions?
+
+**Ejemplo práctico:**
+
+<Code code={`// Readonly
+const config: Readonly<{ host: string; port: number }> = {
+    host: "localhost",
+    port: 3000
+};
+// config.host = "otro"; // ❌ Error: de solo lectura
+
+// Deep Readonly (no existe en TS, pero se puede construir)
+type DeepReadonly<T> = {
+    readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+
+// const assertion - el valor más específico posible
+const colores = ["rojo", "verde", "azul"] as const;
+// tipo: readonly ["rojo", "verde", "azul"] (no string[])
+
+const config2 = {
+    endpoint: "/api",
+    version: 2,
+    metodos: ["GET", "POST"] as const
+} as const;
+// Todas las propiedades son readonly y con tipos literales
+type Endpoint = typeof config2.endpoint; // "/api" (no string)`} lang="typescript" title="Readonly y const assertions" />
+
+**Cómo responder:**
+> "Readonly marca propiedades de solo lectura. as const convierte valores a sus tipos literales más específicos y readonly. Es muy útil para constantes de configuración que no deben cambiar."
+
+---
+
+## 23. ¿Qué es el Optional Chaining y Nullish Coalescing con tipos?
+
+**Ejemplo práctico:**
+
+<Code code={`interface Empresa {
+    nombre: string;
+    direccion?: {
+        ciudad?: string;
+        pais: string;
+    };
+}
+
+function obtenerCiudad(empresa: Empresa): string {
+    // Optional chaining - acceso seguro a propiedades opcionales
+    return empresa.direccion?.ciudad ?? "Ciudad desconocida";
+}
+
+// Nullish coalescing vs OR
+const nombre = null ?? "default";  // "default" (solo null/undefined)
+const valor  = 0 || "default";    // "default" (cualquier falsy)
+const valor2 = 0 ?? "default";    // 0 (0 no es null ni undefined)
+
+// Non-null assertion
+function procesar(valor: string | null): string {
+    // Úsalo solo cuando sabes con certeza que no es null
+    return valor!.toUpperCase(); // ⚠️ Puede fallar en runtime
+}
+
+// Mejor alternativa
+function procesarSeguro(valor: string | null): string {
+    return valor?.toUpperCase() ?? "";
+}`} lang="typescript" title="Optional Chaining y Nullish Coalescing" />
+
+**Cómo responder:**
+> "Optional chaining ?. evita errores con valores null/undefined. Nullish coalescing ?? proporciona un valor por defecto solo para null/undefined, a diferencia de || que reacciona a cualquier falsy."
+
+---
+
+## 24. ¿Cómo funcionan los módulos en TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// Exportaciones nombradas
+export interface Usuario { id: number; nombre: string; }
+export type ID = string | number;
+export function crearUsuario(nombre: string): Usuario {
+    return { id: Date.now(), nombre };
+}
+
+// Exportación default
+export default class ServicioUsuario {
+    private usuarios: Usuario[] = [];
+    agregar(u: Usuario) { this.usuarios.push(u); }
+}
+
+// Re-exportar
+export { Usuario as User } from "./models";
+export * from "./utils";
+
+// Importar
+import ServicioUsuario, { Usuario, type ID } from "./servicio";
+// "import type" solo importa el tipo (se elimina en compilación)
+import type { Configuracion } from "./config";
+
+// Importación dinámica tipada
+async function cargar() {
+    const modulo = await import("./modulo-pesado");
+    return modulo.default;
+}`} lang="typescript" title="Módulos en TypeScript" />
+
+**Cómo responder:**
+> "TypeScript usa ES Modules. import type importa solo tipos y se elimina en compilación, reduciendo el bundle. Las importaciones dinámicas también están tipadas."
+
+---
+
+## 25. ¿Qué son los Declaration Files y @types?
+
+**Ejemplo práctico:**
+
+<Code code={`// types/mi-libreria.d.ts
+declare module "mi-libreria" {
+    export function procesar(datos: object): string;
+    export interface Opciones {
+        formato: "json" | "xml";
+        encoding?: string;
+    }
+    export default class Cliente {
+        constructor(opciones: Opciones);
+        enviar(datos: object): Promise<string>;
+    }
+}
+
+// Ampliar tipos existentes (Module Augmentation)
+declare module "express" {
+    interface Request {
+        usuario?: { id: number; rol: string };
+    }
+}
+
+// Variables globales
+declare const __APP_VERSION__: string;
+declare function require(id: string): any;`} lang="typescript" title="Declaration Files" />
+
+**Cómo responder:**
+> "Los .d.ts declaran tipos para librerías JS. @types en npm son colecciones de tipos de la comunidad. Module Augmentation permite extender tipos de librerías existentes como Express."
+
+---
+
+## 26. ¿Cómo manejar errores de forma tipada?
+
+**Ejemplo práctico:**
+
+<Code code={`// Resultado tipado (estilo Result/Either)
+type Ok<T>  = { success: true;  value: T };
+type Err<E> = { success: false; error: E };
+type Result<T, E = Error> = Ok<T> | Err<E>;
+
+function dividir(a: number, b: number): Result<number, string> {
+    if (b === 0) return { success: false, error: "División por cero" };
+    return { success: true, value: a / b };
+}
+
+const resultado = dividir(10, 2);
+if (resultado.success) {
+    console.log(resultado.value); // TypeScript: number
+} else {
+    console.error(resultado.error); // TypeScript: string
+}
+
+// Clases de error tipadas
+class ErrorValidacion extends Error {
+    constructor(
+        public campo: string,
+        public codigo: string,
+        mensaje: string
+    ) {
+        super(mensaje);
+        this.name = "ErrorValidacion";
+    }
+}
+
+function manejarError(error: unknown): string {
+    if (error instanceof ErrorValidacion) {
+        return \`Campo \${error.campo}: \${error.message}\`;
+    }
+    if (error instanceof Error) return error.message;
+    return String(error);
+}`} lang="typescript" title="Manejo de errores tipado" />
+
+**Cómo responder:**
+> "Uso el patrón `Result<T, E>` para errores esperados sin excepciones. Para excepciones, creo clases de error con propiedades tipadas. En catch, el error es unknown, así que siempre verifico el tipo antes de usarlo."
+
+---
+
+## 27. ¿Qué son los Mixins en TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// Constructor genérico
+type Constructor<T = {}> = new (...args: any[]) => T;
+
+// Mixin de serialización
+function Serializable<Base extends Constructor>(BaseClass: Base) {
+    return class extends BaseClass {
+        toJSON(): string {
+            return JSON.stringify(this);
+        }
+
+        static fromJSON<T>(this: Constructor<T>, json: string): T {
+            return Object.assign(new this(), JSON.parse(json));
+        }
+    };
+}
+
+// Mixin de timestamps
+function ConTimestamps<Base extends Constructor>(BaseClass: Base) {
+    return class extends BaseClass {
+        creadoEn: Date = new Date();
+        actualizadoEn: Date = new Date();
+
+        tocar() { this.actualizadoEn = new Date(); }
+    };
+}
+
+// Combinar mixins
+class Entidad { constructor(public id: number) {} }
+class Modelo extends Serializable(ConTimestamps(Entidad)) {}
+
+const m = new Modelo(1);
+m.tocar();
+console.log(m.toJSON());`} lang="typescript" title="Mixins" />
+
+**Cómo responder:**
+> "Los Mixins son funciones que añaden funcionalidades a clases sin herencia directa, resolviendo la limitación de herencia simple de TypeScript/JS. Se componen aplicando funciones sucesivamente."
+
+---
+
+## 28. ¿Qué son los Branded Types?
+
+**Ejemplo práctico:**
+
+<Code code={`// Branded Type - crea tipos nominales en TypeScript estructural
+type Marca<T, B> = T & { readonly __marca: B };
+
+type Euros  = Marca<number, "Euros">;
+type Dolares = Marca<number, "Dolares">;
+type UserID  = Marca<number, "UserID">;
+type OrderID = Marca<number, "OrderID">;
+
+function toEuros(valor: number): Euros {
+    return valor as Euros;
+}
+
+function sumarEuros(a: Euros, b: Euros): Euros {
+    return (a + b) as Euros;
+}
+
+const precio = toEuros(100);
+const impuesto = toEuros(21);
+const total = sumarEuros(precio, impuesto); // ✅
+
+// const mezcla = sumarEuros(precio, 50 as Dolares); // ❌ Error tipado
+
+// Evitar mezclar IDs
+function buscarOrden(userId: UserID, orderId: OrderID) { /*...*/ }
+const uid = 1 as UserID;
+const oid = 1 as OrderID;
+buscarOrden(uid, oid); // ✅
+// buscarOrden(oid, uid); // ❌ Los tipos no son intercambiables`} lang="typescript" title="Branded Types" />
+
+**Cómo responder:**
+> "Los Branded Types añaden tipado nominal al sistema estructural de TypeScript, evitando mezclas accidentales de valores del mismo tipo primitivo pero con semántica diferente, como IDs de distintas entidades o unidades de medida."
+
+---
+
+## 29. ¿Cómo usar TypeScript con React?
+
+**Ejemplo práctico:**
+
+<Code code={`import React, { useState, useRef, useCallback } from "react";
+
+// Props tipadas con interface
+interface BotonProps {
+    etiqueta: string;
+    onClick: (evento: React.MouseEvent<HTMLButtonElement>) => void;
+    deshabilitado?: boolean;
+    variante?: "primary" | "secondary" | "danger";
+    children?: React.ReactNode;
+}
+
+// Componente funcional tipado
+const Boton: React.FC<BotonProps> = ({
+    etiqueta,
+    onClick,
+    deshabilitado = false,
+    variante = "primary",
+    children
+}) => (
+    <button
+        onClick={onClick}
+        disabled={deshabilitado}
+        className={\`btn btn-\${variante}\`}
+    >
+        {etiqueta}
+        {children}
+    </button>
+);
+
+// Hooks tipados
+function useContador(inicial: number = 0) {
+    const [cuenta, setCuenta] = useState<number>(inicial);
+    const incrementar = useCallback(() => setCuenta(c => c + 1), []);
+    const decrementar = useCallback(() => setCuenta(c => c - 1), []);
+    return { cuenta, incrementar, decrementar };
+}
+
+// useRef tipado
+const inputRef = useRef<HTMLInputElement>(null);
+// inputRef.current?.focus(); // acceso seguro`} lang="typescript" title="TypeScript con React" />
+
+**Cómo responder:**
+> "En React con TypeScript, tipo las props con interfaces, uso React.FC para componentes funcionales, y tipeo los hooks genéricamente: `useState<T>`, `useRef<T>`. Los eventos tienen tipos específicos como `React.MouseEvent<HTMLButtonElement>`."
+
+---
+
+## 30. ¿Cómo usar TypeScript con Node.js / Express?
+
+**Ejemplo práctico:**
+
+<Code code={`import express, { Request, Response, NextFunction } from "express";
+
+// Extender Request con Module Augmentation
+declare global {
+    namespace Express {
+        interface Request {
+            usuario?: { id: number; email: string; rol: string };
+        }
+    }
+}
+
+// Middleware tipado
+const autenticar = (req: Request, res: Response, next: NextFunction): void => {
+    const token = req.headers.authorization;
+    if (!token) {
+        res.status(401).json({ error: "No autorizado" });
+        return;
+    }
+    req.usuario = { id: 1, email: "test@test.com", rol: "admin" };
+    next();
+};
+
+// Controlador tipado
+interface CrearProductoDTO {
+    nombre: string;
+    precio: number;
+    stock?: number;
+}
+
+const crearProducto = async (
+    req: Request<{}, {}, CrearProductoDTO>,
+    res: Response
+): Promise<void> => {
+    const { nombre, precio } = req.body;
+    res.status(201).json({ id: Date.now(), nombre, precio });
+};
+
+const app = express();
+app.use(express.json());
+app.post("/productos", autenticar, crearProducto);`} lang="typescript" title="TypeScript con Express" />
+
+**Cómo responder:**
+> "Con Express uso @types/express para el tipado. Extiendo la interfaz Request con Module Augmentation para propiedades personalizadas. Los handlers tipan `Request<Params, ResBody, ReqBody, Query>` genéricamente."
+
+---
+
+## 31. ¿Qué son los Abstract Classes?
+
+**Ejemplo práctico:**
+
+<Code code={`abstract class ServicioBase<T extends { id: number }> {
+    // Métodos abstractos que las subclases DEBEN implementar
+    abstract buscarPorId(id: number): Promise<T | null>;
+    abstract guardar(entidad: T): Promise<T>;
+    abstract eliminar(id: number): Promise<void>;
+
+    // Métodos concretos compartidos por todas las subclases
+    async existePorId(id: number): Promise<boolean> {
+        const entidad = await this.buscarPorId(id);
+        return entidad !== null;
+    }
+
+    async actualizarSiExiste(id: number, datos: Partial<T>): Promise<T | null> {
+        const entidad = await this.buscarPorId(id);
+        if (!entidad) return null;
+        return this.guardar({ ...entidad, ...datos });
+    }
+}
+
+interface Categoria { id: number; nombre: string; activa: boolean; }
+
+class CategoriaServicio extends ServicioBase<Categoria> {
+    private db: Categoria[] = [];
+
+    async buscarPorId(id: number) {
+        return this.db.find(c => c.id === id) ?? null;
+    }
+    async guardar(c: Categoria) {
+        this.db.push(c);
+        return c;
+    }
+    async eliminar(id: number) {
+        this.db = this.db.filter(c => c.id !== id);
+    }
+}`} lang="typescript" title="Abstract Classes" />
+
+**Cómo responder:**
+> "Las clases abstractas definen contratos para subclases con métodos abstractos, y pueden tener implementación compartida. No se pueden instanciar directamente. Son ideales para el patrón Template Method."
+
+---
+
+## 32. ¿Qué son los Symbol y unique symbol?
+
+**Ejemplo práctico:**
+
+<Code code={`// Symbol básico
+const id1 = Symbol("id");
+const id2 = Symbol("id");
+console.log(id1 === id2); // false - siempre único
+
+// Tipado con symbol
+function crearToken(): symbol {
+    return Symbol("token");
+}
+
+// unique symbol - tipo literal de symbol
+const TOKEN: unique symbol = Symbol("TOKEN");
+type TokenType = typeof TOKEN;
+
+// Usar como clave de propiedad
+const METADATA: unique symbol = Symbol("metadata");
+
+interface ConMetadata {
+    [METADATA]: { version: number; autor: string };
+    nombre: string;
+}
+
+// Well-known symbols
+class MiIterador {
+    private datos = [1, 2, 3];
+
+    [Symbol.iterator]() {
+        let indice = 0;
+        return {
+            next: () => ({
+                value: this.datos[indice],
+                done: indice++ >= this.datos.length
+            })
+        };
+    }
+}`} lang="typescript" title="Symbols en TypeScript" />
+
+**Cómo responder:**
+> "Los Symbols son valores únicos primitivos. unique symbol es un tipo literal de symbol para claves garantizadas únicas. Se usan como claves privadas de objetos y para implementar protocolos iterables."
+
+---
+
+## 33. ¿Cómo configurar paths y aliases en tsconfig?
+
+**Ejemplo práctico:**
+
+<Code code={`// tsconfig.json
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@models/*":      ["src/models/*"],
+            "@services/*":    ["src/services/*"],
+            "@utils/*":       ["src/utils/*"],
+            "@config":        ["src/config/index.ts"],
+            "@/*":            ["src/*"]
+        }
+    }
+}
+
+// Uso en el código (en vez de ../../../models/usuario)
+import { Usuario } from "@models/usuario";
+import { UsuarioService } from "@services/usuario";
+import { formatearFecha } from "@utils/fecha";
+import config from "@config";
+
+// Para Node.js también necesitas configurar el bundler
+// (webpack, vite, etc.) o usar tsconfig-paths en runtime
+// npm install -D tsconfig-paths
+// ts-node -r tsconfig-paths/register src/index.ts`} lang="typescript" title="Paths y aliases" />
+
+**Cómo responder:**
+> "Los paths en tsconfig permiten aliases de importación. baseUrl define la raíz para resolución de módulos. En Node.js sin bundler necesito tsconfig-paths para que funcionen en runtime."
+
+---
+
+## 34. ¿Qué es el strict mode y qué activa?
+
+**Ejemplo práctico:**
+
+<Code code={`// strict: true activa todas estas opciones:
+{
+    "compilerOptions": {
+        "strict": true,
+        // Equivale a activar:
+        "strictNullChecks": true,       // null/undefined explícitos
+        "noImplicitAny": true,          // Prohibe any implícito
+        "strictFunctionTypes": true,    // Contravarianza en funciones
+        "strictBindCallApply": true,    // Tipos en bind/call/apply
+        "strictPropertyInitialization": true, // Props inicializadas en constructor
+        "noImplicitThis": true,         // this debe estar tipado
+        "alwaysStrict": true,           // "use strict" en JS generado
+        "useUnknownInCatchVariables": true  // catch(e: unknown)
+    }
+}
+
+// Con strictNullChecks:
+function obtenerNombre(id: number): string {
+    const usuario = buscar(id); // puede retornar undefined
+    return usuario?.nombre ?? "Anónimo"; // ✅ manejo explícito
+    // return usuario.nombre; // ❌ Error: posiblemente undefined
+}`} lang="typescript" title="Strict mode" />
+
+**Cómo responder:**
+> "strict: true activa todas las verificaciones de seguridad. La más importante es strictNullChecks que obliga a manejar null/undefined explícitamente. Siempre lo activo en proyectos nuevos."
+
+---
+
+## 35. ¿Cómo hacer Discriminated Unions avanzados?
+
+**Ejemplo práctico:**
+
+<Code code={`// Estado de máquina de estados
+type EstadoMaquina =
+    | { estado: "idle" }
+    | { estado: "cargando"; progreso: number }
+    | { estado: "exitoso"; datos: unknown; timestamp: Date }
+    | { estado: "error"; mensaje: string; codigo: number; reintentable: boolean };
+
+// Tipo helper para acceder a un estado específico
+type ObtenerEstado<T, K extends string> =
+    T extends { estado: K } ? T : never;
+
+type EstadoError = ObtenerEstado<EstadoMaquina, "error">;
+// { estado: "error"; mensaje: string; codigo: number; reintentable: boolean }
+
+// Reducer tipado
+type AccionMaquina =
+    | { tipo: "INICIAR" }
+    | { tipo: "PROGRESO"; valor: number }
+    | { tipo: "EXITO"; datos: unknown }
+    | { tipo: "FALLO"; mensaje: string; codigo: number };
+
+function reducir(estado: EstadoMaquina, accion: AccionMaquina): EstadoMaquina {
+    switch (accion.tipo) {
+        case "INICIAR":   return { estado: "cargando", progreso: 0 };
+        case "PROGRESO":  return { estado: "cargando", progreso: accion.valor };
+        case "EXITO":     return { estado: "exitoso", datos: accion.datos, timestamp: new Date() };
+        case "FALLO":     return { estado: "error", mensaje: accion.mensaje, codigo: accion.codigo, reintentable: accion.codigo >= 500 };
+    }
+}`} lang="typescript" title="Discriminated Unions avanzados" />
+
+**Cómo responder:**
+> "Los Discriminated Unions modelan máquinas de estado con seguridad de tipos completa. Cada estado tiene solo las propiedades relevantes. Los reducers tipados garantizan que todas las acciones estén manejadas."
+
+---
+
+## 36. ¿Qué son los Variadic Tuple Types?
+
+**Ejemplo práctico:**
+
+<Code code={`// Tuplas variádicas (TypeScript 4.0+)
+type StringsYNumero = [...string[], number];
+// Cualquier cantidad de strings seguida de un number
+
+type CabezaYCola<T extends unknown[]> =
+    T extends [infer H, ...infer T] ? [H, T] : never;
+
+type Resultado = CabezaYCola<[string, number, boolean]>;
+// [string, [number, boolean]]
+
+// Concatenar tuplas
+type Concat<T extends unknown[], U extends unknown[]> = [...T, ...U];
+type Triple = Concat<[string, number], [boolean, Date]>;
+// [string, number, boolean, Date]
+
+// Spread en parámetros de función
+function pipe<T extends unknown[], R>(
+    valor: T[0],
+    ...funciones: { [K in keyof T]: (arg: K extends "0" ? T[0] : T[any]) => any }
+): R {
+    return funciones.reduce((acc, fn) => fn(acc), valor) as R;
+}`} lang="typescript" title="Variadic Tuple Types" />
+
+**Cómo responder:**
+> "Los Variadic Tuple Types permiten spreads en tuplas para representar listas de tipos de longitud variable. Son fundamentales para tipar funciones como pipe, compose y curry."
+
+---
+
+## 37. ¿Cómo hacer validación en runtime con TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// TypeScript solo comprueba en compilación, no en runtime
+// Para validar datos externos (APIs, formularios) usa bibliotecas
+
+// Opción 1: zod (muy popular)
+// import { z } from "zod";
+// const UsuarioSchema = z.object({
+//     id: z.number().positive(),
+//     nombre: z.string().min(1).max(100),
+//     email: z.string().email(),
+//     rol: z.enum(["admin", "usuario"])
+// });
+// type Usuario = z.infer<typeof UsuarioSchema>; // Tipo inferido del schema
+
+// Opción 2: Type Guard manual
+interface Usuario {
+    id: number;
+    nombre: string;
+    email: string;
+}
+
+function esUsuario(dato: unknown): dato is Usuario {
+    return (
+        typeof dato === "object" &&
+        dato !== null &&
+        typeof (dato as any).id === "number" &&
+        typeof (dato as any).nombre === "string" &&
+        typeof (dato as any).email === "string"
+    );
+}
+
+async function obtenerUsuario(id: number): Promise<Usuario> {
+    const res = await fetch(\`/api/usuarios/\${id}\`);
+    const dato: unknown = await res.json();
+    if (!esUsuario(dato)) throw new Error("Datos inválidos de la API");
+    return dato; // TypeScript: Usuario (narrowed)
+}`} lang="typescript" title="Validación en runtime" />
+
+**Cómo responder:**
+> "TypeScript solo valida en compilación. Para datos en runtime uso zod que genera tanto el schema de validación como el tipo TypeScript. Para casos simples, creo Type Guards manuales. En APIs REST valido siempre los datos entrantes antes de usarlos."
+
+---
+
+## 38. ¿Qué es el patrón Builder en TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// Builder con tipos que cambian según lo construido
+interface QueryBuilder<T extends object> {
+    select<K extends keyof T>(...campos: K[]): QueryBuilder<Pick<T, K>>;
+    where(condicion: string): this;
+    limit(n: number): this;
+    build(): string;
+}
+
+// Builder tipado paso a paso
+class FormularioBuilder {
+    private campos: Record<string, unknown> = {};
+
+    con<K extends string, V>(clave: K, valor: V): FormularioBuilder & Record<K, V> {
+        (this as any)[clave] = valor;
+        this.campos[clave] = valor;
+        return this as any;
+    }
+
+    construir() {
+        return { ...this.campos };
+    }
+}
+
+// Builder para queries SQL tipado
+class SQL<T extends object = {}> {
+    private partes: string[] = [];
+
+    select(...campos: (keyof T | "*")[]): this {
+        this.partes.push(\`SELECT \${campos.join(", ")}\`);
+        return this;
+    }
+
+    from(tabla: string): this {
+        this.partes.push(\`FROM \${tabla}\`);
+        return this;
+    }
+
+    where(condicion: string): this {
+        this.partes.push(\`WHERE \${condicion}\`);
+        return this;
+    }
+
+    build(): string { return this.partes.join(" "); }
+}
+
+interface Producto { id: number; nombre: string; precio: number; }
+const query = new SQL<Producto>()
+    .select("id", "nombre")
+    .from("productos")
+    .where("precio > 100")
+    .build();`} lang="typescript" title="Patrón Builder" />
+
+**Cómo responder:**
+> "El patrón Builder en TypeScript se beneficia del sistema de tipos para hacer el proceso de construcción tipado y guiado. El tipo puede cambiar en cada paso del builder para reflejar el estado actual."
+
+---
+
+## 39. ¿Cómo funcionan los Iterators y Generators en TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// Iterator tipado
+interface Iterador<T> {
+    next(): { value: T; done: false } | { value: undefined; done: true };
+}
+
+// Generator function tipada
+function* rango(inicio: number, fin: number, paso = 1): Generator<number> {
+    for (let i = inicio; i < fin; i += paso) {
+        yield i;
+    }
+}
+
+for (const num of rango(0, 10, 2)) {
+    console.log(num); // 0, 2, 4, 6, 8
+}
+
+// Async generator
+async function* leerPaginas<T>(
+    fetchPagina: (pagina: number) => Promise<T[]>
+): AsyncGenerator<T> {
+    let pagina = 1;
+    while (true) {
+        const datos = await fetchPagina(pagina++);
+        if (datos.length === 0) break;
+        yield* datos;
+    }
+}
+
+// Uso
+async function procesarTodos() {
+    for await (const item of leerPaginas(paginaNum => fetch(\`/api/items?page=\${paginaNum}\`).then(r => r.json()))) {
+        console.log(item);
+    }
+}`} lang="typescript" title="Iterators y Generators" />
+
+**Cómo responder:**
+> "Los generators en TypeScript se tipan con `Generator<YieldType, ReturnType, NextType>`. Los async generators son muy útiles para paginación y streaming de datos. for await...of consume async generators."
+
+---
+
+## 40. ¿Qué es el patrón Repository con TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// Interfaz genérica del repositorio
+interface IRepositorio<T extends { id: number }> {
+    buscarTodos(): Promise<T[]>;
+    buscarPorId(id: number): Promise<T | null>;
+    crear(datos: Omit<T, "id">): Promise<T>;
+    actualizar(id: number, datos: Partial<Omit<T, "id">>): Promise<T | null>;
+    eliminar(id: number): Promise<boolean>;
+}
+
+interface Producto { id: number; nombre: string; precio: number; activo: boolean; }
+
+// Implementación en memoria (para tests)
+class RepositorioEnMemoria<T extends { id: number }> implements IRepositorio<T> {
+    protected datos: T[] = [];
+    private nextId = 1;
+
+    async buscarTodos(): Promise<T[]> { return [...this.datos]; }
+    async buscarPorId(id: number): Promise<T | null> {
+        return this.datos.find(d => d.id === id) ?? null;
+    }
+    async crear(datos: Omit<T, "id">): Promise<T> {
+        const entidad = { ...datos, id: this.nextId++ } as T;
+        this.datos.push(entidad);
+        return entidad;
+    }
+    async actualizar(id: number, datos: Partial<Omit<T, "id">>): Promise<T | null> {
+        const i = this.datos.findIndex(d => d.id === id);
+        if (i === -1) return null;
+        this.datos[i] = { ...this.datos[i], ...datos };
+        return this.datos[i];
+    }
+    async eliminar(id: number): Promise<boolean> {
+        const antes = this.datos.length;
+        this.datos = this.datos.filter(d => d.id !== id);
+        return this.datos.length < antes;
+    }
+}
+
+class ProductoRepositorio extends RepositorioEnMemoria<Producto> {
+    async buscarActivos(): Promise<Producto[]> {
+        return this.datos.filter(p => p.activo);
+    }
+}`} lang="typescript" title="Patrón Repository" />
+
+**Cómo responder:**
+> "El patrón Repository con genéricos en TypeScript permite implementaciones intercambiables (BD real, en memoria para tests). La interfaz `IRepositorio<T>` define el contrato; las implementaciones solo cambian el mecanismo de persistencia."
+
+---
+
+## 41. ¿Cómo tipar correctamente el estado de Redux?
+
+**Ejemplo práctico:**
+
+<Code code={`// Con Redux Toolkit (recomendado)
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+
+interface Producto { id: number; nombre: string; precio: number; }
+
+interface ProductosState {
+    items: Producto[];
+    cargando: boolean;
+    error: string | null;
+}
+
+const estadoInicial: ProductosState = {
+    items: [],
+    cargando: false,
+    error: null
+};
+
+// Thunk tipado
+const cargarProductos = createAsyncThunk<Producto[], void, { rejectValue: string }>(
+    "productos/cargar",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await fetch("/api/productos");
+            return await res.json();
+        } catch {
+            return rejectWithValue("Error al cargar productos");
+        }
+    }
+);
+
+const productosSlice = createSlice({
+    name: "productos",
+    initialState: estadoInicial,
+    reducers: {
+        agregarProducto(state, action: PayloadAction<Producto>) {
+            state.items.push(action.payload);
+        },
+    },
+    extraReducers: builder => {
+        builder
+            .addCase(cargarProductos.pending, state => { state.cargando = true; })
+            .addCase(cargarProductos.fulfilled, (state, { payload }) => {
+                state.cargando = false;
+                state.items = payload;
+            })
+            .addCase(cargarProductos.rejected, (state, { payload }) => {
+                state.cargando = false;
+                state.error = payload ?? "Error desconocido";
+            });
+    }
+});`} lang="typescript" title="Redux con TypeScript" />
+
+**Cómo responder:**
+> "Redux Toolkit está diseñado para TypeScript. createSlice infiere los tipos de los reducers. `createAsyncThunk<ReturnType, ArgType, ThunkAPI>` tipea los thunks. El estado del store se tipea explícitamente para que useSelector sea completamente seguro."
+
+---
+
+## 42. ¿Qué son los Proxy Types y cómo usarlos?
+
+**Ejemplo práctico:**
+
+<Code code={`// Crear un proxy tipado
+function crearProxy<T extends object>(objetivo: T): T {
+    return new Proxy(objetivo, {
+        get(target, propiedad: string | symbol) {
+            console.log(\`Accediendo a: \${String(propiedad)}\`);
+            return Reflect.get(target, propiedad);
+        },
+        set(target, propiedad: string | symbol, valor) {
+            console.log(\`Modificando: \${String(propiedad)} = \${valor}\`);
+            return Reflect.set(target, propiedad, valor);
+        }
+    });
+}
+
+interface Configuracion { host: string; port: number; }
+const config = crearProxy<Configuracion>({ host: "localhost", port: 3000 });
+config.host = "produccion.com"; // Log: "Modificando: host = produccion.com"
+
+// Proxy para validación tipada
+function conValidacion<T extends object>(
+    obj: T,
+    validadores: Partial<{ [K in keyof T]: (v: T[K]) => boolean }>
+): T {
+    return new Proxy(obj, {
+        set(target, prop, valor) {
+            const validar = validadores[prop as keyof T];
+            if (validar && !validar(valor)) {
+                throw new Error(\`Valor inválido para \${String(prop)}\`);
+            }
+            return Reflect.set(target, prop, valor);
+        }
+    });
+}`} lang="typescript" title="Proxy con TypeScript" />
+
+**Cómo responder:**
+> "Los Proxy en TypeScript se tipan con el tipo del objeto objetivo para mantener la seguridad de tipos. Son útiles para logging, validación, caching y observabilidad de objetos."
+
+---
+
+## 43. ¿Cómo usar TypeScript con bases de datos (TypeORM/Prisma)?
+
+**Ejemplo práctico:**
+
+<Code code={`// TypeORM
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
+
+@Entity("productos")
+export class ProductoEntity {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({ length: 200 })
+    nombre: string;
+
+    @Column("decimal", { precision: 10, scale: 2 })
+    precio: number;
+
+    @Column({ default: true })
+    activo: boolean;
+
+    @CreateDateColumn()
+    creadoEn: Date;
+}
+
+// Prisma - schema genera tipos automáticamente
+// En schema.prisma:
+// model Producto {
+//   id     Int     @id @default(autoincrement())
+//   nombre String
+//   precio Float
+//   activo Boolean @default(true)
+// }
+
+// El cliente Prisma genera tipos inferidos:
+// import { PrismaClient, Producto } from "@prisma/client";
+// const prisma = new PrismaClient();
+// const producto: Producto = await prisma.producto.findUnique({ where: { id: 1 } });`} lang="typescript" title="TypeScript con ORMs" />
+
+**Cómo responder:**
+> "TypeORM usa decoradores para mapear clases a tablas. Prisma genera tipos TypeScript automáticamente desde el schema, con mejor DX. Ambos integran perfectamente con TypeScript strict."
+
+---
+
+## 44. ¿Qué son los Weak Types y Exact Types?
+
+**Ejemplo práctico:**
+
+<Code code={`// TypeScript no soporta Exact Types nativamente
+// pero hay patrones para simularlo
+
+// Problema: TypeScript permite propiedades extra en algunas situaciones
+interface Punto { x: number; y: number; }
+
+const p: Punto = { x: 1, y: 2, z: 3 }; // ❌ Error en asignación directa
+const obj = { x: 1, y: 2, z: 3 };
+const p2: Punto = obj; // ✅ No error (excess property check no aplica)
+
+// Simular Exact Types con mapped types
+type ExactoType<T, Forma extends T> = Forma extends T
+    ? Exclude<keyof Forma, keyof T> extends never
+    ? Forma
+    : never
+    : never;
+
+// Weak Types - objetos donde todas las propiedades son opcionales
+interface Opciones {
+    timeout?: number;
+    reintentos?: number;
+    verbose?: boolean;
+}
+
+// TypeScript advierte si ninguna propiedad coincide con el tipo débil
+function configurar(opciones: Opciones): void { /* ... */ }
+// configurar({ timeOut: 1000 }); // ⚠️ "timeOut" no existe en Opciones`} lang="typescript" title="Weak Types" />
+
+**Cómo responder:**
+> "TypeScript no tiene Exact Types nativos, pero el excess property checking en asignaciones directas previene propiedades extra. Para Weak Types (todos los campos opcionales), TypeScript advierte cuando ninguna propiedad coincide."
+
+---
+
+## 45. ¿Cómo hacer testing con TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// Jest con TypeScript (usando ts-jest o vitest)
+import { describe, it, expect, vi } from "vitest";
+
+// Tipo del servicio
+interface ServicioEmail {
+    enviar(destinatario: string, asunto: string, cuerpo: string): Promise<void>;
+}
+
+class NotificacionServicio {
+    constructor(private emailServicio: ServicioEmail) {}
+
+    async notificarRegistro(email: string, nombre: string): Promise<void> {
+        await this.emailServicio.enviar(
+            email,
+            "Bienvenido",
+            \`Hola \${nombre}, tu cuenta fue creada.\`
+        );
+    }
+}
+
+describe("NotificacionServicio", () => {
+    it("debe enviar email de bienvenida", async () => {
+        // Mock tipado
+        const mockEmail: ServicioEmail = {
+            enviar: vi.fn().mockResolvedValue(undefined)
+        };
+
+        const servicio = new NotificacionServicio(mockEmail);
+        await servicio.notificarRegistro("ana@test.com", "Ana");
+
+        expect(mockEmail.enviar).toHaveBeenCalledWith(
+            "ana@test.com",
+            "Bienvenido",
+            "Hola Ana, tu cuenta fue creada."
+        );
+    });
+});`} lang="typescript" title="Testing con TypeScript" />
+
+**Cómo responder:**
+> "Uso Vitest o Jest con ts-jest para testing en TypeScript. Los mocks se crean implementando la interfaz para máxima seguridad de tipos. vi.fn() está tipado genéricamente para callbacks. La DI facilita el testing con mocks."
+
+---
+
+## 46. ¿Qué es el satisfies operator?
+
+**Ejemplo práctico:**
+
+<Code code={`// satisfies (TypeScript 4.9+)
+// Verifica que el tipo sea correcto SIN perder la inferencia del tipo literal
+
+// Problema con anotación directa:
+const paleta: Record<string, string | number[]> = {
+    rojo: "#ff0000",
+    verde: [0, 255, 0]
+};
+// paleta.rojo.toUpperCase(); // ❌ Error: puede ser number[]
+
+// Con satisfies - mantiene el tipo inferido
+const paleta2 = {
+    rojo: "#ff0000",
+    verde: [0, 255, 0]
+} satisfies Record<string, string | number[]>;
+
+paleta2.rojo.toUpperCase(); // ✅ TypeScript sabe que es string
+paleta2.verde.map(n => n * 2); // ✅ TypeScript sabe que es number[]
+
+// Otro caso: configuración tipada sin perder literales
+const rutas = {
+    inicio:    "/",
+    usuarios:  "/usuarios",
+    productos: "/productos"
+} satisfies Record<string, \`/\${string}\`>;
+
+type RutaInicio = typeof rutas.inicio; // "/" (no string)`} lang="typescript" title="satisfies operator" />
+
+**Cómo responder:**
+> "satisfies verifica que el valor cumple un tipo sin perder la inferencia del tipo específico. Es la solución al dilema entre verificación de tipo y mantener tipos literales. Introducido en TypeScript 4.9."
+
+---
+
+## 47. ¿Qué son los Accessor decorators y Auto-accessors?
+
+**Ejemplo práctico:**
+
+<Code code={`// Auto-accessor (TypeScript 4.9+)
+class Persona {
+    accessor nombre: string; // Genera get/set automáticamente
+    accessor edad: number;
+
+    constructor(nombre: string, edad: number) {
+        this.nombre = nombre;
+        this.edad = edad;
+    }
+}
+
+// Decorator para accessor
+function Validar(minLength: number) {
+    return function(target: ClassAccessorDecoratorTarget<any, string>,
+                   context: ClassAccessorDecoratorContext) {
+        return {
+            get(this: any): string {
+                return target.get.call(this);
+            },
+            set(this: any, valor: string): void {
+                if (valor.length < minLength) {
+                    throw new Error(\`Mínimo \${minLength} caracteres\`);
+                }
+                target.set.call(this, valor);
+            }
+        };
+    };
+}
+
+class Usuario {
+    @Validar(3)
+    accessor nombre: string = "";
+}`} lang="typescript" title="Auto-accessors" />
+
+**Cómo responder:**
+> "Los auto-accessors con accessor generan automáticamente getters y setters para propiedades de clase. Los accessor decorators permiten interceptar get/set de forma tipada, disponibles en TypeScript 4.9 con la nueva API de decoradores."
+
+---
+
+## 48. ¿Cómo optimizar el rendimiento de compilación de TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// tsconfig.json optimizado para proyectos grandes
+{
+    "compilerOptions": {
+        // Compilación incremental
+        "incremental": true,
+        "tsBuildInfoFile": ".tsbuildinfo",
+
+        // Saltar verificación de librerías (mejora velocidad)
+        "skipLibCheck": true,
+
+        // Para proyectos monorepo con Project References
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true
+    }
+}
+
+// tsconfig.references.json para monorepo
+// {
+//   "references": [
+//     { "path": "./packages/core" },
+//     { "path": "./packages/ui" },
+//     { "path": "./packages/api" }
+//   ]
+// }
+
+// Aislated Modules (para bundlers como Vite/esbuild)
+// "isolatedModules": true  // Cada archivo se compila independientemente
+
+// Herramientas de compilación rápida:
+// - esbuild (no chequea tipos, solo transpila)
+// - swc (alternativa a Babel, muy rápido)
+// - tsc --noEmit (solo verificar tipos, sin generar JS)`} lang="typescript" title="Optimización de compilación" />
+
+**Cómo responder:**
+> "Para proyectos grandes uso incremental: true para cachear builds previos. skipLibCheck evita re-verificar librerías. Project References en monorepos mejoran el build incremental. En desarrollo con Vite o esbuild, la transpilación es instantánea porque no chequean tipos."
+
+---
+
+## 49. ¿Cómo migrar un proyecto de JavaScript a TypeScript?
+
+**Ejemplo práctico:**
+
+<Code code={`// Fase 1: Configuración permisiva para empezar
+// tsconfig.json inicial
+{
+    "compilerOptions": {
+        "allowJs": true,           // Permite .js junto a .ts
+        "checkJs": false,          // No verificar .js aún
+        "noImplicitAny": false,    // Permite any implícito
+        "strict": false,           // Sin reglas estrictas al inicio
+        "outDir": "dist"
+    }
+}
+
+// Fase 2: Renombrar archivos uno a uno de .js a .ts
+// y añadir tipos básicos
+
+// archivo-js-original.js (antes)
+// function calcular(a, b, operacion) {
+//     if (operacion === "suma") return a + b;
+//     return a - b;
+// }
+
+// archivo-ts-migrado.ts (después, fase 2)
+// function calcular(a: number, b: number, operacion: "suma" | "resta"): number {
+//     ...
+// }
+
+// Fase 3: Activar strict gradualmente
+// "noImplicitAny": true
+// "strictNullChecks": true
+// ...hasta llegar a "strict": true
+
+// Usa @ts-ignore temporalmente para bloques difíciles
+// @ts-ignore
+// const resultado = funcionLegadySinTipar(datos);
+
+// Mejor: @ts-expect-error (error si no hay error - auto-limpieza)
+// @ts-expect-error
+// const resultado = funcionLegadySinTipar(datos);`} lang="typescript" title="Migración JS a TS" />
+
+**Cómo responder:**
+> "La migración gradual empieza con allowJs: true y strict: false. Renombro archivos de .js a .ts uno por uno añadiendo tipos básicos. Incrementalmente activo opciones de strict. @ts-ignore es temporal; @ts-expect-error es mejor porque avisa cuando ya no es necesario."
+
+---
+
+## 50. ¿Cuáles son las mejores prácticas de TypeScript en producción?
+
+**Ejemplo práctico:**
+
+<Code code={`// ✅ Buenas prácticas de TypeScript en producción
+
+// 1. Siempre strict: true
+// 2. Preferir unknown sobre any
+// 3. Tipos explícitos en APIs públicas
+export interface ServicioUsuario {
+    buscar(id: number): Promise<Usuario | null>;
+    crear(datos: CrearUsuarioDTO): Promise<Usuario>;
+}
+
+// 4. Usar type para uniones, interface para objetos
+type EstadoCarga = "idle" | "cargando" | "exito" | "error";
+interface UsuarioDTO { nombre: string; email: string; }
+
+// 5. Readonly para datos inmutables
+function procesar(config: Readonly<Configuracion>): void { /*...*/ }
+
+// 6. Const assertions para configuraciones
+const RUTAS = {
+    INICIO: "/",
+    LOGIN: "/auth/login",
+    DASHBOARD: "/dashboard"
+} as const;
+
+// 7. Zod u otra librería para validación en runtime
+// const Schema = z.object({ ... });
+
+// 8. Separar tipos en archivos .d.ts o types/
+// 9. Usar Path Aliases para imports limpios
+// import { Usuario } from "@models/usuario";
+
+// 10. Documentar con JSDoc cuando el tipo no es suficientemente claro
+/**
+ * Busca usuario por email.
+ * @throws {NotFoundError} Si el usuario no existe
+ */
+async function buscarPorEmail(email: string): Promise<Usuario> {
+    /* ... */
+    return {} as Usuario;
+}`} lang="typescript" title="Mejores prácticas en producción" />
+
+**Cómo responder:**
+> "Las mejores prácticas: strict: true siempre, unknown sobre any, interfaces para objetos públicos, const assertions para constantes, y validación en runtime con zod. Organizo los tipos en carpetas dedicadas, uso path aliases para imports limpios, y valido todos los datos externos antes de confiar en ellos."
+
+---
+
+<Aside type="tip" title="Consejo para entrevistas de nivel avanzado">
+Para destacar en entrevistas avanzadas de TypeScript, domina los Conditional Types con infer, los Mapped Types con remapping (as), los Template Literal Types, y los Branded Types. Demuestra que entiendes el sistema de tipos estructural de TypeScript y cómo construir abstracciones de tipos robustas. La capacidad de crear Utility Types personalizados es señal de dominio experto.
+</Aside>

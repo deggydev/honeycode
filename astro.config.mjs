@@ -81,6 +81,15 @@ export default defineConfig({
 								{ label: 'Top 100 Preguntas Completas', link: '/entrevistas/spring/top-100/' },
 							]
 						},
+						{
+							label: 'TypeScript',
+							collapsed: true,
+							items: [
+								{ label: 'Top 10 Preguntas Esenciales', link: '/entrevistas/typescript/top-10/' },
+								{ label: 'Top 20 Preguntas Frecuentes', link: '/entrevistas/typescript/top-20/' },
+								{ label: 'Top 50 Preguntas Completas', link: '/entrevistas/typescript/top-50/' },
+							]
+						},
 					]
 				},
 
