@@ -1,0 +1,428 @@
+---
+title: NPM - Guía Esencial
+description: Todo lo que necesitas saber sobre NPM, el gestor de paquetes de Node.js
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+## 📦 1. ¿Qué es NPM?
+
+### Concepto
+
+**NPM** (Node Package Manager) es el gestor de paquetes predeterminado de Node.js. Permite instalar, compartir y gestionar dependencias de proyectos JavaScript.
+
+### Componentes principales
+
+| Componente | Descripción |
+|------------|-------------|
+| **CLI** | Herramienta de línea de comandos para interactuar con paquetes |
+| **Registry** | Base de datos pública con millones de paquetes |
+| **package.json** | Archivo que define las dependencias y scripts del proyecto |
+| **node_modules** | Carpeta donde se instalan los paquetes |
+
+### ¿Por qué usar NPM?
+
+- **Reutilización de código**: Acceso a millones de paquetes listos para usar
+- **Gestión de versiones**: Control preciso de las versiones de dependencias
+- **Scripts automatizados**: Ejecutar tareas comunes con comandos simples
+- **Compartir código**: Publicar tus propios paquetes
+
+---
+
+## 🚀 2. Instalación y Configuración
+
+### Verificar instalación
+
+NPM viene incluido con Node.js. Para verificar que está instalado:
+
+<Code code={`# Verificar versión de Node.js
+node --version
+# v20.10.0
+
+# Verificar versión de NPM
+npm --version
+# 10.2.3`} lang="bash" title="Verificar instalación" />
+
+### Actualizar NPM
+
+<Code code={`# Actualizar NPM a la última versión
+npm install -g npm@latest
+
+# Verificar la nueva versión
+npm --version`} lang="bash" title="Actualizar NPM" />
+
+### Configuración inicial
+
+<Code code={`# Ver configuración actual
+npm config list
+
+# Configurar autor por defecto para nuevos proyectos
+npm config set init-author-name "Tu Nombre"
+npm config set init-author-email "tu@email.com"
+
+# Configurar registro (registry) personalizado
+npm config set registry https://registry.npmjs.org/`} lang="bash" title="Configuración" />
+
+---
+
+## 📁 3. Inicializar un Proyecto
+
+### Crear package.json
+
+El archivo `package.json` es el corazón de cualquier proyecto Node.js.
+
+<Code code={`# Crear package.json con asistente interactivo
+npm init
+
+# Crear package.json con valores por defecto (más rápido)
+npm init -y`} lang="bash" title="Inicializar proyecto" />
+
+### Estructura del package.json
+
+<Code code={`{
+  "name": "mi-proyecto",
+  "version": "1.0.0",
+  "description": "Descripción del proyecto",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "build": "webpack --mode production"
+  },
+  "keywords": ["nodejs", "ejemplo"],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}`} lang="json" title="package.json" />
+
+### Campos importantes
+
+| Campo | Descripción |
+|-------|-------------|
+| `name` | Nombre único del paquete |
+| `version` | Versión semántica (MAJOR.MINOR.PATCH) |
+| `scripts` | Comandos ejecutables con `npm run` |
+| `dependencies` | Paquetes necesarios en producción |
+| `devDependencies` | Paquetes solo para desarrollo |
+
+---
+
+## 📥 4. Instalar Paquetes
+
+### Tipos de instalación
+
+| Comando | Descripción | Uso |
+|---------|-------------|-----|
+| `npm install paquete` | Dependencia de producción | Código que tu app necesita |
+| `npm install -D paquete` | Dependencia de desarrollo | Herramientas de desarrollo |
+| `npm install -g paquete` | Instalación global | CLIs y herramientas del sistema |
+
+### Ejemplos de instalación
+
+<Code code={`# Instalar una dependencia de producción
+npm install express
+
+# Instalar múltiples paquetes
+npm install express mongoose dotenv
+
+# Instalar como dependencia de desarrollo
+npm install -D nodemon jest eslint
+
+# Instalar globalmente (disponible en todo el sistema)
+npm install -g typescript
+
+# Instalar versión específica
+npm install express@4.18.2
+
+# Instalar última versión de una major version
+npm install express@4`} lang="bash" title="Instalar paquetes" />
+
+### Instalar todas las dependencias
+
+<Code code={`# Instalar todas las dependencias del package.json
+npm install
+
+# Atajo
+npm i
+
+# Solo dependencias de producción (para deploy)
+npm install --production
+# o
+npm install --omit=dev`} lang="bash" title="Instalar dependencias" />
+
+<Aside type="tip" title="💡 Tip">
+Usa `npm i` como atajo de `npm install`. Ahorra tiempo en el día a día.
+</Aside>
+
+---
+
+## 🗑️ 5. Desinstalar y Actualizar Paquetes
+
+### Desinstalar paquetes
+
+<Code code={`# Desinstalar un paquete
+npm uninstall express
+
+# Desinstalar múltiples paquetes
+npm uninstall express mongoose
+
+# Desinstalar paquete global
+npm uninstall -g typescript`} lang="bash" title="Desinstalar" />
+
+### Actualizar paquetes
+
+<Code code={`# Ver paquetes desactualizados
+npm outdated
+
+# Actualizar un paquete específico
+npm update express
+
+# Actualizar todos los paquetes
+npm update
+
+# Actualizar a la última versión (puede romper compatibilidad)
+npm install express@latest`} lang="bash" title="Actualizar" />
+
+---
+
+## 📜 6. Scripts de NPM
+
+### Definir scripts
+
+Los scripts permiten automatizar tareas comunes del proyecto.
+
+<Code code={`{
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "tsc && node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/"
+  }
+}`} lang="json" title="Scripts en package.json" />
+
+### Ejecutar scripts
+
+<Code code={`# Ejecutar script
+npm run dev
+npm run build
+npm run test
+
+# Scripts especiales (no necesitan 'run')
+npm start    # equivale a npm run start
+npm test     # equivale a npm run test
+
+# Ver todos los scripts disponibles
+npm run`} lang="bash" title="Ejecutar scripts" />
+
+### Scripts con argumentos
+
+<Code code={`# Pasar argumentos a un script
+npm run test -- --coverage
+npm run build -- --watch
+
+# El -- separa los argumentos de npm de los del script`} lang="bash" title="Scripts con argumentos" />
+
+---
+
+## 🎨 7. Crear Proyectos con Frameworks
+
+### Usando npm create / npx
+
+Usa `npm create` o `npx` para iniciar proyectos con frameworks populares:
+
+<Code code={`# React (con Vite - recomendado)
+npm create vite@latest mi-app-react -- --template react
+npm create vite@latest mi-app-react-ts -- --template react-ts
+
+# Vue
+npm create vue@latest mi-app-vue
+
+# Next.js
+npx create-next-app@latest mi-app-next
+
+# Nuxt
+npx nuxi init mi-app-nuxt
+
+# Astro
+npm create astro@latest
+
+# SvelteKit
+npm create svelte@latest mi-app-svelte
+
+# Angular
+npx @angular/cli new mi-app-angular
+
+# Express (API básica)
+npx express-generator mi-api
+
+# Create React App (legacy, preferir Vite)
+npx create-react-app mi-app`} lang="bash" title="Crear proyectos" />
+
+<Aside type="tip" title="💡 Tip">
+`npm create nombre` es equivalente a `npx create-nombre`. Ambos descargan y ejecutan el paquete sin instalarlo permanentemente.
+</Aside>
+
+---
+
+## 🔍 8. Buscar e Inspeccionar Paquetes
+
+### Buscar paquetes
+
+<Code code={`# Buscar paquetes en el registry
+npm search express
+
+# Ver información de un paquete
+npm info express
+
+# Ver todas las versiones disponibles
+npm view express versions
+
+# Ver la última versión
+npm view express version`} lang="bash" title="Buscar paquetes" />
+
+### Inspeccionar dependencias
+
+<Code code={`# Ver árbol de dependencias
+npm list
+
+# Ver solo dependencias directas
+npm list --depth=0
+
+# Ver dependencias de producción
+npm list --prod
+
+# Ver dónde está instalado un paquete global
+npm list -g --depth=0`} lang="bash" title="Inspeccionar" />
+
+---
+
+## 🔒 9. package-lock.json
+
+### ¿Qué es?
+
+El `package-lock.json` registra las versiones exactas de todas las dependencias instaladas, garantizando instalaciones reproducibles.
+
+### Características
+
+| Aspecto | Descripción |
+|---------|-------------|
+| **Versiones exactas** | Guarda la versión específica de cada paquete |
+| **Árbol completo** | Incluye dependencias de dependencias |
+| **Integridad** | Hash SHA para verificar paquetes |
+| **Reproducibilidad** | Mismas versiones en cualquier máquina |
+
+### Buenas prácticas
+
+<Code code={`# SIEMPRE incluir en control de versiones
+git add package-lock.json
+
+# Para instalaciones limpias y reproducibles
+npm ci
+
+# npm ci vs npm install:
+# - npm ci: Borra node_modules, instala exactamente lo del lock
+# - npm install: Puede actualizar el lock si hay cambios`} lang="bash" title="package-lock.json" />
+
+<Aside type="caution" title="⚠️ Importante">
+Nunca borres `package-lock.json` manualmente. Si tienes problemas, usa `npm ci` para una instalación limpia.
+</Aside>
+
+---
+
+## 🧹 10. Limpiar y Solucionar Problemas
+
+### Limpiar caché
+
+<Code code={`# Ver información del caché
+npm cache ls
+
+# Limpiar caché (forzado)
+npm cache clean --force
+
+# Verificar integridad del caché
+npm cache verify`} lang="bash" title="Caché" />
+
+### Solucionar problemas comunes
+
+<Code code={`# Reinstalar todas las dependencias
+rm -rf node_modules
+npm install
+
+# Instalación limpia (mejor opción)
+npm ci
+
+# Verificar problemas de seguridad
+npm audit
+
+# Corregir vulnerabilidades automáticamente
+npm audit fix
+
+# Corregir vulnerabilidades (incluso con breaking changes)
+npm audit fix --force`} lang="bash" title="Solucionar problemas" />
+
+---
+
+## 📊 11. Versionado Semántico
+
+### Formato de versiones
+
+NPM usa **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`
+
+| Parte | Cuándo incrementar | Ejemplo |
+|-------|-------------------|---------|
+| **MAJOR** | Cambios incompatibles (breaking changes) | 1.0.0 → 2.0.0 |
+| **MINOR** | Nueva funcionalidad compatible | 1.0.0 → 1.1.0 |
+| **PATCH** | Corrección de bugs | 1.0.0 → 1.0.1 |
+
+### Rangos de versiones
+
+| Símbolo | Significado | Ejemplo | Acepta |
+|---------|-------------|---------|--------|
+| `^` | Compatible con minor | `^1.2.3` | `1.2.3` a `<2.0.0` |
+| `~` | Compatible con patch | `~1.2.3` | `1.2.3` a `<1.3.0` |
+| `*` | Cualquier versión | `*` | Todas |
+| `>=` | Mayor o igual | `>=1.2.3` | 1.2.3 en adelante |
+| Exacta | Versión específica | `1.2.3` | Solo `1.2.3` |
+
+<Code code={`{
+  "dependencies": {
+    "express": "^4.18.2",    // 4.18.2 a <5.0.0
+    "lodash": "~4.17.21",    // 4.17.21 a <4.18.0
+    "moment": "2.29.4",      // Exactamente 2.29.4
+    "axios": ">=1.0.0"       // 1.0.0 o superior
+  }
+}`} lang="json" title="Rangos de versiones" />
+
+---
+
+## 📋 Comandos Esenciales - Resumen
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm init -y` | Crear proyecto nuevo |
+| `npm install` | Instalar dependencias |
+| `npm install paquete` | Instalar paquete |
+| `npm install -D paquete` | Instalar como dev dependency |
+| `npm install -g paquete` | Instalar globalmente |
+| `npm uninstall paquete` | Desinstalar paquete |
+| `npm update` | Actualizar paquetes |
+| `npm run script` | Ejecutar script |
+| `npm list --depth=0` | Ver dependencias instaladas |
+| `npm outdated` | Ver paquetes desactualizados |
+| `npm audit` | Verificar vulnerabilidades |
+| `npm ci` | Instalación limpia |
+
+<Aside type="tip" title="🎯 Siguiente paso">
+Aprende sobre PNPM, una alternativa más rápida y eficiente a NPM que ahorra espacio en disco.
+</Aside>

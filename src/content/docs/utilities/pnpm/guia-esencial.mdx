@@ -1,0 +1,471 @@
+---
+title: PNPM - Guía Esencial
+description: Todo lo que necesitas saber sobre PNPM, el gestor de paquetes rápido y eficiente
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+## 📦 1. ¿Qué es PNPM?
+
+### Concepto
+
+**PNPM** (Performant NPM) es un gestor de paquetes alternativo a NPM que destaca por su velocidad y eficiencia en el uso de espacio en disco.
+
+### Características principales
+
+| Característica | Descripción |
+|----------------|-------------|
+| **Almacén global** | Los paquetes se guardan una sola vez en disco |
+| **Hard links** | Los proyectos enlazan al almacén en vez de copiar |
+| **Velocidad** | Hasta 2x más rápido que NPM |
+| **Ahorro de espacio** | Reduce significativamente el uso de disco |
+| **Estricto** | Previene acceso a dependencias no declaradas |
+
+### ¿Por qué elegir PNPM sobre NPM?
+
+- **Espacio en disco**: Si tienes 10 proyectos con React, solo se descarga una vez
+- **Velocidad**: Instalaciones más rápidas gracias al caché eficiente
+- **Seguridad**: Solo puedes importar dependencias declaradas explícitamente
+- **Monorepos**: Soporte nativo para workspaces
+
+---
+
+## 🚀 2. Instalación
+
+### Métodos de instalación
+
+<Code code={`# Usando NPM (más común)
+npm install -g pnpm
+
+# Usando Corepack (Node.js 16.13+)
+corepack enable
+corepack prepare pnpm@latest --activate
+
+# Windows (PowerShell)
+iwr https://get.pnpm.io/install.ps1 -useb | iex
+
+# macOS/Linux (curl)
+curl -fsSL https://get.pnpm.io/install.sh | sh -`} lang="bash" title="Instalar PNPM" />
+
+### Verificar instalación
+
+<Code code={`# Verificar versión
+pnpm --version
+# 8.15.0
+
+# Ver ayuda
+pnpm --help`} lang="bash" title="Verificar instalación" />
+
+### Actualizar PNPM
+
+<Code code={`# Actualizar a la última versión
+pnpm add -g pnpm
+
+# O usando npm
+npm install -g pnpm@latest`} lang="bash" title="Actualizar PNPM" />
+
+---
+
+## 📁 3. Inicializar un Proyecto
+
+### Crear proyecto nuevo
+
+<Code code={`# Crear package.json interactivo
+pnpm init
+
+# Crear con valores por defecto
+pnpm init -y`} lang="bash" title="Inicializar proyecto" />
+
+### Migrar desde NPM
+
+<Code code={`# Si ya tienes un proyecto con NPM
+# Simplemente elimina node_modules y el lock file
+
+rm -rf node_modules
+rm package-lock.json
+
+# Instalar con PNPM
+pnpm install
+
+# Esto crea pnpm-lock.yaml`} lang="bash" title="Migrar desde NPM" />
+
+<Aside type="tip" title="💡 Tip">
+PNPM es compatible con `package.json`. Solo cambia el lock file: de `package-lock.json` a `pnpm-lock.yaml`.
+</Aside>
+
+---
+
+## 📥 4. Instalar Paquetes
+
+### Comandos de instalación
+
+| Comando PNPM | Equivalente NPM | Descripción |
+|--------------|-----------------|-------------|
+| `pnpm add paquete` | `npm install paquete` | Dependencia de producción |
+| `pnpm add -D paquete` | `npm install -D paquete` | Dependencia de desarrollo |
+| `pnpm add -g paquete` | `npm install -g paquete` | Instalación global |
+| `pnpm install` | `npm install` | Instalar todas las dependencias |
+
+### Ejemplos de instalación
+
+<Code code={`# Instalar dependencia de producción
+pnpm add express
+
+# Instalar múltiples paquetes
+pnpm add express mongoose dotenv
+
+# Instalar como dependencia de desarrollo
+pnpm add -D typescript @types/node jest
+
+# Instalar globalmente
+pnpm add -g typescript
+
+# Instalar versión específica
+pnpm add express@4.18.2
+
+# Instalar desde GitHub
+pnpm add github:user/repo`} lang="bash" title="Instalar paquetes" />
+
+### Instalar todas las dependencias
+
+<Code code={`# Instalar todas las dependencias del package.json
+pnpm install
+
+# Atajo
+pnpm i
+
+# Instalación limpia (como npm ci)
+pnpm install --frozen-lockfile
+
+# Solo producción
+pnpm install --prod`} lang="bash" title="Instalar dependencias" />
+
+---
+
+## 🗑️ 5. Desinstalar y Actualizar
+
+### Desinstalar paquetes
+
+<Code code={`# Desinstalar un paquete
+pnpm remove express
+
+# Atajo
+pnpm rm express
+
+# Desinstalar múltiples
+pnpm remove express mongoose
+
+# Desinstalar global
+pnpm remove -g typescript`} lang="bash" title="Desinstalar" />
+
+### Actualizar paquetes
+
+<Code code={`# Ver paquetes desactualizados
+pnpm outdated
+
+# Actualizar un paquete
+pnpm update express
+
+# Actualizar todos los paquetes
+pnpm update
+
+# Actualizar a última versión (interactivo)
+pnpm update --interactive
+
+# Actualizar a latest (puede romper)
+pnpm update --latest`} lang="bash" title="Actualizar" />
+
+<Aside type="tip" title="💡 Modo interactivo">
+`pnpm update -i` muestra una interfaz interactiva para seleccionar qué paquetes actualizar. ¡Muy útil!
+</Aside>
+
+---
+
+## 📜 6. Ejecutar Scripts
+
+### Ejecutar scripts del package.json
+
+<Code code={`# Ejecutar script
+pnpm run dev
+pnpm run build
+pnpm run test
+
+# Scripts especiales (sin 'run')
+pnpm start
+pnpm test
+
+# Ver todos los scripts disponibles
+pnpm run
+
+# Ejecutar con argumentos
+pnpm run test -- --coverage`} lang="bash" title="Ejecutar scripts" />
+
+### Crear proyectos con frameworks
+
+Usa `pnpm create` o `pnpm dlx` para iniciar proyectos con frameworks populares:
+
+<Code code={`# React (con Vite - recomendado)
+pnpm create vite mi-app-react --template react
+pnpm create vite mi-app-react-ts --template react-ts
+
+# Vue
+pnpm create vue@latest mi-app-vue
+
+# Next.js
+pnpm create next-app mi-app-next
+
+# Nuxt
+pnpm dlx nuxi init mi-app-nuxt
+
+# Astro
+pnpm create astro@latest
+
+# SvelteKit
+pnpm create svelte@latest mi-app-svelte
+
+# Angular
+pnpm dlx @angular/cli new mi-app-angular
+
+# Express (API básica)
+pnpm dlx express-generator mi-api`} lang="bash" title="Crear proyectos" />
+
+<Aside type="tip" title="💡 Tip">
+`pnpm create nombre` es equivalente a `pnpm dlx create-nombre`. Ambos descargan y ejecutan el paquete sin instalarlo permanentemente.
+</Aside>
+
+### Ejecutar binarios de paquetes
+
+<Code code={`# Ejecutar binario instalado localmente
+pnpm exec eslint src/
+
+# Atajo con pnpx (similar a npx)
+pnpx eslint src/
+
+# Ejecutar paquete sin instalar
+pnpm dlx create-react-app mi-app
+pnpm dlx degit user/repo mi-proyecto`} lang="bash" title="Ejecutar binarios" />
+
+### Diferencia entre exec, dlx y npx
+
+| Comando | Descripción |
+|---------|-------------|
+| `pnpm exec` | Ejecuta binario instalado en el proyecto |
+| `pnpm dlx` | Descarga y ejecuta paquete temporalmente (como npx) |
+| `pnpx` | Alias de `pnpm dlx` |
+
+---
+
+## 🏪 7. El Almacén Global (Store)
+
+### ¿Cómo funciona?
+
+PNPM guarda todos los paquetes en un **almacén global** y crea **hard links** a los proyectos. Esto significa:
+
+- Un paquete se descarga **una sola vez**
+- Todos los proyectos **comparten** el mismo archivo
+- **Ahorro masivo** de espacio en disco
+
+<Code code={`# Ver ubicación del store
+pnpm store path
+# ~/.local/share/pnpm/store/v3 (Linux/macOS)
+# %LOCALAPPDATA%/pnpm/store/v3 (Windows)
+
+# Ver estado del store
+pnpm store status
+
+# Limpiar paquetes no usados del store
+pnpm store prune`} lang="bash" title="Almacén global" />
+
+### Ejemplo de ahorro
+
+```
+Sin PNPM (NPM):
+├── proyecto-1/node_modules/react (5MB)
+├── proyecto-2/node_modules/react (5MB)
+├── proyecto-3/node_modules/react (5MB)
+Total: 15MB
+
+Con PNPM:
+├── ~/.pnpm-store/react (5MB) ← único archivo real
+├── proyecto-1/node_modules/react → link
+├── proyecto-2/node_modules/react → link
+├── proyecto-3/node_modules/react → link
+Total: 5MB
+```
+
+---
+
+## 📂 8. Estructura de node_modules
+
+### Estructura estricta
+
+PNPM usa una estructura **no plana** que previene el acceso a dependencias no declaradas.
+
+<Code code={`node_modules/
+├── .pnpm/                    # Paquetes reales (hard links)
+│   ├── express@4.18.2/
+│   │   └── node_modules/
+│   │       └── express/
+│   └── lodash@4.17.21/
+│       └── node_modules/
+│           └── lodash/
+├── express -> .pnpm/express@4.18.2/node_modules/express
+└── lodash -> .pnpm/lodash@4.17.21/node_modules/lodash`} lang="text" title="Estructura node_modules" />
+
+### Beneficios de la estructura estricta
+
+| Beneficio | Descripción |
+|-----------|-------------|
+| **Seguridad** | No puedes importar paquetes no declarados |
+| **Claridad** | Sabes exactamente qué dependencias usas |
+| **Menos bugs** | Evita errores por dependencias fantasma |
+
+<Aside type="caution" title="⚠️ Nota">
+Algunos paquetes antiguos pueden fallar con la estructura estricta. Usa `pnpm install --shamefully-hoist` como último recurso.
+</Aside>
+
+---
+
+## 🔧 9. Workspaces (Monorepos)
+
+### ¿Qué son los workspaces?
+
+Permiten gestionar múltiples paquetes en un solo repositorio (monorepo).
+
+### Configurar workspaces
+
+<Code code={`# pnpm-workspace.yaml (en la raíz)
+packages:
+  - 'packages/*'
+  - 'apps/*'
+  - '!**/test/**'`} lang="yaml" title="pnpm-workspace.yaml" />
+
+### Estructura de monorepo
+
+```
+mi-monorepo/
+├── package.json
+├── pnpm-workspace.yaml
+├── pnpm-lock.yaml
+├── packages/
+│   ├── ui/
+│   │   └── package.json
+│   └── utils/
+│       └── package.json
+└── apps/
+    ├── web/
+    │   └── package.json
+    └── api/
+        └── package.json
+```
+
+### Comandos para workspaces
+
+<Code code={`# Instalar dependencias en todos los workspaces
+pnpm install
+
+# Ejecutar script en todos los workspaces
+pnpm -r run build
+pnpm --recursive run test
+
+# Ejecutar solo en un workspace específico
+pnpm --filter web run dev
+pnpm --filter @mi-org/ui run build
+
+# Añadir dependencia a un workspace
+pnpm add lodash --filter web
+
+# Añadir dependencia local (otro workspace)
+pnpm add @mi-org/utils --filter web --workspace`} lang="bash" title="Comandos workspaces" />
+
+---
+
+## 🧹 10. Mantenimiento y Limpieza
+
+### Limpiar caché y store
+
+<Code code={`# Limpiar paquetes no usados del store
+pnpm store prune
+
+# Ver tamaño del store
+pnpm store path
+du -sh $(pnpm store path)
+
+# Verificar integridad
+pnpm store status`} lang="bash" title="Limpiar store" />
+
+### Solucionar problemas
+
+<Code code={`# Reinstalar todo desde cero
+rm -rf node_modules
+pnpm install
+
+# Instalación estricta (como npm ci)
+pnpm install --frozen-lockfile
+
+# Si hay problemas de compatibilidad
+pnpm install --shamefully-hoist
+
+# Verificar vulnerabilidades
+pnpm audit
+
+# Corregir vulnerabilidades
+pnpm audit --fix`} lang="bash" title="Solucionar problemas" />
+
+---
+
+## ⚡ 11. PNPM vs NPM - Comparación
+
+### Velocidad
+
+| Escenario | NPM | PNPM |
+|-----------|-----|------|
+| Primera instalación | ~60s | ~45s |
+| Con caché | ~30s | ~10s |
+| node_modules existe | ~15s | ~5s |
+
+### Espacio en disco
+
+| Escenario | NPM | PNPM |
+|-----------|-----|------|
+| 1 proyecto con React | 200MB | 200MB |
+| 10 proyectos con React | 2GB | 200MB |
+| 50 proyectos con React | 10GB | 200MB |
+
+### Equivalencias de comandos
+
+| NPM | PNPM |
+|-----|------|
+| `npm install` | `pnpm install` |
+| `npm install paquete` | `pnpm add paquete` |
+| `npm install -D paquete` | `pnpm add -D paquete` |
+| `npm uninstall paquete` | `pnpm remove paquete` |
+| `npm run script` | `pnpm run script` |
+| `npm ci` | `pnpm install --frozen-lockfile` |
+| `npx comando` | `pnpm dlx comando` |
+| `npm update` | `pnpm update` |
+| `npm audit` | `pnpm audit` |
+
+---
+
+## 📋 Comandos Esenciales - Resumen
+
+| Comando | Descripción |
+|---------|-------------|
+| `pnpm init` | Crear proyecto nuevo |
+| `pnpm install` | Instalar dependencias |
+| `pnpm add paquete` | Añadir paquete |
+| `pnpm add -D paquete` | Añadir como dev dependency |
+| `pnpm remove paquete` | Eliminar paquete |
+| `pnpm update` | Actualizar paquetes |
+| `pnpm update -i` | Actualizar interactivamente |
+| `pnpm run script` | Ejecutar script |
+| `pnpm dlx comando` | Ejecutar sin instalar |
+| `pnpm --filter pkg comando` | Ejecutar en workspace |
+| `pnpm store prune` | Limpiar store |
+| `pnpm outdated` | Ver desactualizados |
+
+<Aside type="tip" title="🎯 Recomendación">
+Si trabajas con múltiples proyectos Node.js, PNPM te ahorrará gigabytes de espacio y tiempo en instalaciones. ¡Vale la pena el cambio!
+</Aside>

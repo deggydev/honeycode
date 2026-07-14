@@ -617,6 +617,20 @@ export default defineConfig({
 								{ label: '06. Interacción con rutas y API REST', link: '/guides/ziggy/api-rest/' }
 							]
 						},
+						{
+							label: 'NPM',
+							collapsed: true,
+							items: [
+								{ label: 'Guía Esencial', link: '/utilities/npm/guia-esencial/' },
+							]
+						},
+						{
+							label: 'PNPM',
+							collapsed: true,
+							items: [
+								{ label: 'Guía Esencial', link: '/utilities/pnpm/guia-esencial/' },
+							]
+						},
 					],
 				},
 								{
